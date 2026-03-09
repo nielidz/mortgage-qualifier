@@ -540,6 +540,38 @@ function App(){
 
   const ResultsPane=(
     <div style={{paddingBottom:16}}>
+      {/* --- Summary card - always visible - mirrors mobile result bar --- */}
+      <div style={{background:"#1c1c1e",borderRadius:16,padding:"20px 24px",marginBottom:24}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:16,flexWrap:"wrap",gap:16}}>
+          <div>
+            <div style={{fontSize:11,color:"rgba(255,255,255,0.4)",fontWeight:500,letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:4}}>Max Mortgage</div>
+            <div style={{fontSize:36,fontWeight:700,color:"#fff",letterSpacing:"-0.03em",lineHeight:1}}>{fCAD(c.maxMtg)}</div>
+            <div style={{fontSize:12,color:"rgba(255,255,255,0.35)",marginTop:4}}>Stress test @ {c.stressR.toFixed(2)}%</div>
+          </div>
+          <div style={{textAlign:"right"}}>
+            <div style={{fontSize:11,color:"rgba(255,255,255,0.4)",fontWeight:500,letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:4}}>Payment</div>
+            <div style={{fontSize:36,fontWeight:700,color:"#fff",letterSpacing:"-0.03em",lineHeight:1}}>{fCAD(selPmt,2)}</div>
+            <div style={{fontSize:12,color:"rgba(255,255,255,0.35)",marginTop:4}}>{FREQS.find(f=>f.key===payFreq)?.label}</div>
+          </div>
+        </div>
+        <div style={{display:"flex",gap:8}}>
+          <div style={{flex:1,background:"rgba(255,255,255,0.07)",borderRadius:10,padding:"10px 0",textAlign:"center"}}>
+            <div style={{fontSize:11,color:"rgba(255,255,255,0.38)",marginBottom:2}}>GDS</div>
+            <div style={{fontSize:22,fontWeight:700,color:c.gdsPass?C.green:C.red,letterSpacing:"-0.02em"}}>{c.gds.toFixed(1)}%</div>
+            <div style={{fontSize:11,color:"rgba(255,255,255,0.28)"}}>max 39%</div>
+          </div>
+          <div style={{flex:1,background:"rgba(255,255,255,0.07)",borderRadius:10,padding:"10px 0",textAlign:"center"}}>
+            <div style={{fontSize:11,color:"rgba(255,255,255,0.38)",marginBottom:2}}>TDS</div>
+            <div style={{fontSize:22,fontWeight:700,color:c.tdsPass?C.green:C.red,letterSpacing:"-0.02em"}}>{c.tds.toFixed(1)}%</div>
+            <div style={{fontSize:11,color:"rgba(255,255,255,0.28)"}}>max 44%</div>
+          </div>
+          <div style={{flex:2,background:price>0?(c.eligible?"rgba(52,199,89,0.15)":"rgba(255,59,48,0.15)"):"rgba(255,255,255,0.07)",border:"1px solid "+(price>0?(c.eligible?"rgba(52,199,89,0.4)":"rgba(255,59,48,0.4)"):"transparent"),borderRadius:10,display:"flex",alignItems:"center",justifyContent:"center",padding:"10px"}}>
+            <span style={{fontSize:15,fontWeight:700,color:price>0?(c.eligible?C.green:C.red):"rgba(255,255,255,0.3)"}}>
+              {price>0?(c.eligible?"Qualifies":"Does Not Qualify"):"Enter details"}
+            </span>
+          </div>
+        </div>
+      </div>
       <SectionTitle>Qualification</SectionTitle>
       <StatRow label="Qualifying Income" value={fCAD(c.qualMo*12,0)+"/yr"}/>
       <StatRow label="Stress Test Payment" value={fCAD(c.qualPmt,0)+"/mo"}/>
