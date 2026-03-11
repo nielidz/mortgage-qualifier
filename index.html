@@ -148,11 +148,11 @@ function InfoBox({children,color}){
   return <div style={{background:bg,borderRadius:12,padding:"12px 16px",fontSize:14,color:tc,marginTop:14}}>{children}</div>;
 }
 
-function ResultBar({c,selPmt,payFreq}){
-  const minDownPct=c.price>0?(calcMinDown(c.price)/c.price*100):5;
-  const qualify=c.price>0&&c.downPct>0&&c.downPct<minDownPct?"warn":c.eligible?"pass":"fail";
+function ResultBar({c,selPmt,payFreq,downMissing}){
+  const qualify=downMissing?"warn":c.eligible?"pass":"fail";
   const pillColor=qualify==="warn"?C.amber:qualify==="pass"?C.green:C.red;
-  const pillLabel=qualify==="warn"?"Min Down Required":qualify==="pass"?"Qualifies":"Does Not Qualify";
+  const pillLabel=qualify==="warn"?"Down Payment Required":qualify==="pass"?"Qualifies":"Does Not Qualify";
+  const minDownAmt=c.price>0?calcMinDown(c.price):0;
   return(
     <div style={{background:"#1c1c1e",boxShadow:"0 -1px 0 rgba(255,255,255,0.06)"}}>
       <div style={{maxWidth:1200,margin:"0 auto",padding:"14px 20px calc(14px + env(safe-area-inset-bottom,0px))"}}>
@@ -179,8 +179,10 @@ function ResultBar({c,selPmt,payFreq}){
             <div style={{fontSize:17,fontWeight:700,color:c.tdsPass?C.green:C.red,letterSpacing:"-0.02em"}}>{c.tds.toFixed(1)}%</div>
             <div style={{fontSize:10,color:"rgba(255,255,255,0.28)"}}>max 44%</div>
           </div>
-          <div style={{flex:2,background:pillColor+"28",border:"1px solid "+pillColor+"55",borderRadius:10,display:"flex",alignItems:"center",justifyContent:"center",padding:"8px"}}>
+          <div style={{flex:2,background:pillColor+"28",border:"1px solid "+pillColor+"55",borderRadius:10,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"8px",textAlign:"center"}}>
             <span style={{fontSize:14,fontWeight:700,color:pillColor}}>{pillLabel}</span>
+            {qualify==="warn"&&<span style={{fontSize:10,color:pillColor,opacity:0.8,marginTop:2}}>Min: {fCAD(minDownAmt,0)}</span>}
+            {qualify==="fail"&&(c.gds>39||c.tds>44)&&<span style={{fontSize:10,color:pillColor,opacity:0.8,marginTop:2}}>{c.gds>39?"GDS over 39%":""}{c.gds>39&&c.tds>44?" & ":""}{c.tds>44?"TDS over 44%":""}</span>}
           </div>
         </div>
       </div>
@@ -249,7 +251,7 @@ function App(){
   const[rental,setRental]=useState(saved.rental||0);
   const[price,setPrice]=useState(saved.price||0);
   const[down,setDown]=useState(saved.down||0);
-  const[rate,setRate]=useState(saved.rate||5.0);
+  const[rate,setRate]=useState(saved.rate||4.5);
   const[amort,setAmort]=useState(saved.amort||25);
   const[isFTHB,setIsFTHB]=useState(saved.isFTHB||false);
   const[compound,setCompound]=useState(saved.compound||"semi-annual");
@@ -272,9 +274,12 @@ function App(){
   const[targetDown,setTargetDown]=useState(0);
   // LTT (synced from price)
   const[lttFTHB,setLttFTHB]=useState(false);
+  const[lttPriceOverride,setLttPriceOverride]=useState(0); // 0 = use Inputs price
   const[lttToronto,setLttToronto]=useState(false);
   // Closing (synced from price)
   const[ccLegal,setCcLegal]=useState(1500);
+  const[ccPriceOverride,setCcPriceOverride]=useState(0); // 0 = use Inputs price
+  const[ccDownOverride,setCcDownOverride]=useState(0);   // 0 = use Inputs down
   const[ccInspect,setCcInspect]=useState(500);
   const[ccTitle,setCcTitle]=useState(300);
   const[ccOther,setCcOther]=useState(500);
@@ -303,7 +308,7 @@ function App(){
   const[rnComp,setRnComp]=useState("semi-annual");
   // Prepayment
   const[ppBalance,setPpBalance]=useState(0);
-  const[ppRate,setPpRate]=useState(5.0);
+  const[ppRate,setPpRate]=useState(4.5);
   const[ppAmort,setPpAmort]=useState(25);
   const[ppComp,setPpComp]=useState("semi-annual");
   const[ppLumpSum,setPpLumpSum]=useState(0);
@@ -320,15 +325,16 @@ function App(){
   function handleFTHB(v){setIsFTHB(v);setAmort(v?30:25);}
   function handleReset(){
     setIncome(0);setCoIncome(0);setRental(0);setPrice(0);setDown(0);
-    setRate(5.0);setAmort(25);setIsFTHB(false);setCompound("semi-annual");
+    setRate(4.5);setAmort(25);setIsFTHB(false);setCompound("semi-annual");
     setTaxMode("annual");setTax(0);setCondo(0);setHeat(100);
     setCarAmt(0);setCarFreq("monthly");setStudMode("payment");
     setStudPmt(0);setStudFreq("monthly");setStudBal(0);
     setCcBal(0);setOtherAmt(0);setOtherFreq("monthly");setPayFreq("monthly");
     setTargetPrice(0);setTargetDown(0);
-    setLttFTHB(false);setLttToronto(false);
-    setCcLegal(1500);setCcInspect(500);setCcTitle(300);setCcOther(500);setCcFTHB(false);setCcToronto(false);
+    setLttFTHB(false);setLttToronto(false);setLttPriceOverride(0);
+    setCcLegal(1500);setCcInspect(500);setCcTitle(300);setCcOther(500);setCcFTHB(false);setCcToronto(false);setCcPriceOverride(0);setCcDownOverride(0);
     setRvbRent(0);setRvbAppreciation(3.0);setRvbRentIncrease(3.0);setRvbYears(5);
+    setMpPriceOverride(0);
     setAtComp("semi-annual");
     setRfBalance(0);setRfCurrentRate(0);setRfNewRate(0);setRfAmort(25);setRfPenalty(0);setRfComp("semi-annual");
     setRnBalance(0);setRnCurrentRate(0);setRnNewRate(0);setRnAmort(20);setRnRenewalDate("");setRnComp("semi-annual");
@@ -399,28 +405,32 @@ function App(){
   },[income,coIncome,rental,price,down,rate,amort,compound,tax,taxMode,condo,heat,carAmt,carFreq,studMode,studPmt,studFreq,studBal,ccBal,otherAmt,otherFreq,is30,targetPrice,targetDown,gdsMax,tdsMax]);
 
   const selPmt=c.pmts[payFreq]||0;
+  const downMissing=c.price>0&&c.downPct<(calcMinDown(c.price)/c.price*100);
 
   //  Derived calcs 
   // LTT uses price from Inputs
+  const lttEffPrice=lttPriceOverride>0?lttPriceOverride:price;
   const ltt=useMemo(()=>{
-    if(price<=0)return null;
-    const ontario=calcOntarioLTT(price,lttFTHB);
-    const toronto=lttToronto?calcTorontoLTT(price,lttFTHB):{tax:0,rebate:0,net:0};
+    if(lttEffPrice<=0)return null;
+    const ontario=calcOntarioLTT(lttEffPrice,lttFTHB);
+    const toronto=lttToronto?calcTorontoLTT(lttEffPrice,lttFTHB):{tax:0,rebate:0,net:0};
     return{ontario,toronto,total:ontario.net+toronto.net};
-  },[price,lttFTHB,lttToronto]);
+  },[lttEffPrice,lttFTHB,lttToronto]);
 
-  // Closing uses price and down from Inputs
+  // Closing uses price and down from Inputs (or overrides)
+  const ccEffPrice=ccPriceOverride>0?ccPriceOverride:price;
+  const ccEffDown=ccDownOverride>0?ccDownOverride:down;
   const closing=useMemo(()=>{
-    if(price<=0)return null;
-    const effDown=down>0?down:calcMinDown(price);
-    const ontario=calcOntarioLTT(price,ccFTHB);
-    const toronto=ccToronto?calcTorontoLTT(price,ccFTHB):{net:0};
+    if(ccEffPrice<=0)return null;
+    const effDown=ccEffDown>0?ccEffDown:calcMinDown(ccEffPrice);
+    const ontario=calcOntarioLTT(ccEffPrice,ccFTHB);
+    const toronto=ccToronto?calcTorontoLTT(ccEffPrice,ccFTHB):{net:0};
     const lttTotal=ontario.net+toronto.net;
-    const targetTotal=price*0.015;
+    const targetTotal=ccEffPrice*0.015;
     const total=lttTotal+ccLegal+ccInspect+ccTitle+ccOther;
-    const pct=price>0?total/price*100:0;
+    const pct=ccEffPrice>0?total/ccEffPrice*100:0;
     return{effDown,lttTotal,legal:ccLegal,inspect:ccInspect,title:ccTitle,other:ccOther,total,targetTotal,pct};
-  },[price,down,ccLegal,ccInspect,ccTitle,ccOther,ccFTHB,ccToronto]);
+  },[ccEffPrice,ccEffDown,ccLegal,ccInspect,ccTitle,ccOther,ccFTHB,ccToronto]);
 
   // Amort uses price/down/rate/amort from Inputs
   const amortTable=useMemo(()=>{
@@ -595,7 +605,7 @@ function App(){
         <PriceSlider value={price} onChange={setPrice}/>
       </Field>
       <Field label="Down Payment" hint={price>0?c.downPct.toFixed(1)+"% | min "+fCAD(c.minDown):""}
-        note={price>0&&c.downPct>0&&c.downPct<5?"Minimum 5% required":undefined}>
+        note={price>0&&down===0?"Enter a down payment (min "+fCAD(c.minDown,0)+")":price>0&&c.downPct>0&&c.downPct<(calcMinDown(price)/price*100)?"Below minimum  need "+fCAD(c.minDown,0):undefined}>
         <NumInput value={down} onChange={setDown} pre="$" highlight={price>0&&down>0&&down<calcMinDown(price)}/>
         <div style={{display:"flex",gap:6,marginTop:8,flexWrap:"wrap"}}>
           {[{label:"Min",fn:()=>setDown(Math.ceil(calcMinDown(price)))},{label:"10%",fn:()=>setDown(Math.round(price*0.10))},{label:"15%",fn:()=>setDown(Math.round(price*0.15))},{label:"20%",fn:()=>setDown(Math.round(price*0.20))}].map(opt=>(
@@ -607,7 +617,7 @@ function App(){
         </div>
       </Field>
       <Field label="First-Time Buyer">
-        <Toggle value={isFTHB} onChange={handleFTHB} label={isFTHB?"Yes  30yr amort enabled":"No"}/>
+        <Pills value={isFTHB} onChange={handleFTHB} options={[{value:false,label:"No"},{value:true,label:"Yes (enables 30yr)"}]}/>
       </Field>
       <Field label="Amortization"><NumInput value={amort} onChange={v=>setAmort(Math.min(30,Math.max(5,v)))} suf="years"/></Field>
       <Field label="Interest Rate" hint={"Stress test: "+c.stressR.toFixed(2)+"%"}><NumInput value={rate} onChange={setRate} pre="%" suf="annual"/></Field>
@@ -677,10 +687,11 @@ function App(){
             <div style={{fontSize:22,fontWeight:700,color:c.tdsPass?C.green:C.red,letterSpacing:"-0.02em"}}>{c.tds.toFixed(1)}%</div>
             <div style={{fontSize:11,color:"rgba(255,255,255,0.28)"}}>max {tdsMax}%</div>
           </div>
-          <div style={{flex:2,background:price>0?(c.eligible?"rgba(52,199,89,0.15)":"rgba(255,59,48,0.15)"):"rgba(255,255,255,0.07)",border:"1px solid "+(price>0?(c.eligible?"rgba(52,199,89,0.4)":"rgba(255,59,48,0.4)"):"transparent"),borderRadius:10,display:"flex",alignItems:"center",justifyContent:"center",padding:"10px"}}>
-            <span style={{fontSize:15,fontWeight:700,color:price>0?(c.eligible?C.green:C.red):"rgba(255,255,255,0.3)"}}>
-              {price>0?(c.eligible?"Qualifies":"Does Not Qualify"):"Enter details"}
+          <div style={{flex:2,background:price>0?(c.eligible?"rgba(52,199,89,0.15)":downMissing?"rgba(255,149,0,0.15)":"rgba(255,59,48,0.15)"):void 0||"rgba(255,255,255,0.07)",border:"1px solid "+(price>0?(c.eligible?"rgba(52,199,89,0.4)":downMissing?"rgba(255,149,0,0.4)":"rgba(255,59,48,0.4)"):"transparent"),borderRadius:10,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"10px",textAlign:"center"}}>
+            <span style={{fontSize:15,fontWeight:700,color:price>0?(c.eligible?C.green:downMissing?C.amber:C.red):"rgba(255,255,255,0.3)"}}>
+              {price>0?(c.eligible?"Qualifies":downMissing?"Down Pmt Required":"Does Not Qualify"):"Enter details"}
             </span>
+            {price>0&&downMissing&&<span style={{fontSize:11,color:C.amber,marginTop:3}}>Min: {fCAD(calcMinDown(price),0)}</span>}
           </div>
         </div>
       </div>
@@ -704,9 +715,14 @@ function App(){
       <StatRow label="Max Mortgage" value={fCAD(c.maxMtg,0)} color={C.blue} big/>
       <StatRow label="Income Needed" value={fCAD(c.incNeeded,0)+"/yr"}/>
       {price>0&&(
-        <InfoBox color={c.eligible?"green":"red"}>
-          <div style={{fontWeight:600}}>{c.eligible?"Client likely qualifies.":"Client does not qualify."}</div>
-          {!c.eligible&&c.incNeeded>(income+coIncome)&&<div style={{fontWeight:400,fontSize:13,marginTop:3,color:C.label}}>Shortfall: {fCAD(c.incNeeded-(income+coIncome),0)}/yr</div>}
+        <InfoBox color={c.eligible?"green":downMissing?"amber":"red"}>
+          <div style={{fontWeight:600}}>
+            {c.eligible?"Client likely qualifies.":downMissing?"Down payment required to qualify.":"Client does not qualify."}
+          </div>
+          {downMissing&&<div style={{fontWeight:400,fontSize:13,marginTop:3}}>Minimum down payment: {fCAD(calcMinDown(price),0)} ({(calcMinDown(price)/price*100).toFixed(1)}% of {fCAD(price,0)})</div>}
+          {!c.eligible&&!downMissing&&c.incNeeded>(income+coIncome)&&<div style={{fontWeight:400,fontSize:13,marginTop:3,color:C.label}}>Shortfall: {fCAD(c.incNeeded-(income+coIncome),0)}/yr</div>}
+          {!c.eligible&&!downMissing&&!c.gdsPass&&<div style={{fontWeight:400,fontSize:13,marginTop:3}}>GDS {c.gds.toFixed(1)}% exceeds max {gdsMax}%</div>}
+          {!c.eligible&&!downMissing&&!c.tdsPass&&<div style={{fontWeight:400,fontSize:13,marginTop:3}}>TDS {c.tds.toFixed(1)}% exceeds max {tdsMax}%</div>}
         </InfoBox>
       )}
       <Divider/>
@@ -821,8 +837,23 @@ function App(){
   const LTTPane=(
     <div style={{paddingBottom:16}}>
       <SectionTitle>Land Transfer Tax</SectionTitle>
-      <p style={{fontSize:14,color:C.label,marginBottom:12,lineHeight:1.6}}>Calculated automatically using the purchase price from Inputs tab ({fCAD(price,0)}).</p>
-      {price<=0&&<InfoBox color="blue">Enter a purchase price in the Inputs tab to calculate LTT.</InfoBox>}
+      <p style={{fontSize:14,color:C.label,marginBottom:16,lineHeight:1.6}}>Ontario LTT calculated automatically. Add Toronto municipal tax if buying in the City of Toronto.</p>
+
+      <Field label="Purchase Price" hint={lttPriceOverride===0&&price>0?"From Inputs tab":lttPriceOverride>0?"Override active":""}>
+        <NumInput value={lttPriceOverride>0?lttPriceOverride:(price||0)} onChange={v=>{
+          if(v===price){setLttPriceOverride(0);}else{setLttPriceOverride(v||0);}
+        }} pre="$"/>
+        {price>0&&lttPriceOverride>0&&(
+          <button onClick={()=>setLttPriceOverride(0)}
+            style={{marginTop:6,fontSize:12,color:C.blue,background:"rgba(0,113,227,0.08)",border:"none",borderRadius:8,padding:"5px 12px",cursor:"pointer",fontFamily:C.font}}>
+            Reset to Inputs price ({fCAD(price,0)})
+          </button>
+        )}
+        {price<=0&&lttPriceOverride===0&&(
+          <div style={{marginTop:6,fontSize:12,color:C.amber}}>Enter a price above or set one in the Inputs tab.</div>
+        )}
+      </Field>
+
       <Field label="First-Time Buyer">
         <Pills value={lttFTHB} onChange={setLttFTHB} options={[{value:false,label:"No"},{value:true,label:"Yes (rebate applied)"}]}/>
       </Field>
@@ -859,25 +890,59 @@ function App(){
   const ClosingPane=(
     <div style={{paddingBottom:16}}>
       <SectionTitle>Closing Costs</SectionTitle>
-      <p style={{fontSize:14,color:C.label,marginBottom:12,lineHeight:1.6}}>Using price {fCAD(price,0)} and down {fCAD(down>0?down:calcMinDown(price),0)} from Inputs tab.</p>
-      {price<=0&&<InfoBox color="blue">Enter a purchase price in the Inputs tab first.</InfoBox>}
-      {price>0&&(
+      <p style={{fontSize:14,color:C.label,marginBottom:16,lineHeight:1.6}}>Purchase price and down payment are pulled from the Inputs tab. Override either below if needed.</p>
+
+      <Field label="Purchase Price" hint={ccPriceOverride===0&&price>0?"From Inputs tab":ccPriceOverride>0?"Override active":""}>
+        <NumInput value={ccPriceOverride>0?ccPriceOverride:(price||0)} onChange={v=>{
+          if(v===price){setCcPriceOverride(0);}else{setCcPriceOverride(v||0);}
+        }} pre="$"/>
+        {price>0&&ccPriceOverride>0&&(
+          <button onClick={()=>setCcPriceOverride(0)}
+            style={{marginTop:6,fontSize:12,color:C.blue,background:"rgba(0,113,227,0.08)",border:"none",borderRadius:8,padding:"5px 12px",cursor:"pointer",fontFamily:C.font}}>
+            Reset to Inputs price ({fCAD(price,0)})
+          </button>
+        )}
+      </Field>
+
+      <Field label="Down Payment" hint={ccDownOverride===0&&down>0?"From Inputs tab":ccDownOverride>0?"Override active":"min "+fCAD(calcMinDown(ccEffPrice),0)}>
+        <NumInput value={ccDownOverride>0?ccDownOverride:(down||0)} onChange={v=>{
+          if(v===down){setCcDownOverride(0);}else{setCcDownOverride(v||0);}
+        }} pre="$"/>
+        {ccEffPrice>0&&(
+          <div style={{display:"flex",gap:6,marginTop:8,flexWrap:"wrap"}}>
+            {[{label:"Min",fn:()=>setCcDownOverride(Math.ceil(calcMinDown(ccEffPrice)))},{label:"10%",fn:()=>setCcDownOverride(Math.round(ccEffPrice*0.10))},{label:"15%",fn:()=>setCcDownOverride(Math.round(ccEffPrice*0.15))},{label:"20%",fn:()=>setCcDownOverride(Math.round(ccEffPrice*0.20))}].map(opt=>(
+              <button key={opt.label} onClick={opt.fn}
+                style={{flex:1,height:34,borderRadius:8,border:"1px solid "+C.border,background:"rgba(118,118,128,0.1)",color:C.text,fontSize:13,fontWeight:500,cursor:"pointer",fontFamily:C.font,transition:"all 0.15s"}}>
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        )}
+        {down>0&&ccDownOverride>0&&(
+          <button onClick={()=>setCcDownOverride(0)}
+            style={{marginTop:6,fontSize:12,color:C.blue,background:"rgba(0,113,227,0.08)",border:"none",borderRadius:8,padding:"5px 12px",cursor:"pointer",fontFamily:C.font}}>
+            Reset to Inputs down ({fCAD(down,0)})
+          </button>
+        )}
+      </Field>
+
+      {ccEffPrice>0&&(
         <>
           <div style={{background:C.navy,borderRadius:16,padding:"18px 20px",marginBottom:16}}>
             <div style={{fontSize:12,color:"rgba(255,255,255,0.45)",fontWeight:500,letterSpacing:"0.05em",textTransform:"uppercase",marginBottom:12}}>Total Funds Required</div>
             <div style={{display:"flex",flexDirection:"column",gap:10}}>
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-                <span style={{fontSize:14,color:"rgba(255,255,255,0.6)"}}>{down>0?"Down Payment":"Min Down Payment"}</span>
-                <span style={{fontSize:16,fontWeight:600,color:"#fff"}}>{fCAD(down>0?down:calcMinDown(price),0)}</span>
+                <span style={{fontSize:14,color:"rgba(255,255,255,0.6)"}}>{ccEffDown>0?"Down Payment":"Min Down Payment"}</span>
+                <span style={{fontSize:16,fontWeight:600,color:"#fff"}}>{fCAD(ccEffDown>0?ccEffDown:calcMinDown(ccEffPrice),0)}</span>
               </div>
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
                 <span style={{fontSize:14,color:"rgba(255,255,255,0.6)"}}>Closing Costs (1.5%)</span>
-                <span style={{fontSize:16,fontWeight:600,color:"#fff"}}>{fCAD(price*0.015,0)}</span>
+                <span style={{fontSize:16,fontWeight:600,color:"#fff"}}>{fCAD(ccEffPrice*0.015,0)}</span>
               </div>
               <div style={{height:1,background:"rgba(255,255,255,0.1)"}}/>
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
                 <span style={{fontSize:15,fontWeight:600,color:"rgba(255,255,255,0.85)"}}>Total to Show Bank</span>
-                <span style={{fontSize:22,fontWeight:700,color:C.green,letterSpacing:"-0.02em"}}>{fCAD((down>0?down:calcMinDown(price))+price*0.015,0)}</span>
+                <span style={{fontSize:22,fontWeight:700,color:C.green,letterSpacing:"-0.02em"}}>{fCAD((ccEffDown>0?ccEffDown:calcMinDown(ccEffPrice))+ccEffPrice*0.015,0)}</span>
               </div>
             </div>
           </div>
@@ -890,7 +955,7 @@ function App(){
           <Divider/>
           <SectionTitle>Closing Cost Breakdown</SectionTitle>
           <div style={{background:"rgba(255,149,0,0.08)",border:"1px solid rgba(255,149,0,0.2)",borderRadius:10,padding:"10px 14px",marginBottom:16,fontSize:13,color:C.amber}}>
-            Guideline: 1.5% = {fCAD(price*0.015,0)}. Adjust line items below.
+            Guideline: 1.5% = {fCAD(ccEffPrice*0.015,0)}. Adjust line items below.
           </div>
           <Field label="Legal Fees"><NumInput value={ccLegal} onChange={setCcLegal} pre="$"/></Field>
           <Field label="Home Inspection"><NumInput value={ccInspect} onChange={setCcInspect} pre="$"/></Field>
@@ -917,6 +982,7 @@ function App(){
           )}
         </>
       )}
+      {ccEffPrice<=0&&<InfoBox color="blue">Enter a purchase price above or set one in the Inputs tab.</InfoBox>}
     </div>
   );
 
@@ -1156,10 +1222,227 @@ function App(){
     </div>
   );
 
+  //  Mortgage Payment Calculator state 
+  const MP_FREQS=[{key:"monthly",label:"Monthly"},{key:"biweekly",label:"Bi-Weekly"},{key:"weekly",label:"Weekly"}];
+  const MP_AMORTS=[15,20,25,30];
+  const[mpPrice,setMpPrice]=useState(0);
+  const[mpPriceOverride,setMpPriceOverride]=useState(0); // 0 = use Inputs price
+  const[mpLocation,setMpLocation]=useState("Other ON");
+  const[mpRate,setMpRate]=useState(4.5);
+  const[mpComp,setMpComp]=useState("semi-annual");
+  const[mpFTHB,setMpFTHB]=useState(false);
+  const[mpFreq,setMpFreq]=useState("monthly");
+
+  // 4 scenario columns, each has its own down% and amort
+  const[mpCols,setMpCols]=useState([
+    {downPct:5,amort:30},{downPct:10,amort:25},{downPct:15,amort:25},{downPct:20,amort:25}
+  ]);
+  function setMpCol(i,field,val){setMpCols(prev=>prev.map((c,idx)=>idx===i?{...c,[field]:val}:c));}
+
+  const mpEffPrice=mpPriceOverride>0?mpPriceOverride:price;
+
+  const mpCalc=useMemo(()=>{
+    if(mpEffPrice<=0)return[];
+    return mpCols.map(col=>{
+      const downAmt=Math.round(mpEffPrice*col.downPct/100);
+      const cmhcRate=getCMHCRate(col.downPct,col.amort>25);
+      const base=Math.max(0,mpEffPrice-downAmt);
+      const cmhcAmt=base*cmhcRate;
+      const totalMtg=base+cmhcAmt;
+      const rm=effRate(mpRate,mpComp);
+      const n=col.amort*12;
+      const moPayment=totalMtg>0&&rm>0?(totalMtg*rm*Math.pow(1+rm,n))/(Math.pow(1+rm,n)-1):0;
+      const pmt=mpFreq==="monthly"?moPayment:mpFreq==="biweekly"?moPayment*12/26:moPayment*12/52;
+      const ontario=calcOntarioLTT(mpEffPrice,mpFTHB);
+      const toronto=mpLocation==="Toronto"?calcTorontoLTT(mpEffPrice,mpFTHB):{tax:0,rebate:0,net:0};
+      const lttTotal=ontario.net+toronto.net;
+      const cashToClose=downAmt+lttTotal+mpEffPrice*0.015;
+      const propTaxMo=mpEffPrice*0.01/12;
+      const heatMo=100;
+      const monthlyExp=moPayment+propTaxMo+heatMo+(cmhcAmt>0?0:0);
+      const minDown=col.downPct>=5;
+      // Check if amort valid for this downPct (30yr only allowed if FTHB or insured)
+      const amortValid=col.amort<=25||(col.downPct<20&&mpFTHB)||col.downPct<20;
+      return{downAmt,downPct:col.downPct,cmhcRate,cmhcAmt,totalMtg,pmt,moPayment,lttTotal,cashToClose,monthlyExp,propTaxMo,heatMo,amort:col.amort,minDown};
+    });
+  },[mpEffPrice,mpCols,mpRate,mpComp,mpFTHB,mpFreq,mpLocation]);
+
+  const MpPane=(
+    <div style={{paddingBottom:16}}>
+      <SectionTitle>Mortgage Payment</SectionTitle>
+      <p style={{fontSize:14,color:C.label,marginBottom:20,lineHeight:1.6}}>Compare up to 4 down payment scenarios side by side with payments, CMHC, LTT, and cash to close.</p>
+
+      {/* Top inputs */}
+      <div style={{display:"grid",gridTemplateColumns:mobile?"1fr":"1fr 1fr",gap:12,marginBottom:4}}>
+        <Field label="Purchase Price" hint={mpPriceOverride===0&&price>0?"From Inputs tab":mpPriceOverride>0?"Override active":""}>
+          <NumInput value={mpPriceOverride>0?mpPriceOverride:(price||0)} onChange={v=>{
+            if(v===price){setMpPriceOverride(0);}else{setMpPriceOverride(v||0);}
+          }} pre="$"/>
+          <PriceSlider value={mpPriceOverride>0?mpPriceOverride:(price||100000)} onChange={v=>{setMpPriceOverride(v===price?0:v);}}/>
+          {price>0&&mpPriceOverride>0&&(
+            <button onClick={()=>setMpPriceOverride(0)}
+              style={{marginTop:6,fontSize:12,color:C.blue,background:"rgba(0,113,227,0.08)",border:"none",borderRadius:8,padding:"5px 12px",cursor:"pointer",fontFamily:C.font}}>
+              Reset to Inputs price ({fCAD(price,0)})
+            </button>
+          )}
+          {price<=0&&mpPriceOverride===0&&(
+            <div style={{marginTop:6,fontSize:12,color:C.amber}}>Enter a price above or set one in the Inputs tab.</div>
+          )}
+        </Field>
+        <Field label="Interest Rate" hint={"Comp: "+mpComp}>
+          <NumInput value={mpRate} onChange={setMpRate} pre="%" suf="annual"/>
+        </Field>
+      </div>
+      <div style={{display:"grid",gridTemplateColumns:mobile?"1fr":"1fr 1fr 1fr",gap:12,marginBottom:16}}>
+        <Field label="Compounding">
+          <Pills value={mpComp} onChange={setMpComp} options={COMPOUNDS.map(x=>({key:x.key,label:x.label}))}/>
+        </Field>
+        <Field label="Payment Frequency">
+          <Pills value={mpFreq} onChange={setMpFreq} options={MP_FREQS.map(x=>({key:x.key,label:x.label}))}/>
+        </Field>
+        <Field label="First-Time Buyer">
+          <Pills value={mpFTHB} onChange={setMpFTHB} options={[{value:false,label:"No"},{value:true,label:"Yes"}]}/>
+        </Field>
+      </div>
+      <Field label="Location (for LTT)">
+        <Pills value={mpLocation} onChange={setMpLocation} options={[{value:"Other ON",label:"Ontario"},{value:"Toronto",label:"Toronto"}]}/>
+      </Field>
+
+      {mpEffPrice>0&&(
+        <>
+          <Divider/>
+          {/* Column headers - down % selectors */}
+          <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6,marginBottom:12}}>
+            {mpCols.map((col,i)=>(
+              <div key={i} style={{background:"rgba(0,113,227,0.06)",borderRadius:12,padding:"10px 8px",textAlign:"center"}}>
+                <div style={{fontSize:11,color:C.label,marginBottom:6,fontWeight:500}}>Down %</div>
+                <select value={col.downPct}
+                  onChange={e=>setMpCol(i,"downPct",parseInt(e.target.value))}
+                  style={{width:"100%",height:32,borderRadius:8,border:"1px solid "+C.border,background:"#fff",fontSize:13,fontWeight:600,color:C.blue,textAlign:"center",cursor:"pointer",fontFamily:C.font}}>
+                  {[5,6,7,8,9,10,12,15,20,25,30,35,40,50].map(p=>(
+                    <option key={p} value={p}>{p}%</option>
+                  ))}
+                </select>
+                <div style={{fontSize:11,color:C.label,marginTop:6}}>Amort</div>
+                <select value={col.amort}
+                  onChange={e=>setMpCol(i,"amort",parseInt(e.target.value))}
+                  style={{width:"100%",height:32,borderRadius:8,border:"1px solid "+C.border,background:"#fff",fontSize:13,fontWeight:600,color:C.text,textAlign:"center",cursor:"pointer",fontFamily:C.font,marginTop:4}}>
+                  {[10,15,20,25,30].map(a=>(
+                    <option key={a} value={a}>{a}yr</option>
+                  ))}
+                </select>
+              </div>
+            ))}
+          </div>
+
+          {/* Down payment amounts */}
+          <div style={{marginBottom:2}}>
+            <div style={{fontSize:12,color:C.label,fontWeight:500,marginBottom:6}}>Down Payment</div>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6}}>
+              {mpCalc.map((col,i)=>(
+                <div key={i} style={{background:"rgba(118,118,128,0.07)",borderRadius:10,padding:"10px 8px",textAlign:"center"}}>
+                  <div style={{fontSize:13,fontWeight:700,color:C.text}}>{fCAD(col.downAmt,0)}</div>
+                  <div style={{fontSize:11,color:C.label,marginTop:2}}>{col.downPct}%</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* CMHC */}
+          <div style={{marginTop:8,marginBottom:2}}>
+            <div style={{fontSize:12,color:C.label,fontWeight:500,marginBottom:6}}>CMHC Insurance</div>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6}}>
+              {mpCalc.map((col,i)=>(
+                <div key={i} style={{background:col.cmhcAmt>0?"rgba(255,149,0,0.08)":"rgba(52,199,89,0.08)",borderRadius:10,padding:"10px 8px",textAlign:"center"}}>
+                  <div style={{fontSize:13,fontWeight:700,color:col.cmhcAmt>0?C.amber:C.green}}>{col.cmhcAmt>0?fCAD(col.cmhcAmt,0):"None"}</div>
+                  <div style={{fontSize:11,color:C.label,marginTop:2}}>{col.cmhcRate>0?(col.cmhcRate*100).toFixed(2)+"%":"0%"}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Total Mortgage */}
+          <div style={{marginTop:8,marginBottom:2}}>
+            <div style={{fontSize:12,color:C.label,fontWeight:500,marginBottom:6}}>Total Mortgage</div>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6}}>
+              {mpCalc.map((col,i)=>(
+                <div key={i} style={{background:"rgba(0,113,227,0.07)",borderRadius:10,padding:"10px 8px",textAlign:"center",border:"1px solid rgba(0,113,227,0.15)"}}>
+                  <div style={{fontSize:13,fontWeight:700,color:C.blue}}>{fCAD(col.totalMtg,0)}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Payment */}
+          <div style={{marginTop:12,background:"#1c1c1e",borderRadius:14,padding:"16px"}}>
+            <div style={{fontSize:12,color:"rgba(255,255,255,0.4)",fontWeight:500,letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:10}}>
+              {MP_FREQS.find(f=>f.key===mpFreq)?.label} Payment
+            </div>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6}}>
+              {mpCalc.map((col,i)=>(
+                <div key={i} style={{background:"rgba(255,255,255,0.08)",borderRadius:10,padding:"12px 8px",textAlign:"center"}}>
+                  <div style={{fontSize:mobile?16:20,fontWeight:700,color:"#fff",letterSpacing:"-0.03em"}}>{fCAD(col.pmt,0)}</div>
+                  <div style={{fontSize:10,color:"rgba(255,255,255,0.35)",marginTop:3}}>{col.amort}yr amort</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <Divider/>
+
+          {/* LTT */}
+          <div style={{marginBottom:2}}>
+            <div style={{fontSize:12,color:C.label,fontWeight:500,marginBottom:6}}>Land Transfer Tax {mpFTHB?"(FTHB rebate applied)":""}</div>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6}}>
+              {mpCalc.map((col,i)=>(
+                <div key={i} style={{background:"rgba(118,118,128,0.07)",borderRadius:10,padding:"10px 8px",textAlign:"center"}}>
+                  <div style={{fontSize:13,fontWeight:700,color:C.text}}>{fCAD(col.lttTotal,0)}</div>
+                  <div style={{fontSize:10,color:C.label,marginTop:2}}>{mpLocation==="Toronto"?"ON+TO":"Ontario"}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Cash to Close */}
+          <div style={{marginTop:8}}>
+            <div style={{fontSize:12,color:C.label,fontWeight:500,marginBottom:6}}>Cash to Close <span style={{fontWeight:400,fontSize:11}}>(down + LTT + 1.5% closing)</span></div>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6}}>
+              {mpCalc.map((col,i)=>(
+                <div key={i} style={{background:"rgba(52,199,89,0.08)",border:"1px solid rgba(52,199,89,0.2)",borderRadius:10,padding:"10px 8px",textAlign:"center"}}>
+                  <div style={{fontSize:13,fontWeight:700,color:C.green}}>{fCAD(col.cashToClose,0)}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Monthly Expenses */}
+          <div style={{marginTop:8}}>
+            <div style={{fontSize:12,color:C.label,fontWeight:500,marginBottom:6}}>Est. Monthly Expenses <span style={{fontWeight:400,fontSize:11}}>(pmt + tax + heat)</span></div>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6}}>
+              {mpCalc.map((col,i)=>(
+                <div key={i} style={{background:"rgba(118,118,128,0.07)",borderRadius:10,padding:"10px 8px",textAlign:"center"}}>
+                  <div style={{fontSize:13,fontWeight:700,color:C.text}}>{fCAD(col.monthlyExp,0)}</div>
+                  <div style={{fontSize:10,color:C.label,marginTop:2}}>/mo</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <InfoBox color="blue">
+            <div style={{fontWeight:500,fontSize:13,lineHeight:1.6}}>
+              Cash to close includes down payment, estimated LTT, and ~1.5% closing costs. Monthly expenses include mortgage payment, estimated property tax (1%/yr) and heating ($100/mo). Tap Apply Now to start a full application.
+            </div>
+          </InfoBox>
+        </>
+      )}
+    </div>
+  );
+
   const TABS=[
     {key:"inputs",label:"Inputs"},
     {key:"results",label:"Results"},
     {key:"income",label:"Income"},
+    {key:"payment",label:"Payment"},
     {key:"ltt",label:"LTT"},
     {key:"closing",label:"Closing"},
     {key:"rentbuy",label:"Rent/Buy"},
@@ -1169,7 +1452,7 @@ function App(){
     {key:"renewal",label:"Renewal"},
   ];
 
-  const paneMap={inputs:InputsPane,results:ResultsPane,income:IncomePane,ltt:LTTPane,closing:ClosingPane,rentbuy:RentBuyPane,amort:AmortPane,prepay:PrepayPane,refi:RefiPane,renewal:RenewalPane};
+  const paneMap={inputs:InputsPane,results:ResultsPane,income:IncomePane,payment:MpPane,ltt:LTTPane,closing:ClosingPane,rentbuy:RentBuyPane,amort:AmortPane,prepay:PrepayPane,refi:RefiPane,renewal:RenewalPane};
   const showResultBar=tab==="inputs"||tab==="results";
 
   const GDSPill=<span style={{fontSize:mobile?11:12,fontWeight:600,padding:mobile?"3px 8px":"3px 10px",borderRadius:20,background:c.gdsPass?"rgba(52,199,89,0.12)":"rgba(255,59,48,0.12)",color:c.gdsPass?C.green:C.red,whiteSpace:"nowrap"}}>GDS {c.gds.toFixed(1)}%</span>;
@@ -1177,8 +1460,8 @@ function App(){
 
   //  Desktop Layout 
   if(!mobile){
-    const tabLabels={inputs:"Inputs",results:"Results",income:"Income Tool",ltt:"Land Transfer Tax",closing:"Closing Costs",rentbuy:"Rent vs Buy",amort:"Amortization",prepay:"Prepayment",refi:"Refinance",renewal:"Renewal Planner"};
-    const allTabs=["inputs","results","income","ltt","closing","rentbuy","amort","prepay","refi","renewal"];
+    const tabLabels={inputs:"Inputs",results:"Results",income:"Income Tool",payment:"Mortgage Payment",ltt:"Land Transfer Tax",closing:"Closing Costs",rentbuy:"Rent vs Buy",amort:"Amortization",prepay:"Prepayment",refi:"Refinance",renewal:"Renewal Planner"};
+    const allTabs=["inputs","results","income","payment","ltt","closing","rentbuy","amort","prepay","refi","renewal"];
     return(
       <>
         {showSplash&&<SplashScreen onDone={()=>setShowSplash(false)}/>}
@@ -1210,7 +1493,7 @@ function App(){
               {paneMap[tab]}
             </div>
           </div>
-          {showResultBar&&<ResultBar c={c} selPmt={selPmt} payFreq={payFreq}/>}
+          {showResultBar&&<ResultBar c={c} selPmt={selPmt} payFreq={payFreq} downMissing={downMissing}/>}
           {Footer}
         </div>
       </>
@@ -1255,7 +1538,7 @@ function App(){
 
         {showResultBar&&(
           <div style={{position:"sticky",bottom:0,zIndex:99}}>
-            <ResultBar c={c} selPmt={selPmt} payFreq={payFreq}/>
+            <ResultBar c={c} selPmt={selPmt} payFreq={payFreq} downMissing={downMissing}/>
           </div>
         )}
         {Footer}
