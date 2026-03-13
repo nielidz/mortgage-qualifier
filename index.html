@@ -55,15 +55,47 @@ const C={bg:"#f5f5f7",surface:"#ffffff",navy:"#1d1d1f",label:"#6e6e73",text:"#1d
 function useWidth(){const[w,setW]=useState(typeof window!=="undefined"?window.innerWidth:800);useEffect(()=>{const h=()=>setW(window.innerWidth);window.addEventListener("resize",h);return()=>window.removeEventListener("resize",h);},[]);return w;}
 
 //  UI Atoms 
+function Tooltip({text,children}){
+  const[show,setShow]=useState(false);
+  return(
+    <span style={{position:"relative",display:"inline-flex",alignItems:"center"}}>
+      {children}
+      <span
+        onMouseEnter={()=>setShow(true)} onMouseLeave={()=>setShow(false)}
+        onClick={()=>setShow(s=>!s)}
+        style={{display:"inline-flex",alignItems:"center",justifyContent:"center",width:16,height:16,borderRadius:"50%",background:"rgba(110,110,115,0.18)",color:C.label,fontSize:10,fontWeight:700,cursor:"pointer",marginLeft:5,flexShrink:0,userSelect:"none"}}>
+        ?
+      </span>
+      {show&&(
+        <span style={{position:"absolute",bottom:"calc(100% + 6px)",left:"50%",transform:"translateX(-50%)",background:"#1c1c1e",color:"#fff",fontSize:12,lineHeight:1.5,padding:"8px 12px",borderRadius:10,whiteSpace:"pre-wrap",width:220,zIndex:500,boxShadow:"0 4px 20px rgba(0,0,0,0.25)",pointerEvents:"none"}}>
+          {text}
+          <span style={{position:"absolute",top:"100%",left:"50%",transform:"translateX(-50%)",borderWidth:5,borderStyle:"solid",borderColor:"#1c1c1e transparent transparent transparent"}}/>
+        </span>
+      )}
+    </span>
+  );
+}
+
 function NumInput({value,onChange,pre,suf,ph="0",readOnly,highlight}){
   const[f,setF]=useState(false);
+  const[raw,setRaw]=useState("");
+  const isDecimal=suf==="annual"||pre==="%";
   const borderColor=highlight?"#ff3b30":f?C.blue:"transparent";
+  const displayVal=f?raw:(value?(isDecimal?String(value):value.toLocaleString("en-CA")):"");
+  function handleFocus(){setF(true);setRaw(value?String(value):"");}
+  function handleBlur(){setF(false);setRaw("");}
+  function handleChange(e){
+    const v=e.target.value;
+    setRaw(v);
+    const n=parseFloat(v.replace(/,/g,""));
+    if(!isNaN(n)&&onChange)onChange(n);
+    else if(v===""&&onChange)onChange(0);
+  }
   return(
     <div style={{display:"flex",alignItems:"center",height:44,background:f?"#fff":"rgba(118,118,128,0.12)",border:"1.5px solid "+borderColor,borderRadius:10,overflow:"hidden",transition:"border-color 0.18s"}}>
       {pre&&<span style={{padding:"0 12px",fontSize:15,color:C.label,flexShrink:0}}>{pre}</span>}
-      <input type="number" inputMode="decimal" min={0} value={value||""} placeholder={ph} readOnly={readOnly}
-        onFocus={()=>setF(true)} onBlur={()=>setF(false)}
-        onChange={e=>onChange&&onChange(parseFloat(e.target.value)||0)}
+      <input inputMode={isDecimal?"decimal":"numeric"} min={0} value={displayVal} placeholder={ph} readOnly={readOnly}
+        onFocus={handleFocus} onBlur={handleBlur} onChange={handleChange}
         style={{flex:1,border:"none",outline:"none",background:"transparent",fontSize:17,color:C.text,padding:"0 12px",fontFamily:C.font,fontWeight:400,minWidth:0}}/>
       {suf&&<span style={{padding:"0 12px",fontSize:13,color:C.label,flexShrink:0,whiteSpace:"nowrap"}}>{suf}</span>}
     </div>
@@ -148,7 +180,7 @@ function InfoBox({children,color}){
   return <div style={{background:bg,borderRadius:12,padding:"12px 16px",fontSize:14,color:tc,marginTop:14}}>{children}</div>;
 }
 
-function ResultBar({c,selPmt,payFreq,downMissing}){
+function ResultBar({c,selPmt,payFreq,downMissing,gdsMax,tdsMax}){
   const qualify=downMissing?"warn":c.eligible?"pass":"fail";
   const pillColor=qualify==="warn"?C.amber:qualify==="pass"?C.green:C.red;
   const pillLabel=qualify==="warn"?"Down Payment Required":qualify==="pass"?"Qualifies":"Does Not Qualify";
@@ -158,31 +190,41 @@ function ResultBar({c,selPmt,payFreq,downMissing}){
       <div style={{maxWidth:1200,margin:"0 auto",padding:"14px 20px calc(14px + env(safe-area-inset-bottom,0px))"}}>
         <div style={{display:"flex",justifyContent:"space-between",marginBottom:12}}>
           <div>
-            <div style={{fontSize:11,color:"rgba(255,255,255,0.4)",fontWeight:500,letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:2}}>Max Mortgage</div>
-            <div style={{fontSize:26,fontWeight:700,color:"#fff",letterSpacing:"-0.03em",lineHeight:1}}>{fCAD(c.maxMtg)}</div>
+            <div style={{fontSize:11,color:"rgba(255,255,255,0.4)",fontWeight:500,letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:2}}>Max Purchase Price</div>
+            <div style={{fontSize:22,fontWeight:700,color:"#fff",letterSpacing:"-0.03em",lineHeight:1}}>{c.maxPrice>0?fCAD(c.maxPrice):c.price>0?fCAD(c.price):""}</div>
             <div style={{fontSize:12,color:"rgba(255,255,255,0.35)",marginTop:3}}>Stress @ {c.stressR.toFixed(2)}%</div>
           </div>
           <div style={{textAlign:"right"}}>
             <div style={{fontSize:11,color:"rgba(255,255,255,0.4)",fontWeight:500,letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:2}}>Payment</div>
-            <div style={{fontSize:26,fontWeight:700,color:"#fff",letterSpacing:"-0.03em",lineHeight:1}}>{fCAD(selPmt,2)}</div>
+            <div style={{fontSize:22,fontWeight:700,color:"#fff",letterSpacing:"-0.03em",lineHeight:1}}>{fCAD(selPmt,2)}</div>
             <div style={{fontSize:12,color:"rgba(255,255,255,0.35)",marginTop:3}}>{FREQS.find(f=>f.key===payFreq)?.label}</div>
           </div>
         </div>
         <div style={{display:"flex",gap:8}}>
           <div style={{flex:1,background:"rgba(255,255,255,0.07)",borderRadius:10,padding:"8px 0",textAlign:"center"}}>
-            <div style={{fontSize:10,color:"rgba(255,255,255,0.38)",marginBottom:1}}>GDS</div>
+            <div style={{fontSize:10,color:"rgba(255,255,255,0.38)",marginBottom:1,display:"flex",alignItems:"center",justifyContent:"center",gap:3}}>
+              GDS
+              <Tooltip text={"Gross Debt Service ratio.\nHousing costs  gross income.\nMax 39% (A-lender) or 50% (B-lender).\nIncludes: mortgage payment, property tax, heat, 50% condo fees."}>
+                <span/>
+              </Tooltip>
+            </div>
             <div style={{fontSize:17,fontWeight:700,color:c.gdsPass?C.green:C.red,letterSpacing:"-0.02em"}}>{c.gds.toFixed(1)}%</div>
-            <div style={{fontSize:10,color:"rgba(255,255,255,0.28)"}}>max 39%</div>
+            <div style={{fontSize:10,color:"rgba(255,255,255,0.28)"}}>max {gdsMax}%</div>
           </div>
           <div style={{flex:1,background:"rgba(255,255,255,0.07)",borderRadius:10,padding:"8px 0",textAlign:"center"}}>
-            <div style={{fontSize:10,color:"rgba(255,255,255,0.38)",marginBottom:1}}>TDS</div>
+            <div style={{fontSize:10,color:"rgba(255,255,255,0.38)",marginBottom:1,display:"flex",alignItems:"center",justifyContent:"center",gap:3}}>
+              TDS
+              <Tooltip text={"Total Debt Service ratio.\nAll debts  gross income.\nMax 44% (A-lender) or 50% (B-lender).\nIncludes: GDS housing costs + all monthly debt payments."}>
+                <span/>
+              </Tooltip>
+            </div>
             <div style={{fontSize:17,fontWeight:700,color:c.tdsPass?C.green:C.red,letterSpacing:"-0.02em"}}>{c.tds.toFixed(1)}%</div>
-            <div style={{fontSize:10,color:"rgba(255,255,255,0.28)"}}>max 44%</div>
+            <div style={{fontSize:10,color:"rgba(255,255,255,0.28)"}}>max {tdsMax}%</div>
           </div>
           <div style={{flex:2,background:pillColor+"28",border:"1px solid "+pillColor+"55",borderRadius:10,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"8px",textAlign:"center"}}>
             <span style={{fontSize:14,fontWeight:700,color:pillColor}}>{pillLabel}</span>
             {qualify==="warn"&&<span style={{fontSize:10,color:pillColor,opacity:0.8,marginTop:2}}>Min: {fCAD(minDownAmt,0)}</span>}
-            {qualify==="fail"&&(c.gds>39||c.tds>44)&&<span style={{fontSize:10,color:pillColor,opacity:0.8,marginTop:2}}>{c.gds>39?"GDS over 39%":""}{c.gds>39&&c.tds>44?" & ":""}{c.tds>44?"TDS over 44%":""}</span>}
+            {qualify==="fail"&&(c.gds>39||c.tds>44)&&<span style={{fontSize:10,color:pillColor,opacity:0.8,marginTop:2}}>{c.gds>39?"GDS over "+gdsMax+"%":""}{c.gds>39&&c.tds>44?" & ":""}{c.tds>44?"TDS over "+tdsMax+"%":""}</span>}
           </div>
         </div>
       </div>
@@ -249,14 +291,17 @@ function App(){
   const[income,setIncome]=useState(saved.income||0);
   const[coIncome,setCoIncome]=useState(saved.coIncome||0);
   const[rental,setRental]=useState(saved.rental||0);
+  const[rentalType,setRentalType]=useState(saved.rentalType||"subject"); // "subject" | "existing"
   const[price,setPrice]=useState(saved.price||0);
   const[down,setDown]=useState(saved.down||0);
   const[rate,setRate]=useState(saved.rate||4.5);
-  const[amort,setAmort]=useState(saved.amort||25);
-  const[isFTHB,setIsFTHB]=useState(saved.isFTHB||false);
+  const[rateBase,setRateBase]=useState(saved.rate||4.5);
+  const[rateSensOffset,setRateSensOffset]=useState(0);
+  const[amort,setAmort]=useState(saved.amort||30);
+  const[isFTHB,setIsFTHB]=useState(saved.isFTHB!==undefined?saved.isFTHB:true);
   const[compound,setCompound]=useState(saved.compound||"semi-annual");
   const[taxMode,setTaxMode]=useState(saved.taxMode||"annual");
-  const[tax,setTax]=useState(saved.tax||0);
+  const[tax,setTax]=useState(saved.tax||5000);
   const[condo,setCondo]=useState(saved.condo||0);
   const[heat,setHeat]=useState(saved.heat||100);
   const[carAmt,setCarAmt]=useState(saved.carAmt||0);
@@ -319,14 +364,14 @@ function App(){
 
   // Auto-save state to localStorage
   useEffect(()=>{
-    lsSet("mqState",{income,coIncome,rental,price,down,rate,amort,isFTHB,compound,taxMode,tax,condo,heat,carAmt,carFreq,studMode,studPmt,studFreq,studBal,ccBal,otherAmt,otherFreq,payFreq});
+    lsSet("mqState",{income,coIncome,rental,rentalType,price,down,rate,amort,isFTHB,compound,taxMode,tax,condo,heat,carAmt,carFreq,studMode,studPmt,studFreq,studBal,ccBal,otherAmt,otherFreq,payFreq});
   },[income,coIncome,rental,price,down,rate,amort,isFTHB,compound,taxMode,tax,condo,heat,carAmt,carFreq,studMode,studPmt,studFreq,studBal,ccBal,otherAmt,otherFreq,payFreq]);
 
   function handleFTHB(v){setIsFTHB(v);setAmort(v?30:25);}
   function handleReset(){
     setIncome(0);setCoIncome(0);setRental(0);setPrice(0);setDown(0);
-    setRate(4.5);setAmort(25);setIsFTHB(false);setCompound("semi-annual");
-    setTaxMode("annual");setTax(0);setCondo(0);setHeat(100);
+    setRate(4.5);setAmort(30);setIsFTHB(true);setCompound("semi-annual");
+    setTaxMode("annual");setTax(5000);setCondo(0);setHeat(100);
     setCarAmt(0);setCarFreq("monthly");setStudMode("payment");
     setStudPmt(0);setStudFreq("monthly");setStudBal(0);
     setCcBal(0);setOtherAmt(0);setOtherFreq("monthly");setPayFreq("monthly");
@@ -347,7 +392,9 @@ function App(){
   //  Qualifier calc 
   const c=useMemo(()=>{
     const grossMo=(income+coIncome)/12;
-    const rentAdd=(rental*0.5)/12;
+    // Subject property rental: 50% add-back to income (CMHC/lender standard)
+    // Existing rental property: full rental income added, but existing mortgage payment also added to TDS
+    const rentAdd=rentalType==="subject"?rental*0.5:rental*0.5; // both 50% for now per B-20; existing rental full calc requires separate mortgage input
     const qualMo=grossMo+rentAdd;
     const downPct=price>0?(down/price)*100:0;
     const cmhcRate=getCMHCRate(downPct,is30);
@@ -401,8 +448,28 @@ function App(){
     });
     const minDownPct=price>0?(calcMinDown(price)/price)*100:5;
     const eligible=price>0&&gds<=gdsMax&&tds<=tdsMax&&downPct>=minDownPct;
-    return{price,qualMo,downPct,cmhcRate,cmhcAmt,baseMtg,totalMtg,stressR,qualPmt,pmts,moTax,heat,condoC,carM,studM,ccM,othM,gdsN,tdsN,gds,tds,gdsPass:gds<=gdsMax,tdsPass:tds<=tdsMax,eligible,maxMtg,incNeeded,minDown,incReqForTarget,scenarios};
-  },[income,coIncome,rental,price,down,rate,amort,compound,tax,taxMode,condo,heat,carAmt,carFreq,studMode,studPmt,studFreq,studBal,ccBal,otherAmt,otherFreq,is30,targetPrice,targetDown,gdsMax,tdsMax]);
+    // Max purchase price at min down (iterative solve)
+    const moTaxForMax=tax>0?(taxMode==="annual"?tax/12:tax):0;
+    const heatForMax=heat>0?heat:100;
+    let maxPrice=0;
+    let mpGuess=qualMo*12*5;
+    for(let i=0;i<15;i++){
+      const moTaxEst=moTaxForMax>0?moTaxForMax:mpGuess*0.01/12;
+      const gdsAvail=qualMo*((gdsMax-0.25)/100)-moTaxEst-heatForMax-condoC;
+      const tdsAvail=qualMo*((tdsMax-0.25)/100)-moTaxEst-heatForMax-condoC-carM-studM-ccM-othM;
+      const avail=Math.min(gdsAvail,tdsAvail);
+      if(avail<=0)break;
+      const mMtg=(avail*(Math.pow(1+rm,n)-1))/(rm*Math.pow(1+rm,n));
+      const minDownAmt=calcMinDown(mpGuess);
+      const minDownPctG=minDownAmt/mpGuess;
+      const cmhcRG=getCMHCRate(minDownPctG*100,is30);
+      const newP=(mMtg/(1+cmhcRG))+minDownAmt;
+      if(Math.abs(newP-mpGuess)<50){maxPrice=newP;break;}
+      mpGuess=(newP+mpGuess)/2;
+      maxPrice=newP;
+    }
+    return{price,qualMo,downPct,cmhcRate,cmhcAmt,baseMtg,totalMtg,stressR,qualPmt,pmts,moTax,heat,condoC,carM,studM,ccM,othM,gdsN,tdsN,gds,tds,gdsPass:gds<=gdsMax,tdsPass:tds<=tdsMax,eligible,maxMtg,maxPrice,incNeeded,minDown,incReqForTarget,scenarios};
+  },[income,coIncome,rental,rentalType,price,down,rate,amort,compound,tax,taxMode,condo,heat,carAmt,carFreq,studMode,studPmt,studFreq,studBal,ccBal,otherAmt,otherFreq,is30,targetPrice,targetDown,gdsMax,tdsMax]);
 
   const selPmt=c.pmts[payFreq]||0;
   const downMissing=c.price>0&&c.downPct<(calcMinDown(c.price)/c.price*100);
@@ -551,8 +618,8 @@ function App(){
   },[ppBalance,ppRate,ppAmort,ppComp,ppLumpSum,ppExtraMo,ppTermYrs]);
 
   //  Copy results to clipboard 
-  function handleCopy(){
-    const lines=[
+  function buildResultsText(){
+    return [
       "Mortgage Qualifier  Neel Idnani Mortgage Group",
       "",
       `Income: ${fCAD(income+coIncome,0)}/yr${rental>0?" + rental":""} | Qualifying: ${fCAD(c.qualMo*12,0)}/yr`,
@@ -568,15 +635,35 @@ function App(){
       "",
       bLender?" B-Lender ratios applied (GDS/TDS 50%)":"Standard A-Lender ratios",
       "",
-      "Neel Idnani | Mortgage Agent Level 1 | Lic. #M23005524",
+      "Neel Idnani | Mortgage Agent Level 2 | Lic. #M23005524",
       "Dominion Lending Centres FC Funding | FSRA #10671",
       "519-697-2359 | info@neelidnani.com | www.neelidnani.com",
       "",
       "For illustration only. Not a commitment to lend.",
-    ];
-    navigator.clipboard.writeText(lines.join("\n")).then(()=>{
+    ].join("\n");
+  }
+
+  function handleCopy(){
+    navigator.clipboard.writeText(buildResultsText()).then(()=>{
       setCopyFlash(true);setTimeout(()=>setCopyFlash(false),2000);
     });
+  }
+
+  function handleEmail(){
+    const body=encodeURIComponent("Hi Neel,\n\nI was using your app and want to discuss this scenario.\n\n"+buildResultsText());
+    const subject=encodeURIComponent("Mortgage Scenario from Your Qualifier App");
+    window.open(`mailto:info@neelidnani.com?subject=${subject}&body=${body}`);
+  }
+
+  function handleShare(){
+    const shareData={title:"Neel Idnani Mortgage Qualifier",text:"Check out this mortgage qualifier tool from Neel Idnani.",url:"https://tools.neelidnani.com"};
+    if(navigator.share){
+      navigator.share(shareData).catch(()=>{});
+    } else {
+      navigator.clipboard.writeText("https://tools.neelidnani.com").then(()=>{
+        alert("Link copied to clipboard!");
+      });
+    }
   }
 
   function switchTab(k){setPrevTab(tab);setTab(k);}
@@ -585,18 +672,118 @@ function App(){
   const InputsPane=(
     <div style={{paddingBottom:16}}>
       {bLender&&(
-        <div style={{background:"rgba(255,149,0,0.1)",border:"1px solid rgba(255,149,0,0.3)",borderRadius:12,padding:"10px 14px",marginBottom:16,fontSize:13,color:C.amber,fontWeight:500}}>
+        <div style={{background:"rgba(255,149,0,0.1)",border:"1px solid rgba(255,149,0,0.3)",borderRadius:12,padding:"10px 14px",marginBottom:16,fontSize:13,color:C.amber,fontWeight:500,display:"flex",alignItems:"center",gap:6}}>
            B-Lender Mode: GDS/TDS ratios increased to 50%
+          <Tooltip text={"B-Lenders allow higher GDS/TDS (up to 50%) for borrowers who don't qualify with A-lenders.\n\nNote: B-Lenders may use different stress test rules  some apply rate+2%, others use the contract rate only. Confirm with the specific lender."}>
+            <span/>
+          </Tooltip>
         </div>
       )}
       <SectionTitle>Income</SectionTitle>
-      <Field label="Primary Annual Income"><NumInput value={income} onChange={setIncome} pre="$" suf="/yr"/></Field>
-      <Field label="Co-Borrower Income"><NumInput value={coIncome} onChange={setCoIncome} pre="$" suf="/yr"/></Field>
-      <Field label="Rental Income" hint="50% add-back"><NumInput value={rental} onChange={setRental} pre="$" suf="/mo gross"/></Field>
+      <Field label="Primary Annual Income" hint="gross (pre-tax)">
+        <NumInput value={income} onChange={setIncome} pre="$" suf="/yr"/>
+      </Field>
+      <Field label="Co-Borrower Income" hint="gross (pre-tax)">
+        <NumInput value={coIncome} onChange={setCoIncome} pre="$" suf="/yr"/>
+      </Field>
+      <Field label="Rental Income" hint="50% add-back per B-20">
+        <Pills value={rentalType} onChange={setRentalType} options={[
+          {value:"subject",label:"Subject Property"},
+          {value:"existing",label:"Existing Rental"},
+        ]}/>
+        <div style={{marginTop:8}}>
+          <NumInput value={rental} onChange={setRental} pre="$" suf="/mo gross"/>
+        </div>
+        {rental>0&&(
+          <div style={{marginTop:6,fontSize:12,color:C.label,lineHeight:1.5}}>
+            {rentalType==="subject"
+              ?"50% of rental income added to qualifying income. Used for duplexes / owner-occupied rental units."
+              :"50% of rental income added to qualifying income. Note: existing rental property mortgage payments should be included in your debts below."}
+          </div>
+        )}
+      </Field>
       {(income+coIncome)>0&&(
         <div style={{background:"rgba(0,113,227,0.08)",borderRadius:10,padding:"10px 14px",fontSize:13,color:C.blue,fontWeight:500,marginTop:-6,marginBottom:18}}>
           Qualifying: {fCAD(c.qualMo*12,0)}/yr ({fCAD(c.qualMo,0)}/mo)
+          {rental>0&&<span style={{fontWeight:400,color:C.label}}>  incl. {fCAD(rental*0.5,0)}/mo rental add-back</span>}
         </div>
+      )}
+
+      {/* Max Purchase Price Finder */}
+      {(income+coIncome)>0&&c.maxMtg>0&&(
+        <>
+          <div style={{background:"linear-gradient(135deg,rgba(0,113,227,0.08),rgba(52,199,89,0.08))",border:"1px solid rgba(0,113,227,0.15)",borderRadius:14,padding:"16px 18px",marginBottom:18}}>
+            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
+              <div style={{fontSize:14,fontWeight:600,color:C.text}}>Max Purchase Price</div>
+              <div style={{fontSize:11,color:C.label,fontWeight:500}}>based on your income & debts</div>
+            </div>
+            {(()=>{
+              const stressR=Math.max(rate+2,5.25);
+              const rm=effRate(stressR,"semi-annual");
+              const n=amort*12;
+              const carM=toMo(carAmt,carFreq);
+              const studM=studMode==="balance"?studBal*0.01:toMo(studPmt,studFreq);
+              const ccM=ccBal*0.03;
+              const othM=toMo(otherAmt,otherFreq);
+              const condoC=condo*0.5;
+              const heatEst=heat>0?heat:100;
+              // 0.5% buffer so result lands comfortably under GDS/TDS limits
+              const gdsTarget=gdsMax-0.25;
+              const tdsTarget=tdsMax-0.25;
+              // Labels and down calculation strategies per row
+              const scenarios=[
+                {label:"Min Down",fn:(p)=>calcMinDown(p),cmhcFn:(p)=>getCMHCRate(calcMinDown(p)/p*100,is30)},
+                {label:"10% down",fn:(p)=>p*0.10,cmhcFn:(p)=>getCMHCRate(10,is30)},
+                {label:"20% down",fn:(p)=>p*0.20,cmhcFn:()=>0},
+              ];
+              return scenarios.map(({label,fn,cmhcFn})=>{
+                let maxPrice=0;
+                let guess=c.qualMo*12*5;
+                for(let i=0;i<15;i++){
+                  const moTaxEst=tax>0?(taxMode==="annual"?tax/12:tax):guess*0.01/12;
+                  const gdsAvail=c.qualMo*(gdsTarget/100)-moTaxEst-heatEst-condoC;
+                  const tdsAvail=c.qualMo*(tdsTarget/100)-moTaxEst-heatEst-condoC-carM-studM-ccM-othM;
+                  const avail=Math.min(gdsAvail,tdsAvail);
+                  if(avail<=0){maxPrice=0;break;}
+                  const maxMortgage=(avail*(Math.pow(1+rm,n)-1))/(rm*Math.pow(1+rm,n));
+                  // Solve: mortgage = (price - down) * (1 + cmhc)
+                  // For min down, down is a function of price so iterate
+                  const downAmt=fn(guess);
+                  const cmhcR=cmhcFn(guess);
+                  const newPrice=(maxMortgage/(1+cmhcR))+downAmt;
+                  if(Math.abs(newPrice-guess)<50){maxPrice=newPrice;break;}
+                  guess=(newPrice+guess)/2;
+                  maxPrice=newPrice;
+                }
+                const maxDown=Math.round(fn(maxPrice));
+                const cmhcR=cmhcFn(maxPrice);
+                const downPctDisplay=maxPrice>0?(maxDown/maxPrice*100).toFixed(1):0;
+                return(
+                  <div key={label} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"8px 0",borderBottom:"1px solid rgba(0,0,0,0.06)"}}>
+                    <div>
+                      <span style={{fontSize:13,fontWeight:600,color:C.text}}>{label}</span>
+                      <span style={{fontSize:12,color:C.label,marginLeft:8}}>{fCAD(maxDown,0)} ({downPctDisplay}%)</span>
+                    </div>
+                    <div style={{display:"flex",alignItems:"center",gap:10}}>
+                      {cmhcR>0&&<span style={{fontSize:11,color:C.amber}}>+CMHC</span>}
+                      <span style={{fontSize:16,fontWeight:700,color:C.blue}}>{maxPrice>0?fCAD(maxPrice,0):""}</span>
+                      {maxPrice>0&&<button onClick={()=>{const p=Math.floor(maxPrice/1000)*1000;setPrice(p);setDown(Math.ceil(calcMinDown(p)));}}
+                        style={{fontSize:11,color:C.blue,background:"rgba(0,113,227,0.1)",border:"1px solid rgba(0,113,227,0.2)",borderRadius:7,padding:"4px 10px",cursor:"pointer",fontFamily:C.font,whiteSpace:"nowrap",fontWeight:500}}>
+                        Use 
+                      </button>}
+                    </div>
+                  </div>
+                );
+              });
+            })()}
+            <div style={{fontSize:11,color:C.label,marginTop:10,lineHeight:1.6}}>
+              Stress tested @ {Math.max(rate+2,5.25).toFixed(2)}%. Targets GDS {gdsMax-0.25}% / TDS {tdsMax-0.25}%.
+              {tax===5000&&<span style={{color:C.amber}}> Using default $5,000/yr property tax  update Housing Costs for exact figures.</span>}
+              {tax!==5000&&tax===0&&<span> Property tax estimated at 1%/yr.</span>}
+              {heat===0&&<span> Heating estimated at $100/mo.</span>}
+            </div>
+          </div>
+        </>
       )}
       <Divider/>
       <SectionTitle>Property</SectionTitle>
@@ -616,20 +803,34 @@ function App(){
           ))}
         </div>
       </Field>
-      <Field label="First-Time Buyer">
+      <Field label="First Time Home Buyer">
         <Pills value={isFTHB} onChange={handleFTHB} options={[{value:false,label:"No"},{value:true,label:"Yes (enables 30yr)"}]}/>
       </Field>
       <Field label="Amortization"><NumInput value={amort} onChange={v=>setAmort(Math.min(30,Math.max(5,v)))} suf="years"/></Field>
-      <Field label="Interest Rate" hint={"Stress test: "+c.stressR.toFixed(2)+"%"}><NumInput value={rate} onChange={setRate} pre="%" suf="annual"/></Field>
+      <Field label="Interest Rate" hint={"Stress test: "+c.stressR.toFixed(2)+"%"}>
+        <NumInput value={rate} onChange={v=>{setRate(v);setRateBase(v);setRateSensOffset(0);}} pre="%" suf="annual"/>
+        <div style={{marginTop:8}}>
+          <div style={{fontSize:11,color:C.label,marginBottom:5,fontWeight:500}}>Rate Sensitivity</div>
+          <div style={{display:"flex",gap:6}}>
+            {[{label:"Base",offset:0},{label:"+0.5%",offset:0.5},{label:"+1%",offset:1},{label:"+2%",offset:2}].map(opt=>(
+              <button key={opt.label} onClick={()=>{setRateSensOffset(opt.offset);setRate(parseFloat((rateBase+opt.offset).toFixed(2)));}}
+                style={{flex:1,height:30,borderRadius:8,border:"1.5px solid "+(rateSensOffset===opt.offset?C.blue:C.border),background:rateSensOffset===opt.offset?"rgba(0,113,227,0.1)":"transparent",color:rateSensOffset===opt.offset?C.blue:C.label,fontSize:12,fontWeight:rateSensOffset===opt.offset?700:400,cursor:"pointer",fontFamily:C.font,transition:"all 0.15s"}}>
+                {opt.label}
+              </button>
+            ))}
+          </div>
+          {rateSensOffset>0&&<div style={{fontSize:11,color:C.amber,marginTop:4}}>Showing impact at {rate.toFixed(2)}% (+{rateSensOffset}% above base {rateBase.toFixed(2)}%)</div>}
+        </div>
+      </Field>
       <Field label="Compounding">
         <Pills value={compound} onChange={setCompound} options={COMPOUNDS.map(x=>({key:x.key,label:x.label}))}/>
       </Field>
       <Divider/>
       <SectionTitle>Housing Costs</SectionTitle>
-      <Field label="Property Tax">
-        <div style={{display:"flex",gap:8}}>
-          <div style={{flex:1}}><NumInput value={tax} onChange={setTax} pre="$"/></div>
-          <div style={{width:170}}><Pills value={taxMode} onChange={setTaxMode} options={[{key:"monthly",label:"Monthly"},{key:"annual",label:"Annual"}]}/></div>
+      <Field label="Property Tax" hint={tax===5000?"default estimate  update for accuracy":""}>
+        <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+          <div style={{flex:1,minWidth:120}}><NumInput value={tax} onChange={setTax} pre="$"/></div>
+          <div style={{minWidth:140,flex:1}}><Pills value={taxMode} onChange={setTaxMode} options={[{key:"monthly",label:"Monthly"},{key:"annual",label:"Annual"}]}/></div>
         </div>
       </Field>
       <Field label="Heating" hint="default $100/mo"><NumInput value={heat} onChange={setHeat} pre="$" suf="/mo"/></Field>
@@ -637,37 +838,42 @@ function App(){
       <Divider/>
       <SectionTitle>Debts</SectionTitle>
       <Field label="Car Payment">
-        <div style={{display:"flex",gap:8}}>
-          <div style={{flex:1}}><NumInput value={carAmt} onChange={setCarAmt} pre="$"/></div>
-          <div style={{width:170}}><Pills value={carFreq} onChange={setCarFreq} options={[{key:"monthly",label:"Monthly"},{key:"biweekly",label:"Bi-Weekly"}]}/></div>
+        <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+          <div style={{flex:1,minWidth:120}}><NumInput value={carAmt} onChange={setCarAmt} pre="$"/></div>
+          <div style={{minWidth:140,flex:1}}><Pills value={carFreq} onChange={setCarFreq} options={[{key:"monthly",label:"Monthly"},{key:"biweekly",label:"Bi-Weekly"}]}/></div>
         </div>
       </Field>
       <Field label="Student Loan">
         <div style={{marginBottom:8}}><Pills value={studMode} onChange={setStudMode} options={[{key:"payment",label:"By Payment"},{key:"balance",label:"By Balance (1%)"}]}/></div>
         {studMode==="payment"
-          ?<div style={{display:"flex",gap:8}}><div style={{flex:1}}><NumInput value={studPmt} onChange={setStudPmt} pre="$"/></div><div style={{width:170}}><Pills value={studFreq} onChange={setStudFreq} options={[{key:"monthly",label:"Monthly"},{key:"biweekly",label:"Bi-Weekly"}]}/></div></div>
+          ?<div style={{display:"flex",gap:8,flexWrap:"wrap"}}><div style={{flex:1,minWidth:120}}><NumInput value={studPmt} onChange={setStudPmt} pre="$"/></div><div style={{minWidth:140,flex:1}}><Pills value={studFreq} onChange={setStudFreq} options={[{key:"monthly",label:"Monthly"},{key:"biweekly",label:"Bi-Weekly"}]}/></div></div>
           :<NumInput value={studBal} onChange={setStudBal} pre="$" suf="balance"/>}
       </Field>
       <Field label="Credit Cards" hint="3% of balance"><NumInput value={ccBal} onChange={setCcBal} pre="$" suf="balance"/></Field>
       <Field label="Other Debt">
-        <div style={{display:"flex",gap:8}}>
-          <div style={{flex:1}}><NumInput value={otherAmt} onChange={setOtherAmt} pre="$"/></div>
-          <div style={{width:170}}><Pills value={otherFreq} onChange={setOtherFreq} options={[{key:"monthly",label:"Monthly"},{key:"biweekly",label:"Bi-Weekly"}]}/></div>
+        <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+          <div style={{flex:1,minWidth:120}}><NumInput value={otherAmt} onChange={setOtherAmt} pre="$"/></div>
+          <div style={{minWidth:140,flex:1}}><Pills value={otherFreq} onChange={setOtherFreq} options={[{key:"monthly",label:"Monthly"},{key:"biweekly",label:"Bi-Weekly"}]}/></div>
         </div>
       </Field>
       <Divider/>
       <SectionTitle>Settings</SectionTitle>
-      <Toggle value={bLender} onChange={setBLender} label={"B-Lender Mode (GDS/TDS up to 50%)"}/>
+      <div style={{display:"flex",alignItems:"center",gap:6}}>
+        <Toggle value={bLender} onChange={setBLender} label={"B-Lender Mode (GDS/TDS up to 50%)"}/>
+        <Tooltip text={"B-Lenders (alt-lenders, MICs) allow GDS/TDS up to 50% for borrowers who don't qualify with traditional banks.\n\nImportant: stress test rules vary by B-lender. Some apply rate+2%, others use contract rate only. Always verify with the lender."}>
+          <span/>
+        </Tooltip>
+      </div>
     </div>
   );
 
   const ResultsPane=(
     <div style={{paddingBottom:16}}>
       <div style={{background:"#1c1c1e",borderRadius:16,padding:"20px 24px",marginBottom:24}}>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:16,flexWrap:"wrap",gap:16}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:16,flexWrap:"wrap",gap:12}}>
           <div>
-            <div style={{fontSize:11,color:"rgba(255,255,255,0.4)",fontWeight:500,letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:4}}>Max Mortgage</div>
-            <div style={{fontSize:36,fontWeight:700,color:"#fff",letterSpacing:"-0.03em",lineHeight:1}}>{fCAD(c.maxMtg)}</div>
+            <div style={{fontSize:11,color:"rgba(255,255,255,0.4)",fontWeight:500,letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:4}}>Max Purchase Price</div>
+            <div style={{fontSize:36,fontWeight:700,color:"#fff",letterSpacing:"-0.03em",lineHeight:1}}>{c.maxPrice>0?fCAD(c.maxPrice):c.price>0?fCAD(c.price):""}</div>
             <div style={{fontSize:12,color:"rgba(255,255,255,0.35)",marginTop:4}}>Stress test @ {c.stressR.toFixed(2)}%</div>
           </div>
           <div style={{textAlign:"right"}}>
@@ -695,10 +901,14 @@ function App(){
           </div>
         </div>
       </div>
-      <div style={{display:"flex",gap:8,marginBottom:20}}>
+      <div style={{display:"flex",gap:8,marginBottom:20,flexWrap:"wrap"}}>
         <button onClick={handleCopy}
           style={{flex:1,height:42,borderRadius:10,border:"1px solid "+C.border,background:copyFlash?"rgba(52,199,89,0.1)":"rgba(118,118,128,0.1)",color:copyFlash?C.green:C.label,fontSize:13,fontWeight:600,cursor:"pointer",fontFamily:C.font,transition:"all 0.3s"}}>
           {copyFlash?" Copied!":"Copy Results"}
+        </button>
+        <button onClick={handleEmail}
+          style={{flex:1,height:42,borderRadius:10,border:"1px solid rgba(0,113,227,0.3)",background:"rgba(0,113,227,0.08)",color:C.blue,fontSize:13,fontWeight:600,cursor:"pointer",fontFamily:C.font}}>
+           Email Neel
         </button>
         {c.eligible&&(
           <a href={VELOCITY} target="_blank" rel="noopener noreferrer"
@@ -712,7 +922,6 @@ function App(){
       <StatRow label="Stress Test Payment" value={fCAD(c.qualPmt,0)+"/mo"}/>
       <StatRow label="GDS Ratio" value={fPct(c.gds)+" (max "+gdsMax+"%)"} color={c.gdsPass?C.green:C.red}/>
       <StatRow label="TDS Ratio" value={fPct(c.tds)+" (max "+tdsMax+"%)"} color={c.tdsPass?C.green:C.red}/>
-      <StatRow label="Max Mortgage" value={fCAD(c.maxMtg,0)} color={C.blue} big/>
       <StatRow label="Income Needed" value={fCAD(c.incNeeded,0)+"/yr"}/>
       {price>0&&(
         <InfoBox color={c.eligible?"green":downMissing?"amber":"red"}>
@@ -730,7 +939,7 @@ function App(){
       <div style={{marginBottom:12}}><Pills value={payFreq} onChange={setPayFreq} options={FREQS.map(f=>({key:f.key,label:f.label}))}/></div>
       <div style={{textAlign:"center",padding:"14px 0 18px"}}>
         <div style={{fontSize:13,color:C.label,marginBottom:4}}>{FREQS.find(f=>f.key===payFreq)?.label} at {rate}%</div>
-        <div style={{fontSize:48,fontWeight:700,color:C.text,letterSpacing:"-0.05em"}}>{fCAD(selPmt,2)}</div>
+        <div style={{fontSize:mobile?36:48,fontWeight:700,color:C.text,letterSpacing:"-0.05em"}}>{fCAD(selPmt,2)}</div>
       </div>
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
         {FREQS.map(f=>(
@@ -854,7 +1063,7 @@ function App(){
         )}
       </Field>
 
-      <Field label="First-Time Buyer">
+      <Field label="First Time Home Buyer">
         <Pills value={lttFTHB} onChange={setLttFTHB} options={[{value:false,label:"No"},{value:true,label:"Yes (rebate applied)"}]}/>
       </Field>
       <Field label="City of Toronto">
@@ -946,7 +1155,7 @@ function App(){
               </div>
             </div>
           </div>
-          <Field label="First-Time Buyer">
+          <Field label="First Time Home Buyer">
             <Pills value={ccFTHB} onChange={setCcFTHB} options={[{value:false,label:"No"},{value:true,label:"Yes (LTT rebate)"}]}/>
           </Field>
           <Field label="City of Toronto">
@@ -1211,7 +1420,7 @@ function App(){
             </div>
           </div>
           <div style={{color:"rgba(255,255,255,0.28)",fontSize:11,lineHeight:1.7,textAlign:mobile?"left":"right"}}>
-            <div>Neel Idnani - Mortgage Agent Level 1</div>
+            <div>Neel Idnani - Mortgage Agent Level 2</div>
             <div>Lic. #M23005524</div>
             <div>Dominion Lending Centres FC Funding</div>
             <div>Brokerage Lic. FSRA #10671</div>
@@ -1244,8 +1453,10 @@ function App(){
   const mpCalc=useMemo(()=>{
     if(mpEffPrice<=0)return[];
     return mpCols.map(col=>{
-      const downAmt=Math.round(mpEffPrice*col.downPct/100);
-      const cmhcRate=getCMHCRate(col.downPct,col.amort>25);
+      const isMinDown=col.downPct<=5;
+      const downAmt=isMinDown?Math.ceil(calcMinDown(mpEffPrice)):Math.round(mpEffPrice*col.downPct/100);
+      const downPctActual=mpEffPrice>0?(downAmt/mpEffPrice)*100:col.downPct;
+      const cmhcRate=getCMHCRate(downPctActual,col.amort>25);
       const base=Math.max(0,mpEffPrice-downAmt);
       const cmhcAmt=base*cmhcRate;
       const totalMtg=base+cmhcAmt;
@@ -1263,7 +1474,7 @@ function App(){
       const minDown=col.downPct>=5;
       // Check if amort valid for this downPct (30yr only allowed if FTHB or insured)
       const amortValid=col.amort<=25||(col.downPct<20&&mpFTHB)||col.downPct<20;
-      return{downAmt,downPct:col.downPct,cmhcRate,cmhcAmt,totalMtg,pmt,moPayment,lttTotal,cashToClose,monthlyExp,propTaxMo,heatMo,amort:col.amort,minDown};
+      return{downAmt,downPct:downPctActual,cmhcRate,cmhcAmt,totalMtg,pmt,moPayment,lttTotal,cashToClose,monthlyExp,propTaxMo,heatMo,amort:col.amort,minDown};
     });
   },[mpEffPrice,mpCols,mpRate,mpComp,mpFTHB,mpFreq,mpLocation]);
 
@@ -1300,7 +1511,7 @@ function App(){
         <Field label="Payment Frequency">
           <Pills value={mpFreq} onChange={setMpFreq} options={MP_FREQS.map(x=>({key:x.key,label:x.label}))}/>
         </Field>
-        <Field label="First-Time Buyer">
+        <Field label="First Time Home Buyer">
           <Pills value={mpFTHB} onChange={setMpFTHB} options={[{value:false,label:"No"},{value:true,label:"Yes"}]}/>
         </Field>
       </div>
@@ -1311,123 +1522,197 @@ function App(){
       {mpEffPrice>0&&(
         <>
           <Divider/>
-          {/* Column headers - down % selectors */}
-          <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6,marginBottom:12}}>
-            {mpCols.map((col,i)=>(
-              <div key={i} style={{background:"rgba(0,113,227,0.06)",borderRadius:12,padding:"10px 8px",textAlign:"center"}}>
-                <div style={{fontSize:11,color:C.label,marginBottom:6,fontWeight:500}}>Down %</div>
-                <select value={col.downPct}
-                  onChange={e=>setMpCol(i,"downPct",parseInt(e.target.value))}
-                  style={{width:"100%",height:32,borderRadius:8,border:"1px solid "+C.border,background:"#fff",fontSize:13,fontWeight:600,color:C.blue,textAlign:"center",cursor:"pointer",fontFamily:C.font}}>
-                  {[5,6,7,8,9,10,12,15,20,25,30,35,40,50].map(p=>(
-                    <option key={p} value={p}>{p}%</option>
+          {mobile?(
+            /*  Mobile: horizontal scroll table  */
+            <div style={{overflowX:"auto",WebkitOverflowScrolling:"touch",marginLeft:-16,marginRight:-16,paddingLeft:16,paddingRight:16}}>
+              <div style={{display:"flex",gap:8,minWidth:"max-content",paddingBottom:8}}>
+                {/* Row labels column */}
+                <div style={{display:"flex",flexDirection:"column",gap:6,paddingTop:80,flexShrink:0,width:110}}>
+                  {[
+                    {label:"Down Payment",sub:""},
+                    {label:"CMHC",sub:""},
+                    {label:"Total Mortgage",sub:""},
+                    {label:MP_FREQS.find(f=>f.key===mpFreq)?.label+" Pmt",sub:"",highlight:true},
+                    {label:"Land Transfer Tax",sub:""},
+                    {label:"Cash to Close",sub:""},
+                    {label:"Monthly Exp.",sub:"pmt+tax+heat"},
+                  ].map((row,i)=>(
+                    <div key={i} style={{height:54,display:"flex",flexDirection:"column",justifyContent:"center",paddingRight:6}}>
+                      <div style={{fontSize:11,fontWeight:600,color:row.highlight?"rgba(255,255,255,0.55)":C.label,lineHeight:1.3}}>{row.label}</div>
+                      {row.sub&&<div style={{fontSize:10,color:row.highlight?"rgba(255,255,255,0.3)":C.label,opacity:0.7,marginTop:1}}>{row.sub}</div>}
+                    </div>
                   ))}
-                </select>
-                <div style={{fontSize:11,color:C.label,marginTop:6}}>Amort</div>
-                <select value={col.amort}
-                  onChange={e=>setMpCol(i,"amort",parseInt(e.target.value))}
-                  style={{width:"100%",height:32,borderRadius:8,border:"1px solid "+C.border,background:"#fff",fontSize:13,fontWeight:600,color:C.text,textAlign:"center",cursor:"pointer",fontFamily:C.font,marginTop:4}}>
-                  {[10,15,20,25,30].map(a=>(
-                    <option key={a} value={a}>{a}yr</option>
-                  ))}
-                </select>
+                </div>
+                {/* Data columns */}
+                {mpCols.map((col,i)=>{
+                  const calc=mpCalc[i];
+                  if(!calc)return null;
+                  return(
+                    <div key={i} style={{display:"flex",flexDirection:"column",gap:6,flexShrink:0,width:110}}>
+                      {/* Header/selector card */}
+                      <div style={{background:"rgba(0,113,227,0.06)",borderRadius:12,padding:"8px 6px",textAlign:"center",marginBottom:0}}>
+                        <div style={{fontSize:10,color:C.label,marginBottom:4,fontWeight:500}}>Down %</div>
+                        <select value={col.downPct}
+                          onChange={e=>setMpCol(i,"downPct",parseInt(e.target.value))}
+                          style={{width:"100%",height:28,borderRadius:7,border:"1px solid "+C.border,background:"#fff",fontSize:12,fontWeight:600,color:C.blue,textAlign:"center",cursor:"pointer",fontFamily:C.font}}>
+                          {[5,6,7,8,9,10,12,15,20,25,30,35,40,50].map(p=>(
+                            <option key={p} value={p}>{p}%</option>
+                          ))}
+                        </select>
+                        <div style={{fontSize:10,color:C.label,marginTop:4}}>Amort</div>
+                        <select value={col.amort}
+                          onChange={e=>setMpCol(i,"amort",parseInt(e.target.value))}
+                          style={{width:"100%",height:28,borderRadius:7,border:"1px solid "+C.border,background:"#fff",fontSize:12,fontWeight:600,color:C.text,textAlign:"center",cursor:"pointer",fontFamily:C.font,marginTop:3}}>
+                          {[10,15,20,25,30].map(a=>(
+                            <option key={a} value={a}>{a}yr</option>
+                          ))}
+                        </select>
+                      </div>
+                      {/* Down */}
+                      <div style={{height:54,background:"rgba(118,118,128,0.07)",borderRadius:10,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center"}}>
+                        <div style={{fontSize:12,fontWeight:700,color:C.text}}>{fCAD(calc.downAmt,0)}</div>
+                        <div style={{fontSize:10,color:C.label,marginTop:2}}>{calc.downPct.toFixed(1)}%</div>
+                      </div>
+                      {/* CMHC */}
+                      <div style={{height:54,background:calc.cmhcAmt>0?"rgba(255,149,0,0.08)":"rgba(52,199,89,0.08)",borderRadius:10,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center"}}>
+                        <div style={{fontSize:12,fontWeight:700,color:calc.cmhcAmt>0?C.amber:C.green}}>{calc.cmhcAmt>0?fCAD(calc.cmhcAmt,0):"None"}</div>
+                        <div style={{fontSize:10,color:C.label,marginTop:2}}>{calc.cmhcRate>0?(calc.cmhcRate*100).toFixed(2)+"%":"0%"}</div>
+                      </div>
+                      {/* Total Mortgage */}
+                      <div style={{height:54,background:"rgba(0,113,227,0.07)",borderRadius:10,border:"1px solid rgba(0,113,227,0.15)",display:"flex",alignItems:"center",justifyContent:"center"}}>
+                        <div style={{fontSize:12,fontWeight:700,color:C.blue}}>{fCAD(calc.totalMtg,0)}</div>
+                      </div>
+                      {/* Payment */}
+                      <div style={{height:54,background:"#1c1c1e",borderRadius:10,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center"}}>
+                        <div style={{fontSize:14,fontWeight:700,color:"#fff",letterSpacing:"-0.02em"}}>{fCAD(calc.pmt,0)}</div>
+                        <div style={{fontSize:9,color:"rgba(255,255,255,0.35)",marginTop:2}}>{col.amort}yr</div>
+                      </div>
+                      {/* LTT */}
+                      <div style={{height:54,background:"rgba(118,118,128,0.07)",borderRadius:10,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center"}}>
+                        <div style={{fontSize:12,fontWeight:700,color:C.text}}>{fCAD(calc.lttTotal,0)}</div>
+                        <div style={{fontSize:10,color:C.label,marginTop:2}}>{mpLocation==="Toronto"?"ON+TO":"Ontario"}</div>
+                      </div>
+                      {/* Cash to Close */}
+                      <div style={{height:54,background:"rgba(52,199,89,0.08)",border:"1px solid rgba(52,199,89,0.2)",borderRadius:10,display:"flex",alignItems:"center",justifyContent:"center"}}>
+                        <div style={{fontSize:12,fontWeight:700,color:C.green}}>{fCAD(calc.cashToClose,0)}</div>
+                      </div>
+                      {/* Monthly Exp */}
+                      <div style={{height:54,background:"rgba(118,118,128,0.07)",borderRadius:10,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center"}}>
+                        <div style={{fontSize:12,fontWeight:700,color:C.text}}>{fCAD(calc.monthlyExp,0)}</div>
+                        <div style={{fontSize:10,color:C.label,marginTop:2}}>/mo</div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-            ))}
-          </div>
-
-          {/* Down payment amounts */}
-          <div style={{marginBottom:2}}>
-            <div style={{fontSize:12,color:C.label,fontWeight:500,marginBottom:6}}>Down Payment</div>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6}}>
-              {mpCalc.map((col,i)=>(
-                <div key={i} style={{background:"rgba(118,118,128,0.07)",borderRadius:10,padding:"10px 8px",textAlign:"center"}}>
-                  <div style={{fontSize:13,fontWeight:700,color:C.text}}>{fCAD(col.downAmt,0)}</div>
-                  <div style={{fontSize:11,color:C.label,marginTop:2}}>{col.downPct}%</div>
+              <div style={{fontSize:11,color:C.label,marginTop:4,paddingBottom:4}}> Scroll to compare all 4 scenarios</div>
+            </div>
+          ):(
+            /*  Desktop: stacked grid rows  */
+            <>
+              {/* Column headers - down % selectors */}
+              <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6,marginBottom:12}}>
+                {mpCols.map((col,i)=>(
+                  <div key={i} style={{background:"rgba(0,113,227,0.06)",borderRadius:12,padding:"10px 8px",textAlign:"center"}}>
+                    <div style={{fontSize:11,color:C.label,marginBottom:6,fontWeight:500}}>Down %</div>
+                    <select value={col.downPct}
+                      onChange={e=>setMpCol(i,"downPct",parseInt(e.target.value))}
+                      style={{width:"100%",height:32,borderRadius:8,border:"1px solid "+C.border,background:"#fff",fontSize:13,fontWeight:600,color:C.blue,textAlign:"center",cursor:"pointer",fontFamily:C.font}}>
+                      {[5,6,7,8,9,10,12,15,20,25,30,35,40,50].map(p=>(
+                        <option key={p} value={p}>{p}%</option>
+                      ))}
+                    </select>
+                    <div style={{fontSize:11,color:C.label,marginTop:6}}>Amort</div>
+                    <select value={col.amort}
+                      onChange={e=>setMpCol(i,"amort",parseInt(e.target.value))}
+                      style={{width:"100%",height:32,borderRadius:8,border:"1px solid "+C.border,background:"#fff",fontSize:13,fontWeight:600,color:C.text,textAlign:"center",cursor:"pointer",fontFamily:C.font,marginTop:4}}>
+                      {[10,15,20,25,30].map(a=>(
+                        <option key={a} value={a}>{a}yr</option>
+                      ))}
+                    </select>
+                  </div>
+                ))}
+              </div>
+              <div style={{marginBottom:2}}>
+                <div style={{fontSize:12,color:C.label,fontWeight:500,marginBottom:6}}>Down Payment</div>
+                <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6}}>
+                  {mpCalc.map((col,i)=>(
+                    <div key={i} style={{background:"rgba(118,118,128,0.07)",borderRadius:10,padding:"10px 8px",textAlign:"center"}}>
+                      <div style={{fontSize:13,fontWeight:700,color:C.text}}>{fCAD(col.downAmt,0)}</div>
+                      <div style={{fontSize:11,color:C.label,marginTop:2}}>{col.downPct.toFixed(1)}%</div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </div>
-
-          {/* CMHC */}
-          <div style={{marginTop:8,marginBottom:2}}>
-            <div style={{fontSize:12,color:C.label,fontWeight:500,marginBottom:6}}>CMHC Insurance</div>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6}}>
-              {mpCalc.map((col,i)=>(
-                <div key={i} style={{background:col.cmhcAmt>0?"rgba(255,149,0,0.08)":"rgba(52,199,89,0.08)",borderRadius:10,padding:"10px 8px",textAlign:"center"}}>
-                  <div style={{fontSize:13,fontWeight:700,color:col.cmhcAmt>0?C.amber:C.green}}>{col.cmhcAmt>0?fCAD(col.cmhcAmt,0):"None"}</div>
-                  <div style={{fontSize:11,color:C.label,marginTop:2}}>{col.cmhcRate>0?(col.cmhcRate*100).toFixed(2)+"%":"0%"}</div>
+              </div>
+              <div style={{marginTop:8,marginBottom:2}}>
+                <div style={{fontSize:12,color:C.label,fontWeight:500,marginBottom:6}}>CMHC Insurance</div>
+                <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6}}>
+                  {mpCalc.map((col,i)=>(
+                    <div key={i} style={{background:col.cmhcAmt>0?"rgba(255,149,0,0.08)":"rgba(52,199,89,0.08)",borderRadius:10,padding:"10px 8px",textAlign:"center"}}>
+                      <div style={{fontSize:13,fontWeight:700,color:col.cmhcAmt>0?C.amber:C.green}}>{col.cmhcAmt>0?fCAD(col.cmhcAmt,0):"None"}</div>
+                      <div style={{fontSize:11,color:C.label,marginTop:2}}>{col.cmhcRate>0?(col.cmhcRate*100).toFixed(2)+"%":"0%"}</div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Total Mortgage */}
-          <div style={{marginTop:8,marginBottom:2}}>
-            <div style={{fontSize:12,color:C.label,fontWeight:500,marginBottom:6}}>Total Mortgage</div>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6}}>
-              {mpCalc.map((col,i)=>(
-                <div key={i} style={{background:"rgba(0,113,227,0.07)",borderRadius:10,padding:"10px 8px",textAlign:"center",border:"1px solid rgba(0,113,227,0.15)"}}>
-                  <div style={{fontSize:13,fontWeight:700,color:C.blue}}>{fCAD(col.totalMtg,0)}</div>
+              </div>
+              <div style={{marginTop:8,marginBottom:2}}>
+                <div style={{fontSize:12,color:C.label,fontWeight:500,marginBottom:6}}>Total Mortgage</div>
+                <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6}}>
+                  {mpCalc.map((col,i)=>(
+                    <div key={i} style={{background:"rgba(0,113,227,0.07)",borderRadius:10,padding:"10px 8px",textAlign:"center",border:"1px solid rgba(0,113,227,0.15)"}}>
+                      <div style={{fontSize:13,fontWeight:700,color:C.blue}}>{fCAD(col.totalMtg,0)}</div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Payment */}
-          <div style={{marginTop:12,background:"#1c1c1e",borderRadius:14,padding:"16px"}}>
-            <div style={{fontSize:12,color:"rgba(255,255,255,0.4)",fontWeight:500,letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:10}}>
-              {MP_FREQS.find(f=>f.key===mpFreq)?.label} Payment
-            </div>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6}}>
-              {mpCalc.map((col,i)=>(
-                <div key={i} style={{background:"rgba(255,255,255,0.08)",borderRadius:10,padding:"12px 8px",textAlign:"center"}}>
-                  <div style={{fontSize:mobile?16:20,fontWeight:700,color:"#fff",letterSpacing:"-0.03em"}}>{fCAD(col.pmt,0)}</div>
-                  <div style={{fontSize:10,color:"rgba(255,255,255,0.35)",marginTop:3}}>{col.amort}yr amort</div>
+              </div>
+              <div style={{marginTop:12,background:"#1c1c1e",borderRadius:14,padding:"16px"}}>
+                <div style={{fontSize:12,color:"rgba(255,255,255,0.4)",fontWeight:500,letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:10}}>
+                  {MP_FREQS.find(f=>f.key===mpFreq)?.label} Payment
                 </div>
-              ))}
-            </div>
-          </div>
-
-          <Divider/>
-
-          {/* LTT */}
-          <div style={{marginBottom:2}}>
-            <div style={{fontSize:12,color:C.label,fontWeight:500,marginBottom:6}}>Land Transfer Tax {mpFTHB?"(FTHB rebate applied)":""}</div>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6}}>
-              {mpCalc.map((col,i)=>(
-                <div key={i} style={{background:"rgba(118,118,128,0.07)",borderRadius:10,padding:"10px 8px",textAlign:"center"}}>
-                  <div style={{fontSize:13,fontWeight:700,color:C.text}}>{fCAD(col.lttTotal,0)}</div>
-                  <div style={{fontSize:10,color:C.label,marginTop:2}}>{mpLocation==="Toronto"?"ON+TO":"Ontario"}</div>
+                <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6}}>
+                  {mpCalc.map((col,i)=>(
+                    <div key={i} style={{background:"rgba(255,255,255,0.08)",borderRadius:10,padding:"12px 8px",textAlign:"center"}}>
+                      <div style={{fontSize:20,fontWeight:700,color:"#fff",letterSpacing:"-0.03em"}}>{fCAD(col.pmt,0)}</div>
+                      <div style={{fontSize:10,color:"rgba(255,255,255,0.35)",marginTop:3}}>{col.amort}yr amort</div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Cash to Close */}
-          <div style={{marginTop:8}}>
-            <div style={{fontSize:12,color:C.label,fontWeight:500,marginBottom:6}}>Cash to Close <span style={{fontWeight:400,fontSize:11}}>(down + LTT + 1.5% closing)</span></div>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6}}>
-              {mpCalc.map((col,i)=>(
-                <div key={i} style={{background:"rgba(52,199,89,0.08)",border:"1px solid rgba(52,199,89,0.2)",borderRadius:10,padding:"10px 8px",textAlign:"center"}}>
-                  <div style={{fontSize:13,fontWeight:700,color:C.green}}>{fCAD(col.cashToClose,0)}</div>
+              </div>
+              <Divider/>
+              <div style={{marginBottom:2}}>
+                <div style={{fontSize:12,color:C.label,fontWeight:500,marginBottom:6}}>Land Transfer Tax {mpFTHB?"(FTHB rebate applied)":""}</div>
+                <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6}}>
+                  {mpCalc.map((col,i)=>(
+                    <div key={i} style={{background:"rgba(118,118,128,0.07)",borderRadius:10,padding:"10px 8px",textAlign:"center"}}>
+                      <div style={{fontSize:13,fontWeight:700,color:C.text}}>{fCAD(col.lttTotal,0)}</div>
+                      <div style={{fontSize:10,color:C.label,marginTop:2}}>{mpLocation==="Toronto"?"ON+TO":"Ontario"}</div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Monthly Expenses */}
-          <div style={{marginTop:8}}>
-            <div style={{fontSize:12,color:C.label,fontWeight:500,marginBottom:6}}>Est. Monthly Expenses <span style={{fontWeight:400,fontSize:11}}>(pmt + tax + heat)</span></div>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6}}>
-              {mpCalc.map((col,i)=>(
-                <div key={i} style={{background:"rgba(118,118,128,0.07)",borderRadius:10,padding:"10px 8px",textAlign:"center"}}>
-                  <div style={{fontSize:13,fontWeight:700,color:C.text}}>{fCAD(col.monthlyExp,0)}</div>
-                  <div style={{fontSize:10,color:C.label,marginTop:2}}>/mo</div>
+              </div>
+              <div style={{marginTop:8}}>
+                <div style={{fontSize:12,color:C.label,fontWeight:500,marginBottom:6}}>Cash to Close <span style={{fontWeight:400,fontSize:11}}>(down + LTT + 1.5% closing)</span></div>
+                <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6}}>
+                  {mpCalc.map((col,i)=>(
+                    <div key={i} style={{background:"rgba(52,199,89,0.08)",border:"1px solid rgba(52,199,89,0.2)",borderRadius:10,padding:"10px 8px",textAlign:"center"}}>
+                      <div style={{fontSize:13,fontWeight:700,color:C.green}}>{fCAD(col.cashToClose,0)}</div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </div>
-
+              </div>
+              <div style={{marginTop:8}}>
+                <div style={{fontSize:12,color:C.label,fontWeight:500,marginBottom:6}}>Est. Monthly Expenses <span style={{fontWeight:400,fontSize:11}}>(pmt + tax + heat)</span></div>
+                <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6}}>
+                  {mpCalc.map((col,i)=>(
+                    <div key={i} style={{background:"rgba(118,118,128,0.07)",borderRadius:10,padding:"10px 8px",textAlign:"center"}}>
+                      <div style={{fontSize:13,fontWeight:700,color:C.text}}>{fCAD(col.monthlyExp,0)}</div>
+                      <div style={{fontSize:10,color:C.label,marginTop:2}}>/mo</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
           <InfoBox color="blue">
             <div style={{fontWeight:500,fontSize:13,lineHeight:1.6}}>
               Cash to close includes down payment, estimated LTT, and ~1.5% closing costs. Monthly expenses include mortgage payment, estimated property tax (1%/yr) and heating ($100/mo). Tap Apply Now to start a full application.
@@ -1493,7 +1778,7 @@ function App(){
               {paneMap[tab]}
             </div>
           </div>
-          {showResultBar&&<ResultBar c={c} selPmt={selPmt} payFreq={payFreq} downMissing={downMissing}/>}
+          {showResultBar&&<ResultBar c={c} selPmt={selPmt} payFreq={payFreq} downMissing={downMissing} gdsMax={gdsMax} tdsMax={tdsMax}/>}
           {Footer}
         </div>
       </>
@@ -1538,7 +1823,7 @@ function App(){
 
         {showResultBar&&(
           <div style={{position:"sticky",bottom:0,zIndex:99}}>
-            <ResultBar c={c} selPmt={selPmt} payFreq={payFreq} downMissing={downMissing}/>
+            <ResultBar c={c} selPmt={selPmt} payFreq={payFreq} downMissing={downMissing} gdsMax={gdsMax} tdsMax={tdsMax}/>
           </div>
         )}
         {Footer}
