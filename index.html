@@ -50,7 +50,7 @@ function lsSet(key,val){try{localStorage.setItem(key,JSON.stringify(val));}catch
 
 const FREQS=[{key:"monthly",label:"Monthly"},{key:"semiMonthly",label:"Semi-Mo"},{key:"biweekly",label:"Bi-Weekly"},{key:"accelBiweekly",label:"Accel BW"},{key:"weekly",label:"Weekly"},{key:"accelWeekly",label:"Accel Wk"}];
 const COMPOUNDS=[{key:"semi-annual",label:"Semi-Annual"},{key:"monthly",label:"Monthly"},{key:"quarterly",label:"Quarterly"},{key:"annual",label:"Annual"}];
-const C={bg:"#f5f5f7",surface:"#ffffff",navy:"#1d1d1f",label:"#6e6e73",text:"#1d1d1f",blue:"#0071e3",green:"#34c759",red:"#ff3b30",amber:"#ff9500",border:"rgba(0,0,0,0.08)",font:"-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display',sans-serif"};
+const C={bg:"#f2f2f7",surface:"#ffffff",navy:"#1d1d1f",label:"#6e6e73",labelStrong:"#3a3a3c",text:"#1d1d1f",blue:"#0071e3",green:"#34c759",red:"#ff3b30",amber:"#ff9500",border:"rgba(0,0,0,0.1)",borderStrong:"rgba(0,0,0,0.14)",shadow:"0 1px 3px rgba(0,0,0,0.08),0 4px 16px rgba(0,0,0,0.06)",font:"-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display',sans-serif"};
 
 function useWidth(){const[w,setW]=useState(typeof window!=="undefined"?window.innerWidth:800);useEffect(()=>{const h=()=>setW(window.innerWidth);window.addEventListener("resize",h);return()=>window.removeEventListener("resize",h);},[]);return w;}
 
@@ -67,7 +67,7 @@ function Tooltip({text,children}){
         ?
       </span>
       {show&&(
-        <span style={{position:"absolute",bottom:"calc(100% + 6px)",left:"50%",transform:"translateX(-50%)",background:"#1c1c1e",color:"#fff",fontSize:12,lineHeight:1.5,padding:"8px 12px",borderRadius:10,whiteSpace:"pre-wrap",width:220,zIndex:500,boxShadow:"0 4px 20px rgba(0,0,0,0.25)",pointerEvents:"none"}}>
+        <span style={{position:"absolute",bottom:"calc(100% + 6px)",left:"50%",transform:"translateX(-50%)",background:"#1c1c1e",color:"rgba(255,255,255,0.88)",fontSize:12,lineHeight:1.6,padding:"10px 14px",borderRadius:12,whiteSpace:"pre-wrap",width:240,zIndex:500,boxShadow:"0 8px 32px rgba(0,0,0,0.3),0 2px 8px rgba(0,0,0,0.2)",pointerEvents:"none"}}>
           {text}
           <span style={{position:"absolute",top:"100%",left:"50%",transform:"translateX(-50%)",borderWidth:5,borderStyle:"solid",borderColor:"#1c1c1e transparent transparent transparent"}}/>
         </span>
@@ -92,12 +92,12 @@ function NumInput({value,onChange,pre,suf,ph="0",readOnly,highlight}){
     else if(v===""&&onChange)onChange(0);
   }
   return(
-    <div style={{display:"flex",alignItems:"center",height:44,background:f?"#fff":"rgba(118,118,128,0.12)",border:"1.5px solid "+borderColor,borderRadius:10,overflow:"hidden",transition:"border-color 0.18s"}}>
-      {pre&&<span style={{padding:"0 12px",fontSize:15,color:C.label,flexShrink:0}}>{pre}</span>}
+    <div style={{display:"flex",alignItems:"center",height:46,background:f?"#fff":"rgba(118,118,128,0.1)",border:"1.5px solid "+(f?C.blue:borderColor==="transparent"?"rgba(0,0,0,0.09)":borderColor),borderRadius:12,overflow:"hidden",transition:"all 0.18s",boxShadow:f?"0 0 0 3px rgba(0,113,227,0.12)":"none"}}>
+      {pre&&<span style={{padding:"0 14px",fontSize:15,color:f?C.blue:C.label,flexShrink:0,fontWeight:500,transition:"color 0.18s"}}>{pre}</span>}
       <input inputMode={isDecimal?"decimal":"numeric"} min={0} value={displayVal} placeholder={ph} readOnly={readOnly}
         onFocus={handleFocus} onBlur={handleBlur} onChange={handleChange}
         style={{flex:1,border:"none",outline:"none",background:"transparent",fontSize:17,color:C.text,padding:"0 12px",fontFamily:C.font,fontWeight:400,minWidth:0}}/>
-      {suf&&<span style={{padding:"0 12px",fontSize:13,color:C.label,flexShrink:0,whiteSpace:"nowrap"}}>{suf}</span>}
+      {suf&&<span style={{padding:"0 14px",fontSize:13,color:C.label,flexShrink:0,whiteSpace:"nowrap"}}>{suf}</span>}
     </div>
   );
 }
@@ -108,7 +108,7 @@ function PriceSlider({value,onChange,min=100000,max=3000000,step=25000}){
     <div style={{marginTop:8}}>
       <input type="range" min={min} max={max} step={step} value={value||min}
         onChange={e=>onChange(parseFloat(e.target.value))}
-        style={{width:"100%",accentColor:C.blue,height:4,cursor:"pointer"}}/>
+        style={{width:"100%",accentColor:C.blue,height:4,cursor:"pointer",borderRadius:4}}/>
       <div style={{display:"flex",justifyContent:"space-between",marginTop:4}}>
         <span style={{fontSize:11,color:C.label}}>{fCAD(min,0)}</span>
         <span style={{fontSize:11,color:C.label}}>{fCAD(max,0)}</span>
@@ -119,13 +119,13 @@ function PriceSlider({value,onChange,min=100000,max=3000000,step=25000}){
 
 function Pills({value,onChange,options}){
   return(
-    <div style={{display:"flex",background:"rgba(118,118,128,0.12)",borderRadius:9,padding:2,gap:1}}>
+    <div style={{display:"flex",background:"rgba(118,118,128,0.12)",borderRadius:11,padding:3,gap:2}}>
       {options.map(o=>{
         const k=o.value!==undefined?o.value:o.key;
         const active=value===k;
         return(
           <button key={String(k)} onClick={()=>onChange(k)}
-            style={{flex:1,padding:"8px 4px",borderRadius:7,border:"none",cursor:"pointer",background:active?C.surface:"transparent",boxShadow:active?"0 1px 3px rgba(0,0,0,0.14)":"none",color:active?C.text:C.label,fontWeight:active?600:400,fontSize:13,fontFamily:C.font,transition:"all 0.18s",whiteSpace:"nowrap",letterSpacing:"-0.01em"}}>
+            style={{flex:1,padding:"9px 4px",borderRadius:8,border:"none",cursor:"pointer",background:active?C.surface:"transparent",boxShadow:active?"0 1px 2px rgba(0,0,0,0.1),0 2px 8px rgba(0,0,0,0.08)":"none",color:active?C.text:C.label,fontWeight:active?600:400,fontSize:13,fontFamily:C.font,transition:"all 0.2s",whiteSpace:"nowrap",letterSpacing:"-0.01em"}}>
             {o.label}
           </button>
         );
@@ -148,36 +148,37 @@ function Toggle({value,onChange,label}){
 
 function Field({label,hint,note,children}){
   return(
-    <div style={{marginBottom:18}}>
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:6}}>
-        <span style={{fontSize:13,fontWeight:500,color:C.label,letterSpacing:"-0.01em"}}>{label}</span>
-        {hint&&<span style={{fontSize:12,color:C.label,opacity:0.75}}>{hint}</span>}
+    <div style={{marginBottom:20}}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:7}}>
+        <span style={{fontSize:13,fontWeight:600,color:C.labelStrong,letterSpacing:"-0.01em",textTransform:"uppercase",letterSpacing:"0.04em"}}>{label}</span>
+        {hint&&<span style={{fontSize:12,color:C.label,fontWeight:400}}>{hint}</span>}
       </div>
       {children}
-      {note&&<div style={{fontSize:12,color:C.amber,marginTop:5,fontWeight:500}}>{note}</div>}
+      {note&&<div style={{fontSize:12,color:C.amber,marginTop:6,fontWeight:500}}>{note}</div>}
     </div>
   );
 }
 
-function SectionTitle({children}){return <div style={{fontSize:20,fontWeight:700,color:C.text,letterSpacing:"-0.03em",marginBottom:16,marginTop:2}}>{children}</div>;}
-function Divider(){return <div style={{height:1,background:C.border,margin:"22px 0"}}/>;}
+function SectionTitle({children}){return <div style={{fontSize:22,fontWeight:700,color:C.text,letterSpacing:"-0.04em",marginBottom:18,marginTop:8,lineHeight:1.1}}>{children}</div>;}
+function Divider(){return <div style={{height:1,background:"linear-gradient(to right,transparent,rgba(0,0,0,0.1) 20%,rgba(0,0,0,0.1) 80%,transparent)",margin:"28px 0"}}/>;}
 
 function StatRow({label,value,color,big,sub}){
   return(
-    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"11px 0",borderBottom:"1px solid "+C.border}}>
+    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:big?"13px 0":"10px 0",borderBottom:"1px solid "+C.border}}>
       <div>
-        <span style={{fontSize:big?15:14,color:C.label}}>{label}</span>
-        {sub&&<div style={{fontSize:11,color:C.label,opacity:0.65,marginTop:1}}>{sub}</div>}
+        <span style={{fontSize:big?15:14,color:C.label,fontWeight:big?500:400}}>{label}</span>
+        {sub&&<div style={{fontSize:11,color:C.label,opacity:0.6,marginTop:2}}>{sub}</div>}
       </div>
-      <span style={{fontSize:big?20:15,fontWeight:big?700:600,color:color||C.text,letterSpacing:"-0.02em"}}>{value}</span>
+      <span style={{fontSize:big?20:15,fontWeight:big?700:600,color:color||C.text,letterSpacing:big?"-0.03em":"-0.01em"}}>{value}</span>
     </div>
   );
 }
 
 function InfoBox({children,color}){
-  const bg=color==="green"?"rgba(52,199,89,0.1)":color==="red"?"rgba(255,59,48,0.1)":"rgba(0,113,227,0.07)";
-  const tc=color==="green"?C.green:color==="red"?C.red:C.blue;
-  return <div style={{background:bg,borderRadius:12,padding:"12px 16px",fontSize:14,color:tc,marginTop:14}}>{children}</div>;
+  const bg=color==="green"?"rgba(52,199,89,0.08)":color==="red"?"rgba(255,59,48,0.08)":color==="amber"?"rgba(255,149,0,0.08)":"rgba(0,113,227,0.06)";
+  const tc=color==="green"?C.green:color==="red"?C.red:color==="amber"?C.amber:C.blue;
+  const bc=color==="green"?"rgba(52,199,89,0.35)":color==="red"?"rgba(255,59,48,0.35)":color==="amber"?"rgba(255,149,0,0.35)":"rgba(0,113,227,0.3)";
+  return <div style={{background:bg,borderRadius:12,padding:"12px 16px",fontSize:14,color:tc,marginTop:14,borderLeft:"3px solid "+bc}}>{children}</div>;
 }
 
 function ResultBar({c,selPmt,payFreq,downMissing,gdsMax,tdsMax}){
@@ -186,7 +187,7 @@ function ResultBar({c,selPmt,payFreq,downMissing,gdsMax,tdsMax}){
   const pillLabel=qualify==="warn"?"Down Payment Required":qualify==="pass"?"Qualifies":"Does Not Qualify";
   const minDownAmt=c.price>0?calcMinDown(c.price):0;
   return(
-    <div style={{background:"#1c1c1e",boxShadow:"0 -1px 0 rgba(255,255,255,0.06)"}}>
+    <div style={{background:"rgba(28,28,30,0.94)",backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",boxShadow:"0 -1px 0 rgba(255,255,255,0.06)"}}>
       <div style={{maxWidth:1200,margin:"0 auto",padding:"14px 20px calc(14px + env(safe-area-inset-bottom,0px))"}}>
         <div style={{display:"flex",justifyContent:"space-between",marginBottom:12}}>
           <div>
@@ -197,7 +198,7 @@ function ResultBar({c,selPmt,payFreq,downMissing,gdsMax,tdsMax}){
           <div style={{textAlign:"right"}}>
             <div style={{fontSize:11,color:"rgba(255,255,255,0.4)",fontWeight:500,letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:2}}>Payment</div>
             <div style={{fontSize:22,fontWeight:700,color:"#fff",letterSpacing:"-0.03em",lineHeight:1}}>{fCAD(selPmt,2)}</div>
-            <div style={{fontSize:12,color:"rgba(255,255,255,0.35)",marginTop:3}}>{FREQS.find(f=>f.key===payFreq)?.label}</div>
+            <div style={{fontSize:12,color:"rgba(255,255,255,0.4)",marginTop:3,letterSpacing:"0.01em"}}>{FREQS.find(f=>f.key===payFreq)?.label}</div>
           </div>
         </div>
         <div style={{display:"flex",gap:8}}>
@@ -235,7 +236,7 @@ function ResultBar({c,selPmt,payFreq,downMissing,gdsMax,tdsMax}){
 function DisclaimerBar(){
   const[open,setOpen]=useState(false);
   return(
-    <div style={{borderTop:"1px solid rgba(255,255,255,0.08)",padding:"10px 20px calc(10px + env(safe-area-inset-bottom,0px))"}}>
+    <div style={{borderTop:"1px solid rgba(255,255,255,0.06)",padding:"12px 20px calc(12px + env(safe-area-inset-bottom,0px))"}}>
       <div style={{maxWidth:1100,margin:"0 auto",display:"flex",alignItems:"flex-start",gap:8,flexWrap:"wrap"}}>
         <span style={{fontSize:10,color:"rgba(255,255,255,0.25)",lineHeight:1.6,flex:1,minWidth:200}}>
           For illustration purposes only. Not a commitment to lend. No fees collected through this tool.
@@ -259,14 +260,14 @@ function SplashScreen({onDone}){
     return()=>{clearTimeout(t1);clearTimeout(t2);clearTimeout(t3);};
   },[]);
   return(
-    <div style={{position:"fixed",inset:0,background:"#1c1c1e",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",zIndex:9999,transition:"opacity 0.4s",opacity:phase===2?0:1}}>
+    <div style={{position:"fixed",inset:0,background:"#111113",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",zIndex:9999,transition:"opacity 0.5s ease",opacity:phase===2?0:1}}>
       <div style={{transform:phase>=1?"scale(1)":"scale(0.7)",transition:"transform 0.4s cubic-bezier(0.34,1.56,0.64,1)",opacity:phase>=1?1:0}}>
-        <div style={{width:80,height:80,borderRadius:20,background:C.blue,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:20,marginLeft:"auto",marginRight:"auto",boxShadow:"0 8px 32px rgba(0,113,227,0.4)"}}>
+        <div style={{width:80,height:80,borderRadius:24,background:"linear-gradient(145deg,#0077ed,#005ac1)",display:"flex",alignItems:"center",justifyContent:"center",marginBottom:20,marginLeft:"auto",marginRight:"auto",boxShadow:"0 12px 40px rgba(0,113,227,0.45),inset 0 1px 0 rgba(255,255,255,0.15)"}}>
           <span style={{fontSize:32,fontWeight:800,color:"#fff",letterSpacing:"-0.05em"}}>NI</span>
         </div>
         <div style={{textAlign:"center"}}>
-          <div style={{fontSize:22,fontWeight:700,color:"#fff",letterSpacing:"-0.03em"}}>Mortgage Qualifier</div>
-          <div style={{fontSize:14,color:"rgba(255,255,255,0.4)",marginTop:6}}>Neel Idnani Mortgage Group</div>
+          <div style={{fontSize:24,fontWeight:700,color:"#fff",letterSpacing:"-0.04em"}}>Mortgage Qualifier</div>
+          <div style={{fontSize:14,color:"rgba(255,255,255,0.45)",marginTop:8,letterSpacing:"-0.01em"}}>Neel Idnani Mortgage Group</div>
         </div>
       </div>
     </div>
@@ -318,7 +319,7 @@ function App(){
   const[targetPrice,setTargetPrice]=useState(0);
   const[targetDown,setTargetDown]=useState(0);
   // LTT (synced from price)
-  const[lttFTHB,setLttFTHB]=useState(false);
+  const[lttFTHB,setLttFTHB]=useState(true);
   const[lttPriceOverride,setLttPriceOverride]=useState(0); // 0 = use Inputs price
   const[lttToronto,setLttToronto]=useState(false);
   // Closing (synced from price)
@@ -328,15 +329,19 @@ function App(){
   const[ccInspect,setCcInspect]=useState(500);
   const[ccTitle,setCcTitle]=useState(300);
   const[ccOther,setCcOther]=useState(500);
-  const[ccFTHB,setCcFTHB]=useState(false);
+  const[ccFTHB,setCcFTHB]=useState(true);
   const[ccToronto,setCcToronto]=useState(false);
   // Rent vs Buy
   const[rvbRent,setRvbRent]=useState(0);
   const[rvbAppreciation,setRvbAppreciation]=useState(3.0);
   const[rvbRentIncrease,setRvbRentIncrease]=useState(3.0);
   const[rvbYears,setRvbYears]=useState(5);
+  const[rvbPriceOverride,setRvbPriceOverride]=useState(0);
+  const[rvbDownOverride,setRvbDownOverride]=useState(0);
   // Amort table (synced from price/down/rate/amort)
   const[atComp,setAtComp]=useState("semi-annual");
+  const[atPriceOverride,setAtPriceOverride]=useState(0);
+  const[atDownOverride,setAtDownOverride]=useState(0);
   // Refinance
   const[rfBalance,setRfBalance]=useState(0);
   const[rfCurrentRate,setRfCurrentRate]=useState(0);
@@ -370,17 +375,17 @@ function App(){
   function handleFTHB(v){setIsFTHB(v);setAmort(v?30:25);}
   function handleReset(){
     setIncome(0);setCoIncome(0);setRental(0);setPrice(0);setDown(0);
-    setRate(4.5);setAmort(30);setIsFTHB(true);setCompound("semi-annual");
+    setRate(4.5);setRateBase(4.5);setRateSensOffset(0);setAmort(30);setIsFTHB(true);setCompound("semi-annual");
     setTaxMode("annual");setTax(5000);setCondo(0);setHeat(100);
     setCarAmt(0);setCarFreq("monthly");setStudMode("payment");
     setStudPmt(0);setStudFreq("monthly");setStudBal(0);
     setCcBal(0);setOtherAmt(0);setOtherFreq("monthly");setPayFreq("monthly");
     setTargetPrice(0);setTargetDown(0);
-    setLttFTHB(false);setLttToronto(false);setLttPriceOverride(0);
-    setCcLegal(1500);setCcInspect(500);setCcTitle(300);setCcOther(500);setCcFTHB(false);setCcToronto(false);setCcPriceOverride(0);setCcDownOverride(0);
-    setRvbRent(0);setRvbAppreciation(3.0);setRvbRentIncrease(3.0);setRvbYears(5);
+    setLttFTHB(true);setLttToronto(false);setLttPriceOverride(0);
+    setCcLegal(1500);setCcInspect(500);setCcTitle(300);setCcOther(500);setCcFTHB(true);setCcToronto(false);setCcPriceOverride(0);setCcDownOverride(0);
+    setRvbRent(0);setRvbAppreciation(3.0);setRvbRentIncrease(3.0);setRvbYears(5);setRvbPriceOverride(0);setRvbDownOverride(0);
     setMpPriceOverride(0);
-    setAtComp("semi-annual");
+    setAtComp("semi-annual");setAtPriceOverride(0);setAtDownOverride(0);
     setRfBalance(0);setRfCurrentRate(0);setRfNewRate(0);setRfAmort(25);setRfPenalty(0);setRfComp("semi-annual");
     setRnBalance(0);setRnCurrentRate(0);setRnNewRate(0);setRnAmort(20);setRnRenewalDate("");setRnComp("semi-annual");
     setPpBalance(0);setPpRate(5.0);setPpAmort(25);setPpComp("semi-annual");setPpLumpSum(0);setPpExtraMo(0);
@@ -500,11 +505,13 @@ function App(){
   },[ccEffPrice,ccEffDown,ccLegal,ccInspect,ccTitle,ccOther,ccFTHB,ccToronto]);
 
   // Amort uses price/down/rate/amort from Inputs
+  const atEffPrice=atPriceOverride>0?atPriceOverride:price;
+  const atEffDown=atDownOverride>0?atDownOverride:down;
   const amortTable=useMemo(()=>{
-    if(price<=0)return{};
-    const dn=down>0?down:calcMinDown(price);
-    const cmhc=getCMHCRate((dn/price)*100,is30);
-    const principal=Math.max(0,price-dn)*(1+cmhc);
+    if(atEffPrice<=0)return{};
+    const dn=atEffDown>0?atEffDown:calcMinDown(atEffPrice);
+    const cmhc=getCMHCRate((dn/atEffPrice)*100,is30);
+    const principal=Math.max(0,atEffPrice-dn)*(1+cmhc);
     if(principal<=0)return{};
     const rm=effRate(rate,atComp);
     const n=amort*12;
@@ -518,20 +525,22 @@ function App(){
       if(bal<=0)break;
     }
     return{rows,pmt,principal};
-  },[price,down,rate,amort,atComp,is30]);
+  },[atEffPrice,atEffDown,rate,amort,atComp,is30]);
 
   // RvB uses price/down/rate from Inputs
+  const rvbEffPrice=rvbPriceOverride>0?rvbPriceOverride:price;
+  const rvbEffDown=rvbDownOverride>0?rvbDownOverride:down;
   const rvb=useMemo(()=>{
-    if(price<=0||rvbRent<=0)return null;
+    if(rvbEffPrice<=0||rvbRent<=0)return null;
     const yrs=rvbYears;
-    const dn=down>0?down:calcMinDown(price);
-    const cmhc=getCMHCRate((dn/price)*100,false);
-    const mtg=Math.max(0,price-dn)*(1+cmhc);
+    const dn=rvbEffDown>0?rvbEffDown:calcMinDown(rvbEffPrice);
+    const cmhc=getCMHCRate((dn/rvbEffPrice)*100,false);
+    const mtg=Math.max(0,rvbEffPrice-dn)*(1+cmhc);
     const pmt=mtgPmt(mtg,rate,25,"semi-annual");
-    const propTaxAnnual=price*0.01;
-    const maintAnnual=price*0.01;
+    const propTaxAnnual=rvbEffPrice*0.01;
+    const maintAnnual=rvbEffPrice*0.01;
     const totalBuyCost=pmt*12*yrs+propTaxAnnual*yrs+maintAnnual*yrs;
-    const futureValue=price*Math.pow(1+rvbAppreciation/100,yrs);
+    const futureValue=rvbEffPrice*Math.pow(1+rvbAppreciation/100,yrs);
     let totalRentCost=0,rent=rvbRent;
     for(let i=0;i<yrs;i++){totalRentCost+=rent*12;rent*=(1+rvbRentIncrease/100);}
     const rm=effRate(rate,"semi-annual");
@@ -541,7 +550,7 @@ function App(){
     const equity=futureValue-bal;
     const netBuyCost=totalBuyCost-(equity-dn);
     return{pmt,totalBuyCost,totalRentCost,futureValue,equity,netBuyCost,buyWins:netBuyCost<totalRentCost,dn};
-  },[price,down,rate,rvbRent,rvbAppreciation,rvbRentIncrease,rvbYears]);
+  },[rvbEffPrice,rvbEffDown,rate,rvbRent,rvbAppreciation,rvbRentIncrease,rvbYears]);
 
   const refi=useMemo(()=>{
     if(rfBalance<=0||rfCurrentRate<=0||rfNewRate<=0)return null;
@@ -655,24 +664,13 @@ function App(){
     window.open(`mailto:info@neelidnani.com?subject=${subject}&body=${body}`);
   }
 
-  function handleShare(){
-    const shareData={title:"Neel Idnani Mortgage Qualifier",text:"Check out this mortgage qualifier tool from Neel Idnani.",url:"https://tools.neelidnani.com"};
-    if(navigator.share){
-      navigator.share(shareData).catch(()=>{});
-    } else {
-      navigator.clipboard.writeText("https://tools.neelidnani.com").then(()=>{
-        alert("Link copied to clipboard!");
-      });
-    }
-  }
-
   function switchTab(k){setPrevTab(tab);setTab(k);}
 
   //  PANES 
   const InputsPane=(
     <div style={{paddingBottom:16}}>
       {bLender&&(
-        <div style={{background:"rgba(255,149,0,0.1)",border:"1px solid rgba(255,149,0,0.3)",borderRadius:12,padding:"10px 14px",marginBottom:16,fontSize:13,color:C.amber,fontWeight:500,display:"flex",alignItems:"center",gap:6}}>
+        <div style={{background:"rgba(255,149,0,0.09)",border:"1px solid rgba(255,149,0,0.28)",borderRadius:12,padding:"11px 16px",marginBottom:16,fontSize:13,color:C.amber,fontWeight:500,display:"flex",alignItems:"center",gap:6,borderLeft:"3px solid rgba(255,149,0,0.6)"}}>
            B-Lender Mode: GDS/TDS ratios increased to 50%
           <Tooltip text={"B-Lenders allow higher GDS/TDS (up to 50%) for borrowers who don't qualify with A-lenders.\n\nNote: B-Lenders may use different stress test rules  some apply rate+2%, others use the contract rate only. Confirm with the specific lender."}>
             <span/>
@@ -703,7 +701,7 @@ function App(){
         )}
       </Field>
       {(income+coIncome)>0&&(
-        <div style={{background:"rgba(0,113,227,0.08)",borderRadius:10,padding:"10px 14px",fontSize:13,color:C.blue,fontWeight:500,marginTop:-6,marginBottom:18}}>
+        <div style={{background:"rgba(0,113,227,0.07)",border:"1px solid rgba(0,113,227,0.15)",borderRadius:12,padding:"10px 14px",fontSize:13,color:C.blue,fontWeight:500,marginTop:-6,marginBottom:18}}>
           Qualifying: {fCAD(c.qualMo*12,0)}/yr ({fCAD(c.qualMo,0)}/mo)
           {rental>0&&<span style={{fontWeight:400,color:C.label}}>  incl. {fCAD(rental*0.5,0)}/mo rental add-back</span>}
         </div>
@@ -712,7 +710,7 @@ function App(){
       {/* Max Purchase Price Finder */}
       {(income+coIncome)>0&&c.maxMtg>0&&(
         <>
-          <div style={{background:"linear-gradient(135deg,rgba(0,113,227,0.08),rgba(52,199,89,0.08))",border:"1px solid rgba(0,113,227,0.15)",borderRadius:14,padding:"16px 18px",marginBottom:18}}>
+          <div style={{background:"linear-gradient(135deg,rgba(0,113,227,0.07) 0%,rgba(52,199,89,0.06) 100%)",border:"1px solid rgba(0,113,227,0.18)",borderRadius:16,padding:"18px 20px",marginBottom:18,boxShadow:"0 1px 8px rgba(0,113,227,0.07)"}}>
             <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
               <div style={{fontSize:14,fontWeight:600,color:C.text}}>Max Purchase Price</div>
               <div style={{fontSize:11,color:C.label,fontWeight:500}}>based on your income & debts</div>
@@ -734,6 +732,7 @@ function App(){
               const scenarios=[
                 {label:"Min Down",fn:(p)=>calcMinDown(p),cmhcFn:(p)=>getCMHCRate(calcMinDown(p)/p*100,is30)},
                 {label:"10% down",fn:(p)=>p*0.10,cmhcFn:(p)=>getCMHCRate(10,is30)},
+                {label:"15% down",fn:(p)=>p*0.15,cmhcFn:(p)=>getCMHCRate(15,is30)},
                 {label:"20% down",fn:(p)=>p*0.20,cmhcFn:()=>0},
               ];
               return scenarios.map(({label,fn,cmhcFn})=>{
@@ -767,7 +766,7 @@ function App(){
                     <div style={{display:"flex",alignItems:"center",gap:10}}>
                       {cmhcR>0&&<span style={{fontSize:11,color:C.amber}}>+CMHC</span>}
                       <span style={{fontSize:16,fontWeight:700,color:C.blue}}>{maxPrice>0?fCAD(maxPrice,0):""}</span>
-                      {maxPrice>0&&<button onClick={()=>{const p=Math.floor(maxPrice/1000)*1000;setPrice(p);setDown(Math.ceil(calcMinDown(p)));}}
+                      {maxPrice>0&&<button onClick={()=>{const p=Math.floor(maxPrice/1000)*1000;setPrice(p);setDown(Math.ceil(fn(p)));}}
                         style={{fontSize:11,color:C.blue,background:"rgba(0,113,227,0.1)",border:"1px solid rgba(0,113,227,0.2)",borderRadius:7,padding:"4px 10px",cursor:"pointer",fontFamily:C.font,whiteSpace:"nowrap",fontWeight:500}}>
                         Use 
                       </button>}
@@ -797,7 +796,7 @@ function App(){
         <div style={{display:"flex",gap:6,marginTop:8,flexWrap:"wrap"}}>
           {[{label:"Min",fn:()=>setDown(Math.ceil(calcMinDown(price)))},{label:"10%",fn:()=>setDown(Math.round(price*0.10))},{label:"15%",fn:()=>setDown(Math.round(price*0.15))},{label:"20%",fn:()=>setDown(Math.round(price*0.20))}].map(opt=>(
             <button key={opt.label} onClick={opt.fn} disabled={price<=0}
-              style={{flex:1,height:34,borderRadius:8,border:"1px solid "+C.border,background:"rgba(118,118,128,0.1)",color:price>0?C.text:C.label,fontSize:13,fontWeight:500,cursor:price>0?"pointer":"default",fontFamily:C.font,transition:"all 0.15s"}}>
+              style={{flex:1,height:36,borderRadius:9,border:"1px solid "+C.border,background:"rgba(118,118,128,0.09)",color:price>0?C.text:C.label,fontSize:13,fontWeight:500,cursor:price>0?"pointer":"default",fontFamily:C.font,transition:"all 0.15s",letterSpacing:"-0.01em"}}>
               {opt.label}
             </button>
           ))}
@@ -814,7 +813,7 @@ function App(){
           <div style={{display:"flex",gap:6}}>
             {[{label:"Base",offset:0},{label:"+0.5%",offset:0.5},{label:"+1%",offset:1},{label:"+2%",offset:2}].map(opt=>(
               <button key={opt.label} onClick={()=>{setRateSensOffset(opt.offset);setRate(parseFloat((rateBase+opt.offset).toFixed(2)));}}
-                style={{flex:1,height:30,borderRadius:8,border:"1.5px solid "+(rateSensOffset===opt.offset?C.blue:C.border),background:rateSensOffset===opt.offset?"rgba(0,113,227,0.1)":"transparent",color:rateSensOffset===opt.offset?C.blue:C.label,fontSize:12,fontWeight:rateSensOffset===opt.offset?700:400,cursor:"pointer",fontFamily:C.font,transition:"all 0.15s"}}>
+                style={{flex:1,height:32,borderRadius:9,border:"1.5px solid "+(rateSensOffset===opt.offset?C.blue:"rgba(0,0,0,0.1)"),background:rateSensOffset===opt.offset?"rgba(0,113,227,0.1)":"rgba(118,118,128,0.07)",color:rateSensOffset===opt.offset?C.blue:C.label,fontSize:12,fontWeight:rateSensOffset===opt.offset?700:400,cursor:"pointer",fontFamily:C.font,transition:"all 0.18s",letterSpacing:"-0.01em"}}>
                 {opt.label}
               </button>
             ))}
@@ -869,26 +868,26 @@ function App(){
 
   const ResultsPane=(
     <div style={{paddingBottom:16}}>
-      <div style={{background:"#1c1c1e",borderRadius:16,padding:"20px 24px",marginBottom:24}}>
+      <div style={{background:"linear-gradient(160deg,#1c1c1e 0%,#2a2a2e 100%)",borderRadius:18,padding:"22px 24px",marginBottom:24,boxShadow:"0 8px 32px rgba(0,0,0,0.18),inset 0 1px 0 rgba(255,255,255,0.05)"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:16,flexWrap:"wrap",gap:12}}>
           <div>
             <div style={{fontSize:11,color:"rgba(255,255,255,0.4)",fontWeight:500,letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:4}}>Max Purchase Price</div>
-            <div style={{fontSize:36,fontWeight:700,color:"#fff",letterSpacing:"-0.03em",lineHeight:1}}>{c.maxPrice>0?fCAD(c.maxPrice):c.price>0?fCAD(c.price):""}</div>
+            <div style={{fontSize:mobile?28:36,fontWeight:700,color:"#fff",letterSpacing:"-0.03em",lineHeight:1}}>{c.maxPrice>0?fCAD(c.maxPrice):c.price>0?fCAD(c.price):""}</div>
             <div style={{fontSize:12,color:"rgba(255,255,255,0.35)",marginTop:4}}>Stress test @ {c.stressR.toFixed(2)}%</div>
           </div>
           <div style={{textAlign:"right"}}>
             <div style={{fontSize:11,color:"rgba(255,255,255,0.4)",fontWeight:500,letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:4}}>Payment</div>
-            <div style={{fontSize:36,fontWeight:700,color:"#fff",letterSpacing:"-0.03em",lineHeight:1}}>{fCAD(selPmt,2)}</div>
+            <div style={{fontSize:mobile?28:36,fontWeight:700,color:"#fff",letterSpacing:"-0.03em",lineHeight:1}}>{fCAD(selPmt,2)}</div>
             <div style={{fontSize:12,color:"rgba(255,255,255,0.35)",marginTop:4}}>{FREQS.find(f=>f.key===payFreq)?.label}</div>
           </div>
         </div>
         <div style={{display:"flex",gap:8}}>
-          <div style={{flex:1,background:"rgba(255,255,255,0.07)",borderRadius:10,padding:"10px 0",textAlign:"center"}}>
+          <div style={{flex:1,background:"rgba(255,255,255,0.08)",borderRadius:12,padding:"10px 0",textAlign:"center",border:"1px solid rgba(255,255,255,0.07)"}}>
             <div style={{fontSize:11,color:"rgba(255,255,255,0.38)",marginBottom:2}}>GDS</div>
             <div style={{fontSize:22,fontWeight:700,color:c.gdsPass?C.green:C.red,letterSpacing:"-0.02em"}}>{c.gds.toFixed(1)}%</div>
             <div style={{fontSize:11,color:"rgba(255,255,255,0.28)"}}>max {gdsMax}%</div>
           </div>
-          <div style={{flex:1,background:"rgba(255,255,255,0.07)",borderRadius:10,padding:"10px 0",textAlign:"center"}}>
+          <div style={{flex:1,background:"rgba(255,255,255,0.08)",borderRadius:12,padding:"10px 0",textAlign:"center",border:"1px solid rgba(255,255,255,0.07)"}}>
             <div style={{fontSize:11,color:"rgba(255,255,255,0.38)",marginBottom:2}}>TDS</div>
             <div style={{fontSize:22,fontWeight:700,color:c.tdsPass?C.green:C.red,letterSpacing:"-0.02em"}}>{c.tds.toFixed(1)}%</div>
             <div style={{fontSize:11,color:"rgba(255,255,255,0.28)"}}>max {tdsMax}%</div>
@@ -903,16 +902,16 @@ function App(){
       </div>
       <div style={{display:"flex",gap:8,marginBottom:20,flexWrap:"wrap"}}>
         <button onClick={handleCopy}
-          style={{flex:1,height:42,borderRadius:10,border:"1px solid "+C.border,background:copyFlash?"rgba(52,199,89,0.1)":"rgba(118,118,128,0.1)",color:copyFlash?C.green:C.label,fontSize:13,fontWeight:600,cursor:"pointer",fontFamily:C.font,transition:"all 0.3s"}}>
+          style={{flex:1,height:44,borderRadius:12,border:"1px solid "+(copyFlash?"rgba(52,199,89,0.4)":C.border),background:copyFlash?"rgba(52,199,89,0.08)":"rgba(118,118,128,0.08)",color:copyFlash?C.green:C.label,fontSize:13,fontWeight:600,cursor:"pointer",fontFamily:C.font,transition:"all 0.3s",letterSpacing:"-0.01em"}}>
           {copyFlash?" Copied!":"Copy Results"}
         </button>
         <button onClick={handleEmail}
-          style={{flex:1,height:42,borderRadius:10,border:"1px solid rgba(0,113,227,0.3)",background:"rgba(0,113,227,0.08)",color:C.blue,fontSize:13,fontWeight:600,cursor:"pointer",fontFamily:C.font}}>
+          style={{flex:1,height:44,borderRadius:12,border:"1px solid rgba(0,113,227,0.25)",background:"rgba(0,113,227,0.07)",color:C.blue,fontSize:13,fontWeight:600,cursor:"pointer",fontFamily:C.font,letterSpacing:"-0.01em"}}>
            Email Neel
         </button>
         {c.eligible&&(
           <a href={VELOCITY} target="_blank" rel="noopener noreferrer"
-            style={{flex:2,height:42,borderRadius:10,background:C.blue,display:"flex",alignItems:"center",justifyContent:"center",textDecoration:"none"}}>
+            style={{flex:2,height:44,borderRadius:12,background:"linear-gradient(180deg,#147CE5,#0071e3)",display:"flex",alignItems:"center",justifyContent:"center",textDecoration:"none",boxShadow:"0 2px 8px rgba(0,113,227,0.35),inset 0 1px 0 rgba(255,255,255,0.2)"}}>
             <span style={{fontSize:13,fontWeight:700,color:"#fff"}}>Apply Now </span>
           </a>
         )}
@@ -973,9 +972,9 @@ function App(){
       <Field label="Down Payment" hint="Leave 0 for minimum"><NumInput value={targetDown} onChange={setTargetDown} pre="$"/></Field>
       {(targetPrice>0||price>0)&&(
         <>
-          <div style={{background:"rgba(0,113,227,0.06)",border:"1px solid rgba(0,113,227,0.15)",borderRadius:16,padding:"20px",marginTop:8,marginBottom:16}}>
+          <div style={{background:"linear-gradient(135deg,rgba(0,113,227,0.06),rgba(0,113,227,0.03))",border:"1px solid rgba(0,113,227,0.16)",borderRadius:18,padding:"22px 24px",marginTop:8,marginBottom:16,boxShadow:"0 2px 12px rgba(0,113,227,0.07)"}}>
             <div style={{fontSize:13,color:C.label,marginBottom:4}}>Income required for {fCAD(targetPrice>0?targetPrice:price,0)}</div>
-            <div style={{fontSize:48,fontWeight:700,color:C.blue,letterSpacing:"-0.05em",lineHeight:1}}>{fCAD(c.incReqForTarget||c.incNeeded,0)}</div>
+            <div style={{fontSize:mobile?34:48,fontWeight:700,color:C.blue,letterSpacing:"-0.05em",lineHeight:1}}>{fCAD(c.incReqForTarget||c.incNeeded,0)}</div>
             <div style={{fontSize:14,color:C.label,marginTop:4}}>/year</div>
             {(income+coIncome)>0&&(
               <div style={{borderTop:"1px solid rgba(0,113,227,0.12)",paddingTop:14,marginTop:14}}>
@@ -1137,7 +1136,7 @@ function App(){
 
       {ccEffPrice>0&&(
         <>
-          <div style={{background:C.navy,borderRadius:16,padding:"18px 20px",marginBottom:16}}>
+          <div style={{background:"linear-gradient(160deg,#1c1c1e 0%,#2a2a2e 100%)",borderRadius:18,padding:"20px 22px",marginBottom:16,boxShadow:"0 8px 32px rgba(0,0,0,0.15),inset 0 1px 0 rgba(255,255,255,0.05)"}}>
             <div style={{fontSize:12,color:"rgba(255,255,255,0.45)",fontWeight:500,letterSpacing:"0.05em",textTransform:"uppercase",marginBottom:12}}>Total Funds Required</div>
             <div style={{display:"flex",flexDirection:"column",gap:10}}>
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
@@ -1198,8 +1197,22 @@ function App(){
   const RentBuyPane=(
     <div style={{paddingBottom:16}}>
       <SectionTitle>Rent vs Buy</SectionTitle>
-      <p style={{fontSize:14,color:C.label,marginBottom:16,lineHeight:1.6}}>Uses purchase price {fCAD(price,0)}, down {fCAD(down>0?down:calcMinDown(price),0)}, and rate {rate}% from Inputs.</p>
-      {price<=0&&<InfoBox color="blue">Enter a purchase price in the Inputs tab first.</InfoBox>}
+      <Field label="Purchase Price" hint={rvbPriceOverride===0&&price>0?"From Inputs tab":rvbPriceOverride>0?"Override active":""}>
+        <NumInput value={rvbPriceOverride>0?rvbPriceOverride:(price||0)} onChange={v=>{if(v>0)setRvbPriceOverride(v);else setRvbPriceOverride(0);}} pre="$"/>
+      </Field>
+      <Field label="Down Payment" hint={rvbDownOverride===0?"Leave 0 for minimum":""}>
+        <NumInput value={rvbDownOverride} onChange={setRvbDownOverride} pre="$"/>
+        <div style={{display:"flex",gap:6,marginTop:8,flexWrap:"wrap"}}>
+          {[{label:"Min",fn:()=>setRvbDownOverride(0)},{label:"10%",fn:()=>setRvbDownOverride(Math.round(rvbEffPrice*0.10))},{label:"15%",fn:()=>setRvbDownOverride(Math.round(rvbEffPrice*0.15))},{label:"20%",fn:()=>setRvbDownOverride(Math.round(rvbEffPrice*0.20))}].map(opt=>(
+            <button key={opt.label} onClick={opt.fn} disabled={rvbEffPrice<=0}
+              style={{flex:1,height:36,borderRadius:9,border:"1px solid "+C.border,background:"rgba(118,118,128,0.09)",color:rvbEffPrice>0?C.text:C.label,fontSize:13,fontWeight:500,cursor:rvbEffPrice>0?"pointer":"default",fontFamily:C.font,letterSpacing:"-0.01em"}}>
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      </Field>
+      {rvbEffPrice<=0&&<InfoBox color="blue">Enter a purchase price above or set one in the Inputs tab.</InfoBox>}
+      <Divider/>
       <Field label="Monthly Rent"><NumInput value={rvbRent} onChange={setRvbRent} pre="$" suf="/mo"/></Field>
       <Field label="Home Appreciation"><NumInput value={rvbAppreciation} onChange={setRvbAppreciation} pre="%" suf="/yr"/></Field>
       <Field label="Annual Rent Increase"><NumInput value={rvbRentIncrease} onChange={setRvbRentIncrease} pre="%" suf="/yr"/></Field>
@@ -1228,8 +1241,22 @@ function App(){
   const AmortPane=(
     <div style={{paddingBottom:16}}>
       <SectionTitle>Amortization Table</SectionTitle>
-      <p style={{fontSize:14,color:C.label,marginBottom:16,lineHeight:1.6}}>Using price {fCAD(price,0)}, rate {rate}%, amort {amort}yr from Inputs tab.</p>
-      {price<=0&&<InfoBox color="blue">Enter a purchase price in the Inputs tab first.</InfoBox>}
+      <Field label="Purchase Price" hint={atPriceOverride===0&&price>0?"From Inputs tab":atPriceOverride>0?"Override active":""}>
+        <NumInput value={atPriceOverride>0?atPriceOverride:(price||0)} onChange={v=>{if(v>0)setAtPriceOverride(v);else setAtPriceOverride(0);}} pre="$"/>
+      </Field>
+      <Field label="Down Payment" hint={atDownOverride===0?"Leave 0 for minimum":""}>
+        <NumInput value={atDownOverride} onChange={setAtDownOverride} pre="$"/>
+        <div style={{display:"flex",gap:6,marginTop:8,flexWrap:"wrap"}}>
+          {[{label:"Min",fn:()=>setAtDownOverride(0)},{label:"10%",fn:()=>setAtDownOverride(Math.round(atEffPrice*0.10))},{label:"15%",fn:()=>setAtDownOverride(Math.round(atEffPrice*0.15))},{label:"20%",fn:()=>setAtDownOverride(Math.round(atEffPrice*0.20))}].map(opt=>(
+            <button key={opt.label} onClick={opt.fn} disabled={atEffPrice<=0}
+              style={{flex:1,height:36,borderRadius:9,border:"1px solid "+C.border,background:"rgba(118,118,128,0.09)",color:atEffPrice>0?C.text:C.label,fontSize:13,fontWeight:500,cursor:atEffPrice>0?"pointer":"default",fontFamily:C.font,letterSpacing:"-0.01em"}}>
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      </Field>
+      {atEffPrice<=0&&<InfoBox color="blue">Enter a purchase price above or set one in the Inputs tab.</InfoBox>}
+      <Divider/>
       <Field label="Compounding">
         <Pills value={atComp} onChange={setAtComp} options={COMPOUNDS.map(x=>({key:x.key,label:x.label}))}/>
       </Field>
@@ -1243,7 +1270,7 @@ function App(){
           <div style={{overflowX:"auto",borderRadius:12,border:"1px solid "+C.border}}>
             <table style={{width:"100%",borderCollapse:"collapse",fontSize:13,fontFamily:C.font}}>
               <thead>
-                <tr style={{background:"rgba(118,118,128,0.07)"}}>
+                <tr style={{background:"rgba(118,118,128,0.06)",borderBottom:"1px solid rgba(0,0,0,0.06)"}}>
                   {["Year","Payment","Interest","Principal","Balance"].map(h=>(
                     <th key={h} style={{padding:"10px 12px",textAlign:"right",color:C.label,fontWeight:600,fontSize:12,borderBottom:"1px solid "+C.border}}>{h}</th>
                   ))}
@@ -1404,26 +1431,29 @@ function App(){
 
   //  Footer 
   const Footer=(
-    <div style={{background:C.navy}}>
-      <div style={{padding:mobile?"24px 20px":"28px 40px"}}>
-        <div style={{maxWidth:1100,margin:"0 auto",display:"flex",flexDirection:mobile?"column":"row",justifyContent:"space-between",alignItems:mobile?"flex-start":"center",gap:16}}>
-          <div style={{display:"flex",alignItems:"center",gap:14}}>
-            <img src={NEEL_PHOTO} alt="Neel Idnani" style={{width:52,height:52,borderRadius:"50%",objectFit:"cover",objectPosition:"center center",flexShrink:0,border:"2px solid rgba(255,255,255,0.15)"}}/>
+    <div style={{background:"#111113",borderTop:"1px solid rgba(255,255,255,0.06)"}}>
+      <div style={{padding:mobile?"24px 20px":"32px 40px"}}>
+        <div style={{maxWidth:1100,margin:"0 auto",display:"flex",flexDirection:mobile?"column":"row",justifyContent:"space-between",alignItems:mobile?"flex-start":"center",gap:20}}>
+          <div style={{display:"flex",alignItems:"center",gap:16}}>
+            <div style={{position:"relative",flexShrink:0}}>
+              <img src={NEEL_PHOTO} alt="Neel Idnani" style={{width:56,height:56,borderRadius:"50%",objectFit:"cover",objectPosition:"center center",display:"block"}}/>
+              <div style={{position:"absolute",inset:-2,borderRadius:"50%",border:"2px solid rgba(255,255,255,0.12)",pointerEvents:"none"}}/>
+            </div>
             <div>
-              <div style={{color:"#fff",fontWeight:600,fontSize:15,marginBottom:4,letterSpacing:"-0.02em"}}>Neel Idnani Mortgage Group</div>
-              <div style={{color:"rgba(255,255,255,0.45)",fontSize:13,marginBottom:8}}>London, Ontario, Canada</div>
-              <div style={{display:"flex",flexDirection:"column",gap:4}}>
-                <a href="tel:5196972359" style={{color:"rgba(255,255,255,0.55)",fontSize:13,textDecoration:"none"}}>519-697-2359</a>
-                <a href="mailto:info@neelidnani.com" style={{color:"rgba(255,255,255,0.55)",fontSize:13,textDecoration:"none"}}>info@neelidnani.com</a>
-                <a href="https://www.neelidnani.com" style={{color:"rgba(255,255,255,0.55)",fontSize:13,textDecoration:"none"}}>www.neelidnani.com</a>
+              <div style={{color:"#fff",fontWeight:700,fontSize:15,marginBottom:2,letterSpacing:"-0.03em"}}>Neel Idnani Mortgage Group</div>
+              <div style={{color:"rgba(255,255,255,0.35)",fontSize:12,marginBottom:10,letterSpacing:"0.01em"}}>London, Ontario, Canada</div>
+              <div style={{display:"flex",flexDirection:mobile?"column":"row",gap:mobile?3:16}}>
+                <a href="tel:5196972359" style={{color:"rgba(255,255,255,0.5)",fontSize:13,textDecoration:"none",transition:"color 0.15s"}}>519-697-2359</a>
+                <a href="mailto:info@neelidnani.com" style={{color:"rgba(255,255,255,0.5)",fontSize:13,textDecoration:"none",transition:"color 0.15s"}}>info@neelidnani.com</a>
+                <a href="https://www.neelidnani.com" style={{color:"rgba(255,255,255,0.5)",fontSize:13,textDecoration:"none",transition:"color 0.15s"}}>www.neelidnani.com</a>
               </div>
             </div>
           </div>
-          <div style={{color:"rgba(255,255,255,0.28)",fontSize:11,lineHeight:1.7,textAlign:mobile?"left":"right"}}>
-            <div>Neel Idnani - Mortgage Agent Level 2</div>
+          <div style={{color:"rgba(255,255,255,0.22)",fontSize:11,lineHeight:1.8,textAlign:mobile?"left":"right"}}>
+            <div style={{color:"rgba(255,255,255,0.35)",fontWeight:500,marginBottom:2}}>Neel Idnani  Mortgage Agent Level 2</div>
             <div>Lic. #M23005524</div>
             <div>Dominion Lending Centres FC Funding</div>
-            <div>Brokerage Lic. FSRA #10671</div>
+            <div>Brokerage FSRA #10671</div>
           </div>
         </div>
       </div>
@@ -1439,7 +1469,7 @@ function App(){
   const[mpLocation,setMpLocation]=useState("Other ON");
   const[mpRate,setMpRate]=useState(4.5);
   const[mpComp,setMpComp]=useState("semi-annual");
-  const[mpFTHB,setMpFTHB]=useState(false);
+  const[mpFTHB,setMpFTHB]=useState(true);
   const[mpFreq,setMpFreq]=useState("monthly");
 
   // 4 scenario columns, each has its own down% and amort
@@ -1750,8 +1780,8 @@ function App(){
     return(
       <>
         {showSplash&&<SplashScreen onDone={()=>setShowSplash(false)}/>}
-        <div style={{fontFamily:C.font,background:C.bg,minHeight:"100vh",color:C.text,display:"flex",flexDirection:"column"}}>
-          <div style={{background:"rgba(255,255,255,0.92)",backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",borderBottom:"1px solid "+C.border,position:"sticky",top:0,zIndex:100}}>
+        <div style={{fontFamily:C.font,background:C.bg,minHeight:"100vh",color:C.text,display:"flex",flexDirection:"column",backgroundImage:"radial-gradient(rgba(0,0,0,0.025) 1px,transparent 1px)",backgroundSize:"32px 32px"}}>
+          <div style={{background:"rgba(255,255,255,0.92)",backdropFilter:"saturate(180%) blur(20px)",WebkitBackdropFilter:"saturate(180%) blur(20px)",borderBottom:"1px solid rgba(0,0,0,0.09)",position:"sticky",top:0,zIndex:100}}>
             <div style={{maxWidth:1200,margin:"0 auto",padding:"0 32px",height:48,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
               <div style={{display:"flex",alignItems:"center",gap:10}}>
                 <img src={NEEL_PHOTO} alt="Neel Idnani" style={{width:30,height:30,borderRadius:"50%",objectFit:"cover",objectPosition:"center center",flexShrink:0,border:"1.5px solid rgba(0,0,0,0.08)"}}/>
@@ -1761,20 +1791,20 @@ function App(){
               <div style={{display:"flex",alignItems:"center",gap:8}}>
                 <button onClick={handleReset} style={{padding:"5px 14px",borderRadius:20,border:"1px solid "+(resetFlash?C.green:C.border),background:resetFlash?"rgba(52,199,89,0.1)":"transparent",fontSize:13,color:resetFlash?C.green:C.label,cursor:"pointer",fontFamily:C.font,transition:"all 0.3s"}}>{resetFlash?"Cleared":"Reset"}</button>
                 <a href={VELOCITY} target="_blank" rel="noopener noreferrer"
-                  style={{padding:"6px 18px",borderRadius:20,background:C.blue,fontSize:13,fontWeight:600,color:"#fff",textDecoration:"none"}}>Apply Now</a>
+                  style={{padding:"6px 18px",borderRadius:20,background:"linear-gradient(180deg,#147CE5,#0071e3)",fontSize:13,fontWeight:600,color:"#fff",textDecoration:"none",boxShadow:"0 1px 0 rgba(255,255,255,0.2) inset"}}>Apply Now</a>
               </div>
             </div>
             <div style={{maxWidth:1200,margin:"0 auto",padding:"0 32px",borderTop:"1px solid "+C.border,display:"flex",overflowX:"auto",scrollbarWidth:"none"}}>
               {allTabs.map(k=>(
                 <button key={k} onClick={()=>switchTab(k)}
-                  style={{flexShrink:0,padding:"9px 16px",border:"none",background:"transparent",fontFamily:C.font,fontSize:13,fontWeight:tab===k?600:400,color:tab===k?C.blue:C.label,borderBottom:"2px solid "+(tab===k?C.blue:"transparent"),cursor:"pointer",transition:"all 0.18s",whiteSpace:"nowrap"}}>
+                  style={{flexShrink:0,padding:"10px 16px",border:"none",background:"transparent",fontFamily:C.font,fontSize:13,fontWeight:tab===k?600:400,color:tab===k?C.text:C.label,borderBottom:"2px solid "+(tab===k?C.text:"transparent"),cursor:"pointer",transition:"all 0.18s",whiteSpace:"nowrap",letterSpacing:"-0.01em"}}>
                   {tabLabels[k]}
                 </button>
               ))}
             </div>
           </div>
           <div style={{flex:1,maxWidth:1200,width:"100%",margin:"0 auto",padding:"32px 32px 60px"}}>
-            <div style={{background:C.surface,borderRadius:20,padding:"28px 32px",boxShadow:"0 1px 3px rgba(0,0,0,0.06)"}}>
+            <div style={{background:C.surface,borderRadius:22,padding:"28px 32px",boxShadow:"0 1px 0 rgba(0,0,0,0.05),0 4px 24px rgba(0,0,0,0.07)"}}>
               {paneMap[tab]}
             </div>
           </div>
@@ -1789,8 +1819,8 @@ function App(){
   return(
     <>
       {showSplash&&<SplashScreen onDone={()=>setShowSplash(false)}/>}
-      <div style={{fontFamily:C.font,background:C.bg,color:C.text,maxWidth:"100vw",overflowX:"hidden",minHeight:"100vh",display:"flex",flexDirection:"column"}}>
-        <div style={{background:"rgba(249,249,249,0.94)",backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",borderBottom:"1px solid "+C.border,position:"sticky",top:0,zIndex:100}}>
+      <div style={{fontFamily:C.font,background:C.bg,color:C.text,maxWidth:"100vw",overflowX:"hidden",minHeight:"100vh",display:"flex",flexDirection:"column",backgroundImage:"radial-gradient(rgba(0,0,0,0.025) 1px,transparent 1px)",backgroundSize:"32px 32px"}}>
+        <div style={{background:"rgba(249,249,249,0.94)",backdropFilter:"saturate(180%) blur(20px)",WebkitBackdropFilter:"saturate(180%) blur(20px)",borderBottom:"1px solid rgba(0,0,0,0.09)",position:"sticky",top:0,zIndex:100}}>
           <div style={{padding:"8px 16px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
             <div style={{display:"flex",alignItems:"center",gap:8}}>
               <img src={NEEL_PHOTO} alt="Neel Idnani" style={{width:30,height:30,borderRadius:"50%",objectFit:"cover",objectPosition:"center center",flexShrink:0,border:"1.5px solid rgba(0,0,0,0.08)"}}/>
@@ -1799,14 +1829,14 @@ function App(){
             <div style={{display:"flex",gap:8,alignItems:"center"}}>
               <button onClick={handleReset} style={{padding:"5px 14px",borderRadius:20,border:"1px solid "+(resetFlash?C.green:C.border),background:resetFlash?"rgba(52,199,89,0.1)":"transparent",fontSize:13,color:resetFlash?C.green:C.label,cursor:"pointer",fontFamily:C.font,transition:"all 0.3s"}}>{resetFlash?"Cleared":"Reset"}</button>
               <a href={VELOCITY} target="_blank" rel="noopener noreferrer"
-                style={{padding:"5px 14px",borderRadius:20,background:C.blue,fontSize:13,fontWeight:600,color:"#fff",textDecoration:"none"}}>Apply</a>
+                style={{padding:"5px 14px",borderRadius:20,background:"linear-gradient(180deg,#147CE5,#0071e3)",fontSize:13,fontWeight:600,color:"#fff",textDecoration:"none",boxShadow:"0 1px 0 rgba(255,255,255,0.2) inset"}}>Apply</a>
             </div>
           </div>
           <div style={{display:"flex",alignItems:"center",borderTop:"1px solid "+C.border}}>
             <div style={{display:"flex",overflowX:"auto",overflowY:"hidden",WebkitOverflowScrolling:"touch",msOverflowStyle:"none",scrollbarWidth:"none",flex:1,minHeight:40}}>
               {TABS.map(t=>(
                 <button key={t.key} onClick={()=>switchTab(t.key)}
-                  style={{flexShrink:0,padding:"9px 14px",border:"none",background:"transparent",fontFamily:C.font,fontSize:13,fontWeight:tab===t.key?600:400,color:tab===t.key?C.blue:C.label,borderBottom:"2px solid "+(tab===t.key?C.blue:"transparent"),cursor:"pointer",transition:"all 0.18s",whiteSpace:"nowrap",WebkitTapHighlightColor:"transparent"}}>
+                  style={{flexShrink:0,padding:"10px 14px",border:"none",background:"transparent",fontFamily:C.font,fontSize:13,fontWeight:tab===t.key?600:400,color:tab===t.key?C.text:C.label,borderBottom:"2px solid "+(tab===t.key?C.text:"transparent"),cursor:"pointer",transition:"all 0.18s",whiteSpace:"nowrap",WebkitTapHighlightColor:"transparent",letterSpacing:"-0.01em"}}>
                   {t.label}
                 </button>
               ))}
@@ -1817,7 +1847,7 @@ function App(){
           </div>
         </div>
 
-        <div style={{flex:1,padding:"20px 16px 0"}}>
+        <div style={{flex:1,padding:"20px 16px 24px"}}>
           {paneMap[tab]}
         </div>
 
