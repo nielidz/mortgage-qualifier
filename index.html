@@ -49,26 +49,12 @@
     };
   </script>
   <div id="root"></div>
-  <!-- Safety net: if app crashes before splash dismisses, hide it after 5s -->
-  <script>
-    setTimeout(function(){
-      var splash = document.querySelector('[style*="position: fixed"][style*="z-index: 9999"]') ||
-                   document.querySelector('[style*="position:fixed"][style*="zIndex"]');
-      if(splash){ splash.style.display = 'none'; }
-      // Also try to find root and show error if empty
-      var root = document.getElementById('root');
-      if(root && root.children.length === 0){
-        root.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:system-ui;color:#666;text-align:center;padding:20px"><div><div style="font-size:18px;font-weight:600;margin-bottom:8px">Unable to load</div><div style="font-size:14px">Please open this file from a web server or visit<br><a href="https://tools.neelidnani.com" style="color:#0071e3">tools.neelidnani.com</a></div></div></div>';
-      }
-    }, 5000);
-  </script>
   <script type="text/babel" data-presets="react">
 const { useState, useMemo, useEffect, useCallback } = React;
 
 const NEEL_PHOTO = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAQDAwMDAgQDAwMEBAQFBgoGBgUFBgwICQcKDgwPDg4MDQ0PERYTDxAVEQ0NExoTFRcYGRkZDxIbHRsYHRYYGRj/2wBDAQQEBAYFBgsGBgsYEA0QGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBj/wAARCADIAMgDASIAAhEBAxEB/8QAHQAAAgIDAQEBAAAAAAAAAAAABgcEBQADCAIBCf/EAEwQAAEDAwIDBAYGBQgIBwEAAAECAwQABREGIQcSMRNBUXEIIiMkYYEUMkKRobFSYnKywRUWJzdzdJLRFyUzNENjovE2RFOCg8Lh8P/EABsBAAEFAQEAAAAAAAAAAAAAAAQAAQIDBQYH/8QALBEAAgIBAwMCBQUBAQAAAAAAAAECAxEEITEFEjITQSIzUWFxFCNCUoHB8f/aAAwDAQACEQMRAD8A7LTrSzLGfpTf+KpcK/2+5KKIryXCOvKc0g2ni42pKmMde6jrhexHbMlewcK+lGSqSWTNhfKUkha+lEf9faa/tXP3RSOcPsnf2TTv9KPa/aa/tHP3RSOWfZu/smiavEHs82dh+j9twFsX93H5mmaTmllwC24DWH+7j+NMwdcUBPyYdDxRn2fOtLnfW7AANR3DsaiuSRwt6QUREnjPOCk5P0Vv81VW8CuG0DVOoruqW6tsxm0cgQcbqzv+FX3HIBfGyf8A3Vv81USejO2Bqe+gDbka/wDtRsl8OQKL9gO1ToK62ic720ZxxttRCJLQ3GO8iqiJqubaWvo1yUZMTpz96fOutLhDjPocQ80laSTnNJnW3DC2XRMh6Cv6M7yk+p0Pyqp1KfBJXOt4YP2S+qDSZNslplR1blsqyRR5bpzc+KHUoKD3pNcXPXjU+itYS48R9SkMvFJA+qoeVdH6D16Z9njqubQaUsD1u40M62mF96xkZxSe6vPIQc1pTMIbDyQHWT9pO+KsGEtSWQtpQUDVbgx1JEUpBGCKoL3YEy2lOsDlcH40V/RxzjmOBWl0ICyE7j41XKCksMshNxeUJWfHcjPqadQUqHjUFKck7Gmrf7BHuUZSkJ5XR0IpeLstzakqa+jLODjmHfWbbRKMtjUq1CmtymuIDdvW4R0FAj07mUrlQTTMutonoszy3I6gkDel43G9m5tQ90cNZCaZJrYqzMUTgNmvDr7gOC31qWln2o2769zWfap27qq7UXFaFPrBIRWVZx2ctLrKXahHXZfKVrSE0ScNHHDqR9HMQnAPLQoRhaspT99FfDE41G8Md1dvPxZxEfNAV6UpxfNNf2rn7opGLPsnf2TTv9Kc4vmmf7Vz90UjFr93dP6pp638KGs82dj8BP6iLD/d0/xpmjbc0seAn9RVi/u6f40zCTmgZ+QdDxR9WdqjrPqGtqq0u4CD5UyHbOJONp/psuH93b/jVl6P93Nt1tdGQ3zJeaQc+GM/51VcayTxquP93b/jW/gj2Ler7pJkLS20zHC1rWcBKRkkn5UdLxAY/Y6MekFxtSgOu+KD7m+nleQpaUqUkgBSgCfKuZeKfH/UV6vz1q0zcX7NamVqS25HUUvSAM+upQ6A42A8d6Rd0vV7mPidKn3KQ6o8xfU4o4PXPw+NDevGAU9FK1ZGhqm2h3UtzWtG5fO5FO7R/DiPceGEWXGeUh8thX4eFcaNahnMvGUi8yu0GVEOLKubv3z1rsz0aOJbOtNETLFLbbbudrCefk2S60eiwO452Py8aeNqkxraJQjyDLuptTcP5ihPjOSLelWFZ3AHwNMPRet7NqxCpVjUo8v+0QBjB+IqTxHhRZOipqXY6VeqrfFUHox6ajtaTnvpbGVSFb4qdkFyD02d2wfSJr2DhGKqZE58Emiy7W4NrVhNCU1rlztQliDa5exXvXWQj41qj3R197l7IZ8qjyRvUixNhdxIx3UJu3gKTSRp1G64rTUkFH2D3UlGmstOnHdXQWp4qP5sSvV+yfypGts4Zc2rP1qxJI0dFLMWUCGfaDbvr1Paw6jbuqa2x7Ubd9fbgz7wnbuoP3Ds7kGO17Be1ZU+Oz7svasp0I6ceRgrOE0R8Mv/ABG71zih51Y7RzdNEXDTH84Xjsdv412svFnER80A/pVKxedNePaufuikM4v3Zzf7Jp5+lYrF701/aOfuikG4v2Dmf0TT1+KHmszZ2nwCd/oMsKfGMmmd39KT/o/XBhXBaxpU4Byxwn86bn0mOejqfvoOa3C4P4UbVDbNRXjsfKpIWhaMpOajvDCFeVRRJnEHGpWONVx/sG/40MWi4T7dovUxtbZXMmJjwGQnrzOr5dqI+NZ/pruQHcw3/GpPCC1xrs/dUyuUIivRpYKtgC2SQTRVrxBsFoSc0n9S2t/AfSdniRGJUFFxuKEByVJdJPO6euB+iOgHwq+maJsiYS2f5Khcqhg+yTVwnV+mZc9TSdRQg4vPKkrwpXkDXufIYRB+kLmt9ljPPzbEVwOt752NvJ6doVCFSjHBzvxD4Y6VXlxFsaacx9Zkcn4CgXhJfXOEnpAxYjTIlRLwUQFl1RBQhxYwU47wrHWmvrnWOklqfbavaHnUA5aZQVH76XelbPA1Pxg0tKCgpKbkwtJ8QlfNj8K0elWW1TUbM4Zk9bqotrlKvGV9Dp3XskDRszKc+qamejNHB4fSV46vuGqziAVDR0wcgPqmiP0ZWwOG7px1ec/Ouvu8TgNL5BpfYw5lHFL+6NcpVtTSvjWSrIpdXlvBVtQkuA+PIFShuRUnT7zbNzKnTgHbetUsetQjrGZcbZYHJttTzONjJHjQaWZ4CntDI0NTFtzSslTagQUHpSNQz7FdatK8WXdSW520yGnG3wOVSV/d176s0Newc2rP6jtNI0NB4NlG2z7UbHrXy4M+8J27qsUtAOJ2768TmcvjyoHO4fnchR2vdl7VlT4zPui6yoPkkh6OOqMlwc34UT8OJLTF9dU6pIyBuaHV4+kr3I+VRIkpyPJUppZSa7pLuWDhZS7X3FR6VNwjSL9pttpxKlBbhIB7uUUh3nPd3MfomizjPNcka3tPaOFRCFdaCXV+7Ofsmk49uxOuXqLu+p0JwauEhjg1by0+pBGRsfiaZVuuFylEq+nLwKUfCMKPBOCQcbn8zR3BffZA5FkZxVa3QpPEhoWy+Lhx8SFleO81fRLtHnRisOJ6eNK991/+SHFhRKsUCs6j1LGWtLDykpyfs08ae/ceWocHwLHjW4n/AE33LlVkdi30+dEfB+140hfbkQXkyk9gWsYB5cbZz356eFKbU1wmXHiBdJM5wuPFQBJ8BTm4K3ZtnRMiO8QENy3Acd+UpIz95/CgupTlCr4Xj/xmn0euFl3xrO2V+coE9R8PdRX2bGcbRboryMlaIMLl7NWdvaEDIA695PSrvX9nm2/hTbLM3JKJqzyreG2SetHF31MxFlobDzMeOE9o886sJz+qPiaT/FHjNa7o1GhwLM6spJQ8kPJPJ4b532wa4/Fl2HH2O/zVTtLhlGjQl6tWm2EWRx5Mt1SlyVpiIc7YEeqAo/Vwep7/AIUMR2btorUFvusxltE2PJbkrQkYSpSVDOw6Z+FOPRmqY8rQ6UOym3nmm+qVBR8j5UoNbXZE28ntsLb7UIwo9ckVKu21zw/Yr1FFHp5XuPFnVEvWHCq7TbjBaiSGXVt8jZJBQRlJ37+oPlTE9Gcf0ZKP/OX+dKSztm38FZ0lxCkrluqIyeqEpCR+Oab3o0f1XZHe64fxrsqJSlpoSny0eeamFcNbZGpYimMS8pzzbUvb0jdVMS79VUBXlOealPgUfIA5qMKO3fQ9qJCTpuXz9OTvomnJ9odqFtXJI0nJIz9U0JV81BFvymKbhraGnrrPl9nnlWdwKYTbfsHNu6hXhc6luJcEHqpZx91GbTfurlAdWx6iD+mZdTz9SnQj2yR8a+TmvbgfCpjbft0+dZPa95HlWWng0URozXuiqypkdv3JW1ZSJJjfcdHbubr+6qtLmFLOT86lOqdS6slDgqlekKQ2onmruq+ThLltgT/Fp/n15bd+iDQy6v3Zz9k1acS5Bd11byT9g1Rur93c3+yae3yZPTrEIo6C4Qf1Jwfn+Zo7jIwEnfuoD4PHHBODn4/maPo6hypx4iqIvYnPyLyQoosrigOgpbRbot249ipnAKiM0ypK0osjhI25aVrd8jpnYDStlHuomvjgHue63EdqohPEW6cveQaL9CyrhH0TepERKVogPty1oxupJTyKGfD6p+GKCdSSky9f3N5IwCoDenB6PMdiZcL1ElMpeYdaDbjaxlK0kEEH4YoXUVK2LhL3D9LfKmUZx9gTTbZesOIEibar6hosNsvIjPtBwAHZaBk4SrAPrYOM0R6pHDqPbVRnRKFy5SkNia1zk/HDecdaX+vbVduB/GZdwjPGTaJCe0ZWTkoQScNufEY28QAaAtR6ysdxvI1AwhDM7m5+TblwT/3rnHpJwl2rdHZVdQrlDMuf9PdxZRYLmm+SLy8yFykcjCEpSEtg5IJABV4Z+Ne9CQ/9JvG+2WZ1S0xXHlyHktKwUtNpKjg+JIH30srteL1rW/MwojD0t9auRpppGSrw2FOSHpNXB3gveNQ3iUUanujIixeyXhUZSiCAkj7QxzE/qgURClQcXPdmffqnYpKvZf8AR/axgx7dw6ct8VBS0w2UpBOT5k95o79Gk44Wf/I5+dInT3EyLxH4RSDIcbbvsVoJmxsgFZx/tUDvSrvx0OR4U8PRsc5eFx/tHP3q3ptOC7eDlaVNWPv5GXdT6yqBruMhVGlzXnmoLu26VUPPgMjyBU1OXDQnrZXZaOkn9U0Yy0+1OaHdWQGpejZfaL5cJNCU/NQRd8pii4arIelI/SNMdpvEddLrhugCbIGcgEgGmY2n3Zys7qz/AHl+DQ6av2StQ17dO3fWTW8SAPhUpCfapHxrxNT7zWZk0kaWEe5qrKkMo9yJrKSHGJLmBwqHZK7++hqWomKtQ5vvq8uEYIWSEbYP2qoYhjyJojSNkHr62K7mt43OHtWdhF8QXCrXEHP6JqrcV7uv9k0X8Z7fb7fry1CCfrIJUObNBrh9gv8AZNKcu5tllK7YpM6G4RkjgnAI8D+Zo7iqJSk92RUbgZpiLL4IWhTxB7RoLO/iaZzGkLegADHzoeMsck3ByYMSXgmxuk9AmlGb1B7ZaezPMFEZ5a6If03EMRxpW6VDFctcRtW2Oyall2vTUKO6Ii1NSJrg5gp0fWSgdMJOxPecgdM0TC2K5KLKJN7CpubiX9Y3NxKcJ59+7HnRLobisrh81cnrVb2Z0taQS6+shllI6kgbqPwBFAc+ZKurzq1qCEKVkpSOUE+Jx1oj0dot7WeuLNouIjCJKxJnuY+qwjrnz6AVRZZhNhtdK2TOgrjpK4cTeF1g4nJaRLmTrMlu52hxoBMhIUSFtpPRacEY+0k+PVLWf0c0a6vbkqzW4W+2IX7WW8Vdmk96UI6qV8Og7yKd3pFTblpzhnDtNu5bVp5lSI3K0shUlRSeVGB9lITnHeT8KVHow37iPM1PJgQW35WjnFKMrtiQGXP0mlHor9JPQ+e9Z0tN8PrKWPsasNRt6Tjn7jF0twb0voFakWiIHpmMOSVJCnFf5D4DauYeOGrjrHX6osNX+q7YVR2ADkOLz67nzIwPgPjXW3HrWR0Fw1eiWwIYud0UqKw6frhGMuLAO+Qk45ugKhjfpw/JjFyOeyQkrA9Xm6U1MP5MhZL2RWwmXGH2VNLU2vchSSQRt4inXw09IDWXDeP/ACehiJd7WSSqNLBQtOevK4ncfMGlJFjZUHnHC4vGBtgJ8QBU0terRG64KXFPlHZ1i9JLh3qSFz3KU9YJYHrMTklaCf1XEAg/MA0RMajseooSpViu8O5M964zoXy+Y6j51wSpogbEitab1L05IRcoE1+LKRuhxhwoUPMjr5VJzbW5X6K5R3BLIKqENdhf8y5XIop9U9DS44L8YLnrC7SNO6lkIfm8hfiyeUJU6B9ZCgNiQNwfDPhTG14HDoyT2YJ9XuqipYuRK7api54Ywn3kypKEZbScE0yG0+6qoW4RSGWtJT2FY7RTivyouQnENRrN6v8AOX4DulvNT/JDbTl5NeJiB9INSGRl8bVrm/70ayjTPLSfcjWVtbT7jmspxBjNS48VAITgA7k0KTIDjJK8J+Rp33zTUIwlqioAXjbFLGRpu9PSFIUnKAa61XTjLC4ONsg0+DnXiOV/z1gdpn6h61TLPsF/smjDjLaJFr1rag8nAWhW/wAaDFn3df7JovOVkSW6OoOC+oJzHB+0sozypHLn4Zpqt3yWnl9YnPxpScFIjiuEFtX2alZGc/OmahiQpxPslEUJGSb3LZEnUGpZNt0fc7nhZVGiOvDl3OUoJH5Vwm067IsqVvKK3CAVKJyVLV6xP3k12VxHeetnB/UU1JLa0QHACe4qHL/GuPGmQ1aI4PTkCj9235URj6CgaITAMxDRVhCPXWrw8T91dO+i1pU/yVctey0+1uauzjDl3Qwk4A+eM1zQ3FdlwzDjZ+lXKQiG0R1AUcE/JINdqXGfH4S+jc7KiJS29ChJaip8XlgIR+Jz8qoszKSrQXWsJzYk/SR11C1NqxvSMFYci2cuB95KtlyFAJUAR3JAxnxJ8Kano7RFxeAdpjoZDWVurbJGBgrJ5ifnXH7Tcu5T0sNKU7LkuBIUdypa1YyfMnNdbcVr9H4VejTHs1pcDM2VGRaohScKA5PaOf4c7+KxV2ugoKFURaeTeZs5j4262/nzxcnSIzxctkEmFC32KEk8y/8A3qyryxS6kOIjRi6pJUdglI6qJ6AVtaTzkqIrQgCVK+kHdpvKWvie9X8B/wDtD4wiw+RGFtNFTyuZ1Z5lkdAfAfAVt5hnFfHXOVOK0JcwgqNIR7kOpbbJONhmg6fLRMllK2XHgDk8nSryc6H2eUhawtX1UnGQP+9QF+xaCA2hr9VNMxHjTtzd0zrC23+2ucrkSQl5TZODyg+sPjlOR867tlxY900DKlIIW2poONq8UlOR+BFcAPNIUo78pOd66v0VxNVeuAzh7NDc6AhMOU0nYZSnCFj4KSPvBpor9yLKr96pJEThm26UTSkHkDih+NMhI90UKCuE4SrTc5xR9ZTijRuP91Uax+sfOX4NLpXyf9IzA94FaZiR9LNSI+74rVNHvdZSZp43PTYxBrK2IH+r81lIdIfS5rQRhSh86iOy46G84SKFr4mc4U/RFkbjO9QrvEurlnSmOshw47666mlSWWclbNpiV9I6Sh/WlkCCDhK+nkKUyzhlf7Joz4zx50fWtpE1ZUooOCTQWs+xX5GjMYWChNyabOw+BMmIODFnCkpyGhnzpqMTIS1YCU0iuCClng/A+CTj76ZkRa+VZPUdKzoy3CZLBC41hh/gNqdLZAP0IkfJSTXGSzz2+Kkf+kg/gK6g4uXCSjgtqPtSEI7AAknG3OnNcoomgWGE+BnLKfw2o5bIrhuHfC60i68arHCUnmbhMqlK/bWeUfhmm96VF/LNrsGkWV4Cyq4SEg9yfZtg/MrPypZ8B7mwjjmhl7HNIip7NR8UK3H/AFfhW/0groq7ccrowFcyYiWoSPgEICj/ANSjS0kO7UNv2CbNqUio4L2M3zjPZIxb520PGQrbuQnP5kV89JDXI1ZxfetkF7ntlmSYTHKcpUsHLqx5q28kiiHhFOa0npjXOtXOVL1ptAajKJ/476iEAfHZNc8rlczjsqQsqxlSlHck/wCZNR1T7rpP6bEqliCR9kKUeWI2SFODK1D7KO/5noK2rUhlkJTgADAA7qjxwsNredOHVnKh4eA+X+dRJchecc+BVJM+vvjm61Bmzg1G2PWokh7BJWs48Aap50kmLz56nYfCoiCFgOO29pQXypKMlXmc1GkJSEkNgqPes99SLS4HbGyrHMeUDfurXIDhyVlKB8adiKl5KgCCnNGvCi6vxrtdbJuuPcISiM9ULa9YfeCoUHPJT9nK/idhVroec5C4jWw5HLIc+iKzsAHfU/Minh5IhYsxaOj+Frik2qSkZwVGmIkZhqqt03w4vGldPOy5a0FKiTyjuq0RvCNYXV/n/wCGl0v5H+miOnD4rTNHvhxUlgZeFaZY96Oay8mmbEj3Csr1j3DaspsiQRzLzdIzaVFnnCuhANRLlqq5tR2+RhJJ8abZ01HctyW3kJKgPChO6aJLygW9gD4V3NeEsHGWNvc5X4xXCXcdY2pyUkJwk4AoOWfZKx4GmTx7sa7Pq2ylRyFpUOngBS0UfYr8jVrGj7HUvA9z+iGAAnPqn86ZMVx0pWS2Rj4UF8Bk29ngvbHHXE8yk7j45pnpch8hUhSQKAjVuXTnkRnH6W69wlMBSVITIntIX3ZSkKWf3RXLcSUiRppsp/4S1t4/9xI/A10z6Ud9hxeHFvs0ZOZs2WVoI+whCSFH58wFcoWF7D0+3KPVIeSPiDg/mKKezwKtfCFmlL+uwa6sV+Q5yCNJQl1R7kE8qs/I5+VF+qpyb7xEvF3SQoSZzzoIOQRzED8MUryj1FtLHqq//jRJpGU5IsSA6oqdjqLCyepKT1+YxROjx3v8E7G3FIsr/qYROFk3TkZXKudeA9Ix3tsMpSgf41qPypZtOJflhGfZsnKvivuHy6/dUrVVw+jy5JSStRdUG0+KielQrfEUzESlaiVfWWrxUetB2PM2/uER4RLkOJCPVA86pZT2SamzXQ2jANUEh8qWfCq2xzVKdycVVznCYwTmpDyipeagyTzJxURBLp550WNpTSecpykjO/WrFwtShugoc7wqqXSD+O3jFQHrAj5/9qv5AWlZGArHcadiKx5opBGKgKK2HkvtqKXEKC0kdQQcg/fVo6tKvqnlX4GqmQ6eYpcbwe5QphHf8LWzurOG1quKXUpbmxG3igeJSOYf4s1ERtDNJzgHLk3Th+4hUlRRanyx2RPRKvXT8t1fdTi5vdCa5zqLl625r6NJV7Gtg+8itUreSTWyNvJGa1Sle9KoHIWbz/uArK8kn6EN6ylkQ5karfd08qf9HcGE83KRvQXB4sG43T6CLfKQrJGVNkCiiPeYK9PKfDOGuXPShCBq/Ssq6djHS322T0TvXcQ3T2OLse63E36R09yXq+w8wUAErO/kKUiz7NXkaa3pFTI8jWNjQ0nBCFH5bUqF/wCyV5GrF4jxHtwqdkp4UxAmQtKAs4SDR5Gu9xQ12YfUEig3hHapErhdE5UKwVk5NM6Lp9pDXt1gHwoZVyzsXOcVyc4ekLepf8q2mMpv1URVKQ6rfJUvcf8ASKQtufVH1zBbKsqeJbX5KH+eKbPHzVFxTxbm2eBAhs/yc0mOh97K1qGOYqA6D61I2GLgNZwZsp3tHFSmyVHqfWFWN7pFkF8Iw3hhRSdiK3WCemBJuTaiAHGhIQD+kPVP/wBa+XNpSJSuXxyKEr2qS8oMwW3e0WhQdWhJPYtnHMTjpnAGfOpqbreUPFKSwamSq86gXKJJjMKKWz+mrvVVpMmsxGikqHN4VXpkot8FEaK3lzGAB3VoRCWsmRNX6x3wT0qguIb8p19RIBwairQUoJUN6snnGEAhJHnVc84F7jOKixEJ3vqA9U95YAwKguDO5pCN1heU1fAhJwXElI8+o/KjZL4cw3IT2buMAnoql7FfDFyZezshYP40dSJDy0crcJbiQNlgU4jJLAXkKSQe7FVT8Z9IIUjtE/iKmJnTgoNqtzqx5b18kSipsgNrZc70OjH40who+jlexB1Re9PrUeSfEDzee5bSskf4Vn7q6M/8ka5F4Myuy48WNpxQaEhxyMSrYeu2oD8cU7rhxx0dbpki2ykyw4ysoKkt5SSDjY+FYvUdNZOzuiso09JdCMO2T3GRGJ7cVpknMs0s2uPuhUOc3vp/+I1Fk8fdGl4rQxOUD/y6z/0l39Qv16/7DdUcQRWUnnfSG0v9HCG7ZOUfikCsqX6O7+ov1FX1OwGZNpXp4qCEhkp+WKEYJ0cq6c0YRu2yfq4zRnEZtUix/RWkBSSMYAofh8M4ibt9MYZQwAc82N67KENmcbN5aaOfvSMMUazsf0dIB5FfdtSp+skjxFdA8etLWhu8W6U5JCnG0lP1ulKGLYnri92Vnt0iYvp7NBx99WYUVuxQzL2OneC9jlu8IbYXHEMtlGQrvxRfc7ppDS6O2udxaUv9ZW5pUaP0bxclaUjWkzTbLe2MJSyMucvhk9KYdg4RQYDqJVyiPTpQIKn5Si4c+Z6VHvzwP6f1OKOMt0ZvPE+96glvxW4siUsx2ynCygbJ+OcAUqoUuPN1XbW20uK96bwcH9IUzuKlo+icV9SNuKQoNXF9ICxukc5wBQLZy3/Pq2MoTk9uFdPDJ/hVMvIOj4jHuSEdohpSR2iu7v3ofmhMG8OR+zS4HGQFpK1JAVv+id8c3Q7UTojlhT93mq51Jzyg9M91BUp9T1xLqj6yiST86ezgjUjymDGZGEpJOPrE5JqM/FaXnOc+dTC5mtS8Gqi8pnoTYVt+NQJDOPVSOnwq4kHGarHldTURFU6yAck5qI8kBJx4VPfJJO1Q3EnlPlSEVXL69MK52bUti0lpy+RsSLXeYocbcWjmCHUkhbZ8DtkeIPwNL87HNdNWDVVqt3oe2e3XG2tXJ+Y5Jix2XtktFDhPa56gp5hjHefDNNnAhRwH7gUc0mMw2nvcTzIwO894qFKnwZHOVOrcT0276sZDLc5IblIebSNggnCFfMd9V79ojtrwwnsx3ipMR90tcGGOItgfjMuBLVwjk5VufaJ6fKijjVa2LTxZvUWO0lptMlXKhIwADg/xob0uyE8RLEyUArNyjjA7/appkeknbw1xiuTuT7UNugD4p/8Ayl7Mj/JCS5vGs5/jXhTRJ2Sv7q8/RnD0aX91QaRYsm4ODxrK1iG8ejK6ymwhYZ+nF54waJ06owrcRNlJ2SzFTznPyof/AJ0cVtaq5LPa02OEvo9J9ZePgmmFpfhPpmwISINrbLo6uKTzKPzo6Fvt9sjdrMeZjNJGTzEDFHSm3yZkYCPt/BmPKnJn6tuMq8yup7dXqjyT0poWjTlis0MNxrezHQkdeUCqnUHEiyQXVMWVozXBtzj6ufOl5ddV368LIkSyw0f+Gztt8TQlmphHjdhdemnLnZDkk690zp6KULkpdeGwaaGT9woBvvFS/XVxTVsaTBjnYKUMrP8AAUAJDaNwMq65O5r12w6kgY3oKepnLjYMhpox53OauLLj8jXt0mGU2htyQtSn3TjtDnc/fml/px0S+I9vZiuJcCFKUpxI2OEEmiHijaG7Vr+e9Kd+mh55TrOVfVbJyACTjbpiqTRiXntZsvshptltpxWEKydxyjfzNaMXnAK1hNB1d5S02dptW3PzLx88Cg11ftUHPXP50T6nfZE9lkqHZoCUq69O/p86Fp6oypANucQ62kkZTzBOc78pUM486eb3FWtjaldeXXOVJJrwjIHrYz4A5ry7hSCn41AsKuTIy4Ug7VCec9cJHfvVg5EC1qwRnxJqIqMUrJUtv4bn+AqIiErc1odwE7/jUxbKEg5cHd0ST+ZqE6hsk4Kj9wpCKtY3z18qc1vhKl+jLp25sOoxBvMuG82VYOHeVYUPLl386Tr+E5wMeZzRRpq8SxptdoWtS4jclT4a7gtaEpKvPCB+NLAgiUpDLB5CHPI4FDFxflOPrX2nLnoE1eIcKG8qb5m1fVdQNj8CO41RSUSZcshlvlRndSthTsRVs/SEzkPBxYWlWQoEgjyNTpE6RId7SQ+48vGOZxZUfvNfUtoEtbKVhZbQVKI8ahq+sahJZJJm4Pk+FexIVUXO9fcmqh+4ldurrmsqNzVlMP3H6j3ni6+tKo+nbeGkdO3fH5D/ADpfXO8XS7vF263B6QTvyFWEjyHSsrKHnbKfLL4VRjwiuLiU7JwK0rkAbkgCsrKgXYBy9aztNmaUqRJQVD7IO9LC+cSL3enTGsyFMsk4KzWVlKb7VlDQXc8MXeoLRc7lPLtwdU4wwdgtWxUQCVq+HQAd9EPD2zx1wbhM5SlBV2faK68qU5J8t+lZWVsUr4Yv7GVc+fyCt4uf0q4vuJVlJUeXy7qgRe0RDDi/qrdXyeQwD+OaysqPOSzjYlJczXoqyN6ysqORyE9s5n4VAecAJ3rKymEQnnqjZUtXKkEmsrKQiNLbUkhOPWUcYo3h2tu22lEdKe0J9dwkbFVZWU4j5LedZhYaAAHQDoKFpUua4SFOqAPcKysphEyBAlR7Ui4rZUW5SlttKP2+THNjyJAqG42/zHKAPnWVlNJ4JQWTXyP/AKg8zXwod73GxWVlVtsnhGdmvvfHyFZWVlSIn//Z";
 const VELOCITY = "https://velocity-client.newton.ca/en/client/journey/home?shortCode=pzdcffg7l1o6";
 
-//  Math helpers 
 function fCAD(v,d=0){return new Intl.NumberFormat("en-CA",{style:"currency",currency:"CAD",minimumFractionDigits:d,maximumFractionDigits:d}).format(v||0);}
 function fPct(v,d=2){return v.toFixed(d)+"%";}
 function calcMinDown(p){if(p<=0)return 0;if(p<=500000)return p*0.05;if(p<1500000)return 25000+(p-500000)*0.10;return p*0.20;}
@@ -80,7 +66,6 @@ function toMo(a,f){return f==="biweekly"?(a*26)/12:a;}
 function calcOntarioLTT(price,fthb){let tax=0;if(price<=55000)tax=price*0.005;else if(price<=250000)tax=275+(price-55000)*0.010;else if(price<=400000)tax=2225+(price-250000)*0.015;else if(price<=2000000)tax=4475+(price-400000)*0.020;else tax=36475+(price-2000000)*0.025;const rebate=fthb?Math.min(tax,4000):0;return{tax,rebate,net:tax-rebate};}
 function calcTorontoLTT(price,fthb){let tax=0;if(price<=55000)tax=price*0.005;else if(price<=400000)tax=275+(price-55000)*0.010;else if(price<=40000000)tax=3725+(price-400000)*0.020;else tax=795725+(price-40000000)*0.025;const rebate=fthb?Math.min(tax,4475):0;return{tax,rebate,net:tax-rebate};}
 
-// localStorage helpers with try/catch
 function lsGet(key){try{const v=localStorage.getItem(key);return v?JSON.parse(v):null;}catch{return null;}}
 function lsSet(key,val){try{localStorage.setItem(key,JSON.stringify(val));}catch{}}
 
@@ -90,7 +75,6 @@ const C={bg:"#f2f2f7",surface:"#ffffff",navy:"#1d1d1f",label:"#6e6e73",labelStro
 
 function useWidth(){const[w,setW]=useState(typeof window!=="undefined"?window.innerWidth:800);useEffect(()=>{const h=()=>setW(window.innerWidth);window.addEventListener("resize",h);return()=>window.removeEventListener("resize",h);},[]);return w;}
 
-//  UI Atoms 
 function Tooltip({text,children}){
   const[show,setShow]=useState(false);
   return(
@@ -223,7 +207,6 @@ function MortgageSummary({principal,totalPaid,totalMtg,termInt,termPrin,termTota
   const[animated,setAnimated]=useState(false);
   useEffect(()=>{setAnimated(false);const t=setTimeout(()=>setAnimated(true),80);return()=>clearTimeout(t);},[activeTab,principal,totalPaid,termInt]);
 
-  // SVG donut helpers
   const size=mobile?160:180;
   const cx=size/2, cy=size/2;
   const R=mobile?60:68;
@@ -241,12 +224,11 @@ function MortgageSummary({principal,totalPaid,totalMtg,termInt,termPrin,termTota
     return `M ${sx} ${sy} A ${r} ${r} 0 ${large} 1 ${ex} ${ey}`;
   }
 
-  // Data per tab
   const tabs={
     payment:{
       label:"Payment",
       blue:principal>0?moPayment>0?(moPayment-(moPayment*(principal/(principal>0?principal:1)))):0:0,
-      // first payment: interest portion = principal * monthly rate
+      
       // We'll compute properly below
       centerLabel:"Monthly",
       centerVal:fCAD(moPayment,2),
@@ -263,7 +245,6 @@ function MortgageSummary({principal,totalPaid,totalMtg,termInt,termPrin,termTota
     },
   };
 
-  // Compute first payment split
   const rm=totalMtg>0&&rate>0?((Math.pow(1+rate/200,1/6)-1)):0;
   const firstInt=totalMtg*rm;
   const firstPrin=Math.max(0,moPayment-firstInt);
@@ -311,7 +292,7 @@ function MortgageSummary({principal,totalPaid,totalMtg,termInt,termPrin,termTota
 
   return(
     <div>
-      {/* Tab switcher */}
+      {}
       <div style={{display:"flex",background:"rgba(118,118,128,0.12)",borderRadius:12,padding:3,gap:2,marginBottom:16}}>
         {[{k:"payment",l:"Payment Summary"},{k:"term",l:"Term"},{k:"total",l:"Total"}].map(t=>(
           <button key={t.k} onClick={()=>setActiveTab(t.k)}
@@ -321,9 +302,9 @@ function MortgageSummary({principal,totalPaid,totalMtg,termInt,termPrin,termTota
         ))}
       </div>
 
-      {/* Donut + stats */}
+      {}
       <div style={{display:"flex",flexDirection:mobile?"column":"row",alignItems:"center",gap:mobile?12:24}}>
-        {/* Donut */}
+        {}
         <div style={{position:"relative",flexShrink:0}}>
           <svg width={size} height={size} style={{display:"block"}}>
             <path d={arcPath(startAngle,sweepAngle,R)} fill="none" stroke="rgba(0,0,0,0.07)" strokeWidth={strokeW} strokeLinecap="round"/>
@@ -340,7 +321,7 @@ function MortgageSummary({principal,totalPaid,totalMtg,termInt,termPrin,termTota
           </div>
         </div>
 
-        {/* Stats */}
+        {}
         <div style={{flex:1,minWidth:0}}>
           {extraStats.map((s,i) => (
             <div key={i} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"9px 0",borderBottom:i<extraStats.length-1?"1px solid "+C.border:"none"}}>
@@ -374,7 +355,7 @@ function MortgageSummary({principal,totalPaid,totalMtg,termInt,termPrin,termTota
 
 function FreqSavings({totalMtg,rate,compound,amort,mobile}){
   if(totalMtg<=0||rate<=0||amort<=0)return null;
-  // Calculate payoff months for monthly vs accel biweekly
+  
   function payoffMonths(P,r,comp,extraPerMo){
     const rm=effRate(r,comp);
     const n=amort*12;
@@ -392,7 +373,7 @@ function FreqSavings({totalMtg,rate,compound,amort,mobile}){
     return{months,interest:totalInt,pmt};
   }
   const monthly=payoffMonths(totalMtg,rate,compound,0);
-  // Accel biweekly = 26 payments/yr each = monthly/2, so extra per month = monthly.pmt/12
+  
   const accelExtraPerMo=monthly.pmt/12;
   const accel=payoffMonths(totalMtg,rate,compound,accelExtraPerMo);
   const intSaved=monthly.interest-accel.interest;
@@ -418,7 +399,7 @@ function FreqSavings({totalMtg,rate,compound,amort,mobile}){
           <div style={{fontSize:mobile?22:26,fontWeight:700,color:C.blue,letterSpacing:"-0.04em"}}>{yrsSaved.toFixed(1)} <span style={{fontSize:14,fontWeight:500}}>yrs</span></div>
         </div>
       </div>
-      {/* Progress bar showing interest reduction */}
+      {}
       <div style={{marginBottom:8}}>
         <div style={{display:"flex",justifyContent:"space-between",marginBottom:5}}>
           <span style={{fontSize:11,color:C.label}}>Monthly interest</span>
@@ -436,7 +417,6 @@ function FreqSavings({totalMtg,rate,compound,amort,mobile}){
     </div>
   );
 }
-
 
 function ResultBar({c,selPmt,payFreq,downMissing,gdsMax,tdsMax,rate,amort,term}){
   const qualify=downMissing?"warn":c.eligible?"pass":"fail";
@@ -507,132 +487,6 @@ function DisclaimerBar(){
   );
 }
 
-//  Splash Screen 
-function HelpModal({onClose}){
-  const[section,setSection]=useState("overview");
-  const sections=[
-    {key:"overview",label:"Overview"},
-    {key:"tabs",label:"Tab Guide"},
-    {key:"terms",label:"Key Terms"},
-  ];
-  const tabGuide=[
-    {tab:"Inputs",icon:"",desc:"Start here. Enter your income, co-borrower income, rental income, purchase price, down payment, interest rate, and debts. Everything else in the app flows from these numbers."},
-    {tab:"Results",icon:"",desc:"Your qualification summary. Shows max purchase price, monthly payment, GDS/TDS ratios, CMHC insurance, and whether you qualify. Also includes an interest vs principal arc chart and payment frequency savings tip."},
-    {tab:"Income Required",icon:"",desc:"Flip the question  instead of asking 'can I afford this?', ask 'what income do I need for this price?'. Enter a target price and see the minimum income required, with 4 down payment scenarios."},
-    {tab:"Home Cost",icon:"",desc:"Compare up to 4 scenarios side by side. Each column has its own rate, term, down payment, and amortization. See payment, CMHC, balance at renewal, cash to close, and monthly expenses all at once."},
-    {tab:"Land Transfer Tax",icon:"",desc:"Ontario LTT calculator with FTHB rebate. Add Toronto municipal LTT if buying in the City of Toronto. Updates automatically from your purchase price."},
-    {tab:"Closing Costs",icon:"",desc:"Full cash-to-close breakdown  LTT, legal fees, home inspection, title insurance, and other costs. Shows how much you need in the bank on closing day."},
-    {tab:"Rate Compare",icon:"",desc:"Compare two lenders head-to-head. Enter their rates and see the difference in monthly payment, term interest paid, balance at renewal, and total interest saved  plus the true cost of choosing the higher rate."},
-    {tab:"Rent vs Buy",icon:"",desc:"Compare the true cost of renting vs buying over a time horizon. Factors in equity built, home appreciation, and rent increases to show which option wins financially."},
-    {tab:"Amortization",icon:"",desc:"Year-by-year and payment-by-payment breakdown. Set your term to see a summary of what happens before renewal  total paid, interest paid, principal paid, and your balance at renewal date."},
-    {tab:"Prepayment",icon:"",desc:"See the impact of lump sum payments or extra monthly contributions. Shows how many years you can shave off and how much interest you save."},
-    {tab:"Refinance",icon:"",desc:"Compare your current mortgage to a new rate. Calculates monthly savings, annual savings, break-even point, and lifetime savings."},
-    {tab:"Renewal Planner",icon:"",desc:"Plan your upcoming renewal. Enter your current balance, current rate, and new rate to see the payment impact. Shows urgency based on your renewal date."},
-  ];
-  const keyTerms=[
-    {term:"Stress Test",def:"To qualify for a mortgage in Canada, lenders must test your ability to afford payments at either your contract rate +2%, or 5.25%  whichever is higher. This protects you if rates rise at renewal."},
-    {term:"GDS Ratio",def:"Gross Debt Service ratio. Your monthly housing costs (mortgage payment + property tax + heat + 50% of condo fees) divided by your gross monthly income. Maximum is 39% for A-lenders."},
-    {term:"TDS Ratio",def:"Total Debt Service ratio. Same as GDS but also includes all other monthly debts (car loans, student loans, credit card minimums). Maximum is 44% for A-lenders."},
-    {term:"CMHC Insurance",def:"If your down payment is less than 20%, you must purchase mortgage default insurance. The premium (2.8%4.0% of the mortgage) is added to your mortgage balance. This protects the lender, not you."},
-    {term:"Term",def:"The length of time your mortgage rate is locked in  typically 5 years. At the end of your term you must renew at whatever rates are available then. This is different from your amortization."},
-    {term:"Amortization",def:"The total length of time to pay off your mortgage in full  typically 25 or 30 years. Your term is a short commitment within your amortization period."},
-    {term:"Balance at Renewal",def:"The amount you'll still owe on your mortgage when your term ends. This is the number you'll need to renegotiate with a lender. It should guide how aggressively you pay down principal."},
-    {term:"B-Lender",def:"Alternative lenders (trust companies, MICs) that allow higher GDS/TDS ratios (up to 50%) for borrowers who don't qualify with traditional banks. Typically charge higher rates."},
-    {term:"Land Transfer Tax",def:"A provincial tax paid on closing when you buy a home in Ontario. First-time buyers get a rebate up to $4,000. Toronto buyers pay an additional municipal LTT on top."},
-    {term:"Cash to Close",def:"The total amount of money you need in your bank account on closing day  down payment + land transfer tax + legal fees + other closing costs. Plan for 1.5% of the purchase price for closing costs."},
-  ];
-
-  return(
-    <div style={{position:"fixed",inset:0,zIndex:9998,display:"flex",alignItems:"flex-end",justifyContent:"center"}} onClick={onClose}>
-      {/* Backdrop */}
-      <div style={{position:"absolute",inset:0,background:"rgba(0,0,0,0.5)",backdropFilter:"blur(4px)"}}/>
-      {/* Sheet */}
-      <div onClick={e=>e.stopPropagation()}
-        style={{position:"relative",background:C.surface,borderRadius:"24px 24px 0 0",width:"100%",maxWidth:720,maxHeight:"85vh",display:"flex",flexDirection:"column",boxShadow:"0 -8px 40px rgba(0,0,0,0.2)"}}>
-        {/* Handle */}
-        <div style={{width:40,height:4,borderRadius:2,background:"rgba(0,0,0,0.15)",margin:"12px auto 0"}}/>
-        {/* Header */}
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"16px 24px 0"}}>
-          <div>
-            <div style={{fontSize:20,fontWeight:700,color:C.text,letterSpacing:"-0.03em"}}>Help & Guide</div>
-            <div style={{fontSize:13,color:C.label,marginTop:2}}>Neel Idnani Mortgage Qualifier</div>
-          </div>
-          <button onClick={onClose}
-            style={{width:32,height:32,borderRadius:"50%",border:"none",background:"rgba(118,118,128,0.15)",cursor:"pointer",fontSize:16,color:C.label,display:"flex",alignItems:"center",justifyContent:"center",fontFamily:C.font}}></button>
-        </div>
-        {/* Tab switcher */}
-        <div style={{padding:"16px 24px 0"}}>
-          <Pills value={section} onChange={setSection} options={sections.map(s=>({key:s.key,label:s.label}))}/>
-        </div>
-        {/* Content */}
-        <div style={{overflowY:"auto",padding:"20px 24px",flex:1}}>
-          {section==="overview"&&(
-            <div>
-              <div style={{background:"linear-gradient(135deg,rgba(0,113,227,0.07),rgba(52,199,89,0.05))",border:"1px solid rgba(0,113,227,0.15)",borderRadius:16,padding:"18px 20px",marginBottom:20}}>
-                <div style={{fontSize:15,fontWeight:600,color:C.text,marginBottom:8,letterSpacing:"-0.02em"}}>What is this tool?</div>
-                <div style={{fontSize:14,color:C.label,lineHeight:1.7}}>
-                  This is a Canadian mortgage qualification calculator built specifically for Ontario home buyers. It helps you understand how much you can borrow, what your payments will be, how much you'll pay over time, and what it actually costs to close on a home.
-                </div>
-              </div>
-              <div style={{fontSize:15,fontWeight:600,color:C.text,marginBottom:12,letterSpacing:"-0.02em"}}>How to use it</div>
-              {[
-                {step:"1",title:"Start with Inputs",desc:"Enter your income, debts, and property details. This drives everything else in the app."},
-                {step:"2",title:"Check Results",desc:"See if you qualify, what your max purchase price is, and what your payment would be."},
-                {step:"3",title:"Explore scenarios",desc:"Use Home Cost to compare different rates, terms, and down payments side by side."},
-                {step:"4",title:"Understand the full cost",desc:"Check Amortization to see the full picture  how much goes to interest vs principal over time."},
-                {step:"5",title:"Talk to Neel",desc:"Ready to move forward? Hit Apply Now or email directly to start a full application."},
-              ].map(s=>(
-                <div key={s.step} style={{display:"flex",gap:14,marginBottom:14,alignItems:"flex-start"}}>
-                  <div style={{width:28,height:28,borderRadius:"50%",background:C.blue,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,marginTop:1}}>
-                    <span style={{fontSize:13,fontWeight:700,color:"#fff"}}>{s.step}</span>
-                  </div>
-                  <div>
-                    <div style={{fontSize:14,fontWeight:600,color:C.text,marginBottom:2}}>{s.title}</div>
-                    <div style={{fontSize:13,color:C.label,lineHeight:1.5}}>{s.desc}</div>
-                  </div>
-                </div>
-              ))}
-              <Divider/>
-              <div style={{background:C.navy,borderRadius:14,padding:"18px 20px",textAlign:"center"}}>
-                <div style={{fontSize:14,fontWeight:600,color:"#fff",marginBottom:4}}>Ready to get started?</div>
-                <div style={{fontSize:13,color:"rgba(255,255,255,0.5)",marginBottom:14}}>Neel Idnani  Mortgage Agent Level 2  London, ON</div>
-                <a href="mailto:info@neelidnani.com"
-                  style={{display:"inline-block",background:C.blue,color:"#fff",fontSize:13,fontWeight:600,padding:"10px 24px",borderRadius:20,textDecoration:"none"}}>
-                  Email Neel
-                </a>
-              </div>
-            </div>
-          )}
-          {section==="tabs"&&(
-            <div>
-              {tabGuide.map(t=>(
-                <div key={t.tab} style={{display:"flex",gap:12,padding:"14px 0",borderBottom:"1px solid "+C.border}}>
-                  <span style={{fontSize:22,flexShrink:0,lineHeight:1.2}}>{t.icon}</span>
-                  <div>
-                    <div style={{fontSize:14,fontWeight:600,color:C.text,marginBottom:4}}>{t.tab}</div>
-                    <div style={{fontSize:13,color:C.label,lineHeight:1.6}}>{t.desc}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-          {section==="terms"&&(
-            <div>
-              {keyTerms.map(t=>(
-                <div key={t.term} style={{padding:"14px 0",borderBottom:"1px solid "+C.border}}>
-                  <div style={{fontSize:14,fontWeight:600,color:C.text,marginBottom:5}}>{t.term}</div>
-                  <div style={{fontSize:13,color:C.label,lineHeight:1.6}}>{t.def}</div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-
 function SplashScreen({onDone}){
   const[phase,setPhase]=useState(0);
   useEffect(()=>{
@@ -656,22 +510,18 @@ function SplashScreen({onDone}){
   );
 }
 
-//  Main App 
 function App(){
   const w=useWidth();
   const mobile=w<1024;
-  const[showSplash,setShowSplash]=useState(typeof window!=='undefined'&&window.location.protocol!=='file:');
-  const[showHelp,setShowHelp]=useState(false);
+  const[showSplash,setShowSplash]=useState(true);
   const[tab,setTab]=useState("inputs");
   const[prevTab,setPrevTab]=useState("inputs");
   const[resetFlash,setResetFlash]=useState(false);
   const[copyFlash,setCopyFlash]=useState(false);
-  const[pdfState,setPdfState]=useState("idle"); // idle | loading | done | error
   const[bLender,setBLender]=useState(false);
   const gdsMax=bLender?50:39;
   const tdsMax=bLender?50:44;
 
-  //  Inputs state (restored from localStorage) 
   const saved=lsGet("mqState")||{};
   const[income,setIncome]=useState(saved.income||0);
   const[coIncome,setCoIncome]=useState(saved.coIncome||0);
@@ -699,69 +549,59 @@ function App(){
   const[ccBal,setCcBal]=useState(saved.ccBal||0);
   const[otherAmt,setOtherAmt]=useState(saved.otherAmt||0);
   const[otherFreq,setOtherFreq]=useState(saved.otherFreq||"monthly");
-  const[extraDebts,setExtraDebts]=useState([]); // [{label,amt,freq}]
-  function addDebt(){setExtraDebts(d=>[...d,{label:"Debt "+(d.length+1),amt:0,freq:"monthly"}]);}
-  function removeDebt(i){setExtraDebts(d=>d.filter((_,idx)=>idx!==i));}
-  function setDebtField(i,field,val){setExtraDebts(d=>d.map((x,idx)=>idx===i?{...x,[field]:val}:x));}
   const[payFreq,setPayFreq]=useState(saved.payFreq||"monthly");
-  // Income tool
+  
   const[targetPrice,setTargetPrice]=useState(0);
   const[targetDown,setTargetDown]=useState(0);
-  // LTT (synced from price)
+  
   const[lttFTHB,setLttFTHB]=useState(saved.isFTHB!==undefined?saved.isFTHB:true);
-  const[lttPriceOverride,setLttPriceOverride]=useState(0); // 0 = use Inputs price
+  const[lttPriceOverride,setLttPriceOverride]=useState(0); 
   const[lttToronto,setLttToronto]=useState(false);
-  // Closing (synced from price)
+  
   const[ccLegal,setCcLegal]=useState(1500);
-  const[ccPriceOverride,setCcPriceOverride]=useState(0); // 0 = use Inputs price
-  const[ccDownOverride,setCcDownOverride]=useState(0);   // 0 = use Inputs down
+  const[ccPriceOverride,setCcPriceOverride]=useState(0); 
+  const[ccDownOverride,setCcDownOverride]=useState(0);   
   const[ccInspect,setCcInspect]=useState(500);
   const[ccTitle,setCcTitle]=useState(300);
   const[ccOther,setCcOther]=useState(500);
   const[ccFTHB,setCcFTHB]=useState(saved.isFTHB!==undefined?saved.isFTHB:true);
   const[ccToronto,setCcToronto]=useState(false);
-  // Rent vs Buy
+  
   const[rvbRent,setRvbRent]=useState(0);
   const[rvbAppreciation,setRvbAppreciation]=useState(3.0);
   const[rvbRentIncrease,setRvbRentIncrease]=useState(3.0);
   const[rvbYears,setRvbYears]=useState(5);
   const[rvbPriceOverride,setRvbPriceOverride]=useState(0);
   const[rvbDownOverride,setRvbDownOverride]=useState(0);
-  // Amort table (synced from price/down/rate/amort)
+  
   const[atComp,setAtComp]=useState("semi-annual");
-  const[atFreq,setAtFreq]=useState("monthly");
-  const[atView,setAtView]=useState("annual"); // annual | detail
   const[atPriceOverride,setAtPriceOverride]=useState(0);
   const[atDownOverride,setAtDownOverride]=useState(0);
-  const[atRateOverride,setAtRateOverride]=useState(0); // 0 = use global rate
-  const[atAmortOverride,setAtAmortOverride]=useState(0); // 0 = use global amort
-  const[atTermOverride,setAtTermOverride]=useState(0); // 0 = use global term
-  // Refinance
+  
   const[rfBalance,setRfBalance]=useState(0);
   const[rfCurrentRate,setRfCurrentRate]=useState(0);
   const[rfNewRate,setRfNewRate]=useState(0);
   const[rfAmort,setRfAmort]=useState(25);
   const[rfPenalty,setRfPenalty]=useState(0);
   const[rfComp,setRfComp]=useState("semi-annual");
-  // Renewal
+  
   const[rnBalance,setRnBalance]=useState(0);
   const[rnCurrentRate,setRnCurrentRate]=useState(0);
   const[rnNewRate,setRnNewRate]=useState(0);
   const[rnAmort,setRnAmort]=useState(20);
   const[rnRenewalDate,setRnRenewalDate]=useState("");
   const[rnComp,setRnComp]=useState("semi-annual");
-  // Prepayment
+  
   const[ppBalance,setPpBalance]=useState(0);
   const[ppRate,setPpRate]=useState(4.5);
   const[ppAmort,setPpAmort]=useState(25);
   const[ppComp,setPpComp]=useState("semi-annual");
   const[ppLumpSum,setPpLumpSum]=useState(0);
   const[ppExtraMo,setPpExtraMo]=useState(0);
-  const[ppTermYrs,setPpTermYrs]=useState(0); // 0 = full amort
+  const[ppTermYrs,setPpTermYrs]=useState(0); 
 
   const is30=amort>25;
 
-  // Auto-save state to localStorage
   useEffect(()=>{
     lsSet("mqState",{income,coIncome,rental,rentalType,price,down,rate,amort,term,isFTHB,compound,taxMode,tax,condo,heat,carAmt,carFreq,studMode,studPmt,studFreq,studBal,ccBal,otherAmt,otherFreq,payFreq});
   },[income,coIncome,rental,price,down,rate,amort,term,isFTHB,compound,taxMode,tax,condo,heat,carAmt,carFreq,studMode,studPmt,studFreq,studBal,ccBal,otherAmt,otherFreq,payFreq]);
@@ -773,14 +613,14 @@ function App(){
     setTaxMode("annual");setTax(5000);setCondo(0);setHeat(100);
     setCarAmt(0);setCarFreq("monthly");setStudMode("payment");
     setStudPmt(0);setStudFreq("monthly");setStudBal(0);
-    setCcBal(0);setOtherAmt(0);setOtherFreq("monthly");setExtraDebts([]);setPayFreq("monthly");
+    setCcBal(0);setOtherAmt(0);setOtherFreq("monthly");setPayFreq("monthly");
     setTargetPrice(0);setTargetDown(0);
     setLttFTHB(true);setLttToronto(false);setLttPriceOverride(0);
     setCcLegal(1500);setCcInspect(500);setCcTitle(300);setCcOther(500);setCcFTHB(true);setCcToronto(false);setCcPriceOverride(0);setCcDownOverride(0);
     setRvbRent(0);setRvbAppreciation(3.0);setRvbRentIncrease(3.0);setRvbYears(5);setRvbPriceOverride(0);setRvbDownOverride(0);
     setMpPriceOverride(0);setMpNumCols(2);setMpResultTab("payment");
     setMpCols([{downPct:5,downAmt$:0,downMode:"%",amort:30,rate:4.5,term:5,label:"Scenario A"},{downPct:20,downAmt$:0,downMode:"%",amort:25,rate:4.75,term:5,label:"Scenario B"},{downPct:10,downAmt$:0,downMode:"%",amort:25,rate:5.0,term:3,label:"Scenario C"},{downPct:15,downAmt$:0,downMode:"%",amort:25,rate:5.25,term:5,label:"Scenario D"}]);
-    setAtComp("semi-annual");setAtFreq("monthly");setAtView("annual");setAtPriceOverride(0);setAtDownOverride(0);setAtRateOverride(0);setAtAmortOverride(0);setAtTermOverride(0);
+    setAtComp("semi-annual");setAtPriceOverride(0);setAtDownOverride(0);
     setRfBalance(0);setRfCurrentRate(0);setRfNewRate(0);setRfAmort(25);setRfPenalty(0);setRfComp("semi-annual");
     setRnBalance(0);setRnCurrentRate(0);setRnNewRate(0);setRnAmort(20);setRnRenewalDate("");setRnComp("semi-annual");
     setPpBalance(0);setPpRate(5.0);setPpAmort(25);setPpComp("semi-annual");setPpLumpSum(0);setPpExtraMo(0);
@@ -791,12 +631,10 @@ function App(){
     lsSet("mqState",null);
   }
 
-  //  Qualifier calc 
   const c=useMemo(()=>{
     const grossMo=(income+coIncome)/12;
-    // Subject property rental: 50% add-back to income (CMHC/lender standard)
-    // Existing rental property: full rental income added, but existing mortgage payment also added to TDS
-    const rentAdd=rentalType==="subject"?rental*0.5:rental*0.5; // both 50% for now per B-20; existing rental full calc requires separate mortgage input
+
+    const rentAdd=rentalType==="subject"?rental*0.5:rental*0.5; 
     const qualMo=grossMo+rentAdd;
     const downPct=price>0?(down/price)*100:0;
     const cmhcRate=getCMHCRate(downPct,is30);
@@ -811,8 +649,7 @@ function App(){
     const carM=toMo(carAmt,carFreq);
     const studM=studMode==="balance"?studBal*0.01:toMo(studPmt,studFreq);
     const ccM=ccBal*0.03;
-    const extraM=extraDebts.reduce((s,d)=>s+toMo(d.amt||0,d.freq||"monthly"),0);
-    const othM=toMo(otherAmt,otherFreq)+extraM;
+    const othM=toMo(otherAmt,otherFreq);
     const gdsN=qualPmt+moTax+heat+condoC;
     const tdsN=gdsN+carM+studM+ccM+othM;
     const gds=qualMo>0?(gdsN/qualMo)*100:0;
@@ -851,7 +688,7 @@ function App(){
     });
     const minDownPct=price>0?(calcMinDown(price)/price)*100:5;
     const eligible=price>0&&gds<=gdsMax&&tds<=tdsMax&&downPct>=minDownPct;
-    // Max purchase price at min down (iterative solve)
+    
     const moTaxForMax=tax>0?(taxMode==="annual"?tax/12:tax):0;
     const heatForMax=heat>0?heat:100;
     let maxPrice=0;
@@ -871,7 +708,7 @@ function App(){
       mpGuess=(newP+mpGuess)/2;
       maxPrice=newP;
     }
-    // Term calculations
+    
     const termMonths=term*12;
     const rm2=effRate(rate,compound);
     const n2=amort*12;
@@ -885,13 +722,11 @@ function App(){
     const termTotalPaid=actualMoPmt*Math.min(termMonths,n2);
     const balAtRenewal=Math.max(0,bal2);
     return{price,qualMo,downPct,cmhcRate,cmhcAmt,baseMtg,totalMtg,stressR,qualPmt,pmts,moTax,heat,condoC,carM,studM,ccM,othM,gdsN,tdsN,gds,tds,gdsPass:gds<=gdsMax,tdsPass:tds<=tdsMax,eligible,maxMtg,maxPrice,incNeeded,minDown,incReqForTarget,scenarios,termInt,termPrin,termTotalPaid,balAtRenewal,actualMoPmt};
-  },[income,coIncome,rental,rentalType,price,down,rate,amort,term,compound,tax,taxMode,condo,heat,carAmt,carFreq,studMode,studPmt,studFreq,studBal,ccBal,otherAmt,otherFreq,extraDebts,is30,targetPrice,targetDown,gdsMax,tdsMax]);
+  },[income,coIncome,rental,rentalType,price,down,rate,amort,term,compound,tax,taxMode,condo,heat,carAmt,carFreq,studMode,studPmt,studFreq,studBal,ccBal,otherAmt,otherFreq,is30,targetPrice,targetDown,gdsMax,tdsMax]);
 
   const selPmt=c.pmts[payFreq]||0;
   const downMissing=c.price>0&&c.downPct<(calcMinDown(c.price)/c.price*100);
 
-  //  Derived calcs 
-  // LTT uses price from Inputs
   const lttEffPrice=lttPriceOverride>0?lttPriceOverride:price;
   const ltt=useMemo(()=>{
     if(lttEffPrice<=0)return null;
@@ -900,7 +735,6 @@ function App(){
     return{ontario,toronto,total:ontario.net+toronto.net};
   },[lttEffPrice,lttFTHB,lttToronto]);
 
-  // Closing uses price and down from Inputs (or overrides)
   const ccEffPrice=ccPriceOverride>0?ccPriceOverride:price;
   const ccEffDown=ccDownOverride>0?ccDownOverride:down;
   const closing=useMemo(()=>{
@@ -915,32 +749,28 @@ function App(){
     return{effDown,lttTotal,legal:ccLegal,inspect:ccInspect,title:ccTitle,other:ccOther,total,targetTotal,pct};
   },[ccEffPrice,ccEffDown,ccLegal,ccInspect,ccTitle,ccOther,ccFTHB,ccToronto]);
 
-  // Amort uses price/down/rate/amort from Inputs
   const atEffPrice=atPriceOverride>0?atPriceOverride:price;
   const atEffDown=atDownOverride>0?atDownOverride:down;
-  const atEffRate=atRateOverride>0?atRateOverride:rate;
-  const atEffAmort=atAmortOverride>0?atAmortOverride:amort;
   const amortTable=useMemo(()=>{
     if(atEffPrice<=0)return{};
     const dn=atEffDown>0?atEffDown:calcMinDown(atEffPrice);
     const cmhc=getCMHCRate((dn/atEffPrice)*100,is30);
     const principal=Math.max(0,atEffPrice-dn)*(1+cmhc);
     if(principal<=0)return{};
-    const rm=effRate(atEffRate,atComp);
-    const n=atEffAmort*12;
+    const rm=effRate(rate,atComp);
+    const n=amort*12;
     const pmt=(principal*rm*Math.pow(1+rm,n))/(Math.pow(1+rm,n)-1);
     let bal=principal;
     const rows=[];
-    for(let yr=1;yr<=atEffAmort;yr++){
+    for(let yr=1;yr<=amort;yr++){
       let intYr=0,prinYr=0;
       for(let m=0;m<12;m++){const intM=bal*rm;const prinM=pmt-intM;intYr+=intM;prinYr+=prinM;bal=Math.max(0,bal-prinM);}
       rows.push({yr,payment:pmt*12,interest:intYr,principal:prinYr,balance:bal});
       if(bal<=0)break;
     }
     return{rows,pmt,principal};
-  },[atEffPrice,atEffDown,atEffRate,atEffAmort,atComp,is30]);
+  },[atEffPrice,atEffDown,rate,amort,atComp,is30]);
 
-  // RvB uses price/down/rate from Inputs
   const rvbEffPrice=rvbPriceOverride>0?rvbPriceOverride:price;
   const rvbEffDown=rvbDownOverride>0?rvbDownOverride:down;
   const rvb=useMemo(()=>{
@@ -985,7 +815,6 @@ function App(){
     return{oldPmt,newPmt,diff,daysUntil,urgency,higher:diff>0};
   },[rnBalance,rnCurrentRate,rnNewRate,rnAmort,rnRenewalDate,rnComp]);
 
-  // Prepayment calc
   const prepay=useMemo(()=>{
     if(ppBalance<=0||ppRate<=0||ppAmort<=0)return null;
     const rm=effRate(ppRate,ppComp);
@@ -993,28 +822,26 @@ function App(){
     const regPmt=(ppBalance*rm*Math.pow(1+rm,n))/(Math.pow(1+rm,n)-1);
     const balAfterLump=Math.max(0,ppBalance-ppLumpSum);
     const pmtWithExtra=regPmt+ppExtraMo;
-    // termMonths: how long extra payments apply (0 = full amort)
+    
     const termMonths=ppTermYrs>0?ppTermYrs*12:n;
 
-    // --- Baseline: regular payments, no extras ---
     const interestRegular=regPmt*n-ppBalance;
 
-    // --- Scenario: lump sum + extra for termMonths, then regular for remainder ---
     let bal=balAfterLump;
     let intWithChanges=0;
     let months=0;
-    // Phase 1: extra payments during term
+    
     for(let i=0;i<termMonths&&bal>0;i++){
       const interest=bal*rm;
       intWithChanges+=interest;
       bal=Math.max(0,bal-(pmtWithExtra-interest));
       months++;
     }
-    // Phase 2: back to regular payments after term
+    
     let balAtTermEnd=bal;
     let paidOffDuringTerm=bal<=0;
     if(!paidOffDuringTerm&&bal>0){
-      // How many more months at regular rate?
+      
       while(bal>0&&months<n*2){
         const interest=bal*rm;
         const principal=regPmt-interest;
@@ -1027,7 +854,7 @@ function App(){
 
     const yearsOff=ppAmort-months/12;
     const interestSaved=interestRegular-intWithChanges;
-    // Balance at end of term (useful for renewal)
+    
     const balEndOfTerm=ppTermYrs>0?balAtTermEnd:0;
 
     return{
@@ -1039,7 +866,6 @@ function App(){
     };
   },[ppBalance,ppRate,ppAmort,ppComp,ppLumpSum,ppExtraMo,ppTermYrs]);
 
-  //  Copy results to clipboard 
   function buildResultsText(){
     return [
       "Mortgage Qualifier  Neel Idnani Mortgage Group",
@@ -1077,249 +903,8 @@ function App(){
     window.open(`mailto:info@neelidnani.com?subject=${subject}&body=${body}`);
   }
 
-  function generatePDF(){
-    if(pdfState==="loading")return;
-    setPdfState("loading");
-    function doGenerate(){
-      try{
-        if(!window.jspdf){
-          setPdfState("error");
-          setTimeout(()=>setPdfState("idle"),3000);
-          return;
-        }
-        const {jsPDF}=window.jspdf;
-      const doc=new jsPDF({orientation:"portrait",unit:"mm",format:"a4"});
-      const W=210,M=20,CW=W-M*2;
-      let y=M;
-
-      // Colours (RGB)
-      const navy=[29,29,31];
-      const blue=[0,113,227];
-      const green=[52,199,89];
-      const red=[255,59,48];
-      const amber=[255,149,0];
-      const label=[110,110,115];
-      const border=[220,220,225];
-      const lightBg=[247,247,247];
-
-      //  Helper functions 
-      function addSection(title){
-        if(y>250){doc.addPage();y=M;}
-        doc.setFillColor(...lightBg);
-        doc.roundedRect(M,y,CW,7,1,1,"F");
-        doc.setFontSize(8);doc.setFont("helvetica","bold");
-        doc.setTextColor(...label);
-        doc.text(title.toUpperCase(),M+3,y+4.8,{letterSpacing:0.5});
-        y+=10;
-      }
-      function addRow(label,value,valueColor){
-        if(y>265){doc.addPage();y=M;}
-        doc.setFontSize(10);doc.setFont("helvetica","normal");
-        doc.setTextColor(...navy);doc.text(label,M,y);
-        doc.setFont("helvetica","bold");
-        doc.setTextColor(...(valueColor||navy));
-        doc.text(String(value),W-M,y,{align:"right"});
-        doc.setDrawColor(...border);
-        doc.setLineWidth(0.2);
-        doc.line(M,y+1.5,W-M,y+1.5);
-        y+=8;
-      }
-      function addBigStat(label,value,color){
-        if(y>255){doc.addPage();y=M;}
-        doc.setFontSize(9);doc.setFont("helvetica","normal");
-        doc.setTextColor(...[150,150,155]);doc.text(label.toUpperCase(),M,y,{letterSpacing:0.3});
-        y+=5;
-        doc.setFontSize(16);doc.setFont("helvetica","bold");
-        doc.setTextColor(...(color||navy));doc.text(String(value),M,y);
-        y+=8;
-      }
-      function twoCol(l1,v1,l2,v2,c1,c2){
-        if(y>265){doc.addPage();y=M;}
-        const hw=(CW-6)/2;
-        // Left cell
-        doc.setFillColor(...lightBg);doc.roundedRect(M,y,hw,16,1,1,"F");
-        doc.setFontSize(8);doc.setFont("helvetica","normal");doc.setTextColor(...label);
-        doc.text(l1,M+3,y+5);
-        doc.setFontSize(11);doc.setFont("helvetica","bold");doc.setTextColor(...(c1||navy));
-        doc.text(String(v1),M+3,y+12);
-        // Right cell
-        const rx=M+hw+6;
-        doc.setFillColor(...lightBg);doc.roundedRect(rx,y,hw,16,1,1,"F");
-        doc.setFontSize(8);doc.setFont("helvetica","normal");doc.setTextColor(...label);
-        doc.text(l2,rx+3,y+5);
-        doc.setFontSize(11);doc.setFont("helvetica","bold");doc.setTextColor(...(c2||navy));
-        doc.text(String(v2),rx+3,y+12);
-        y+=20;
-      }
-      function addNote(text){
-        doc.setFontSize(8.5);doc.setFont("helvetica","normal");doc.setTextColor(...label);
-        const lines=doc.splitTextToSize(text,CW);
-        doc.text(lines,M,y);
-        y+=lines.length*4.5+2;
-      }
-      function checkPage(){if(y>262){doc.addPage();y=M;}}
-
-      // 
-      // HEADER
-      // 
-      // Blue header bar
-      doc.setFillColor(...blue);
-      doc.rect(0,0,W,28,"F");
-
-      // "NI" monogram circle
-      doc.setFillColor(255,255,255);
-      doc.circle(M+6,14,7,"F");
-      doc.setFontSize(9);doc.setFont("helvetica","bold");
-      doc.setTextColor(...blue);
-      doc.text("NI",M+6,14.5,{align:"center"});
-
-      // Title
-      doc.setFontSize(16);doc.setFont("helvetica","bold");
-      doc.setTextColor(255,255,255);
-      doc.text("Mortgage Qualifier Report",M+17,12);
-      doc.setFontSize(9);doc.setFont("helvetica","normal");
-      doc.setTextColor(200,220,255);
-      doc.text("Neel Idnani Mortgage Group  "+new Date().toLocaleDateString("en-CA",{year:"numeric",month:"long",day:"numeric"}),M+17,19);
-
-      y=36;
-
-      // Status pill
-      const statusText=c.eligible?"QUALIFIES":downMissing?"DOWN PAYMENT REQUIRED":"DOES NOT QUALIFY";
-      const statusColor=c.eligible?green:downMissing?amber:red;
-      doc.setFillColor(...statusColor);
-      doc.roundedRect(M,y,CW,12,2,2,"F");
-      doc.setFontSize(11);doc.setFont("helvetica","bold");
-      doc.setTextColor(255,255,255);
-      doc.text(statusText,W/2,y+8,{align:"center"});
-      y+=18;
-
-      // 
-      // KEY NUMBERS (2x2 grid)
-      // 
-      twoCol("MAX PURCHASE PRICE",c.maxPrice>0?fCAD(c.maxPrice):c.price>0?fCAD(c.price):"","MONTHLY PAYMENT",fCAD(c.pmts.monthly,2),blue,navy);
-      twoCol("GDS RATIO",c.gds.toFixed(1)+"% (max "+gdsMax+"%)", "TDS RATIO",c.tds.toFixed(1)+"% (max "+tdsMax+"%)",c.gdsPass?green:red,c.tdsPass?green:red);
-      y+=2;
-
-      // 
-      // INCOME & QUALIFICATION
-      // 
-      addSection("Income & Qualification");
-      addRow("Gross Annual Income",fCAD(income+coIncome,0)+"/yr");
-      if(rental>0)addRow("Rental Income (50% add-back)",fCAD(rental*0.5,0)+"/mo");
-      addRow("Qualifying Income",fCAD(c.qualMo*12,0)+"/yr ("+fCAD(c.qualMo,0)+"/mo)");
-      addRow("Income Required to Qualify",fCAD(c.incNeeded,0)+"/yr",c.incNeeded<=(income+coIncome)?green:red);
-      addRow("Stress Test Rate",c.stressR.toFixed(2)+"%");
-      addRow("Stress Test Payment",fCAD(c.qualPmt,0)+"/mo");
-      checkPage();
-
-      // 
-      // PROPERTY & MORTGAGE
-      // 
-      addSection("Property & Mortgage");
-      addRow("Purchase Price",fCAD(price,0));
-      addRow("Down Payment",fCAD(down,0)+" ("+c.downPct.toFixed(1)+"%)");
-      addRow("CMHC Premium",c.cmhcAmt>0?fCAD(c.cmhcAmt,0)+" ("+( c.cmhcRate*100).toFixed(2)+"%)":"None",c.cmhcAmt>0?amber:green);
-      addRow("Total Mortgage",fCAD(c.totalMtg,0),blue);
-      addRow("Interest Rate",rate.toFixed(2)+"%");
-      addRow("Term",term+"yr");
-      addRow("Amortization",amort+"yr");
-      addRow("Compounding",compound.replace("-"," ").replace(/\w/g,l=>l.toUpperCase()));
-      checkPage();
-
-      // 
-      // PAYMENT BREAKDOWN
-      // 
-      addSection("Payment Breakdown");
-      addRow("Monthly",fCAD(c.pmts.monthly,2));
-      addRow("Semi-Monthly",fCAD(c.pmts.semiMonthly,2));
-      addRow("Bi-Weekly",fCAD(c.pmts.biweekly,2));
-      addRow("Accelerated Bi-Weekly",fCAD(c.pmts.accelBiweekly,2));
-      addRow("Weekly",fCAD(c.pmts.weekly,2));
-      checkPage();
-
-      // 
-      // TERM SUMMARY
-      // 
-      if(c.termTotalPaid>0){
-        addSection(term+"-Year Term Summary");
-        addRow("Total Paid Over Term",fCAD(c.termTotalPaid,0));
-        addRow("Interest Paid Over Term",fCAD(c.termInt,0),red);
-        addRow("Principal Paid Over Term",fCAD(c.termPrin,0),green);
-        addRow("Balance at Renewal",fCAD(c.balAtRenewal,0),amber);
-        checkPage();
-      }
-
-      // 
-      // CLOSING COSTS
-      // 
-      const lttCalc=calcOntarioLTT(price,isFTHB);
-      const lttNet=lttCalc.net;
-      const estClosing=price*0.015;
-      const cashToClose=down+lttNet+estClosing;
-      addSection("Estimated Closing Costs");
-      addRow("Down Payment",fCAD(down,0));
-      addRow("Ontario Land Transfer Tax",fCAD(lttCalc.tax,0)+(isFTHB?" (before rebate)":""));
-      if(isFTHB)addRow("FTHB LTT Rebate","-"+fCAD(lttCalc.rebate,0),green);
-      addRow("Net Land Transfer Tax",fCAD(lttNet,0));
-      addRow("Est. Closing Costs (~1.5%)",fCAD(estClosing,0));
-      addRow("Total Cash to Close",fCAD(cashToClose,0),blue);
-      checkPage();
-
-      // 
-      // HOUSING COSTS & DEBTS
-      // 
-      addSection("Monthly Housing Costs & Debts");
-      addRow("Mortgage Payment (stressed)",fCAD(c.qualPmt,0)+"/mo");
-      addRow("Property Tax",fCAD(c.moTax,2)+"/mo");
-      addRow("Heating",fCAD(c.heat,0)+"/mo");
-      if(condo>0)addRow("Condo Fees (50%)",fCAD(c.condoC,2)+"/mo");
-      if(c.carM>0)addRow("Car Payment",fCAD(c.carM,2)+"/mo");
-      if(c.studM>0)addRow("Student Loan",fCAD(c.studM,2)+"/mo");
-      if(c.ccM>0)addRow("Credit Cards (3%)",fCAD(c.ccM,2)+"/mo");
-      if(c.othM>0)addRow("Other Debts",fCAD(c.othM,2)+"/mo");
-      checkPage();
-
-      // 
-      // FOOTER
-      // 
-      // Footer bar
-      const fY=doc.internal.pageSize.height-22;
-      doc.setFillColor(...[245,245,247]);
-      doc.rect(0,fY,W,22,"F");
-      doc.setFontSize(8);doc.setFont("helvetica","bold");
-      doc.setTextColor(...navy);
-      doc.text("Neel Idnani - Mortgage Agent Level 2 | Lic. #M23005524",M,fY+6);
-      doc.setFont("helvetica","normal");doc.setTextColor(...label);
-      doc.text("Dominion Lending Centres FC Funding | Brokerage FSRA #10671",M,fY+11);
-      doc.text("519-697-2359 | info@neelidnani.com | www.neelidnani.com",M,fY+16);
-      doc.setFontSize(7);doc.setTextColor(180,180,185);
-      doc.text("For illustration purposes only. Not a commitment to lend. Results subject to full underwriting and credit adjudication.",M,fY+20);
-
-      //  Save 
-      const fname="Mortgage-Report-"+new Date().toISOString().slice(0,10)+".pdf";
-      doc.save(fname);
-      setPdfState("done");
-      setTimeout(()=>setPdfState("idle"),2500);
-    }catch(err){
-      console.error("PDF error:",err);
-      setPdfState("error");
-      setTimeout(()=>setPdfState("idle"),3000);
-    }
-    }
-    if(window.jspdf){
-      doGenerate();
-    }else{
-      const s=document.createElement("script");
-      s.src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
-      s.onload=()=>doGenerate();
-      s.onerror=()=>{setPdfState("error");setTimeout(()=>setPdfState("idle"),3000);};
-      document.head.appendChild(s);
-    }
-  }
-
   function switchTab(k){setPrevTab(tab);setTab(k);}
 
-  //  PANES 
   const InputsPane=(
     <div style={{paddingBottom:16}}>
       {bLender&&(
@@ -1360,7 +945,7 @@ function App(){
         </div>
       )}
 
-      {/* Max Purchase Price Finder */}
+      {}
       {(income+coIncome)>0&&c.maxMtg>0&&(
         <>
           <div style={{background:"linear-gradient(135deg,rgba(0,113,227,0.07) 0%,rgba(52,199,89,0.06) 100%)",border:"1px solid rgba(0,113,227,0.18)",borderRadius:16,padding:"18px 20px",marginBottom:18,boxShadow:"0 1px 8px rgba(0,113,227,0.07)"}}>
@@ -1375,14 +960,13 @@ function App(){
               const carM=toMo(carAmt,carFreq);
               const studM=studMode==="balance"?studBal*0.01:toMo(studPmt,studFreq);
               const ccM=ccBal*0.03;
-              const extraM2=extraDebts.reduce((s,d)=>s+toMo(d.amt||0,d.freq||"monthly"),0);
-              const othM=toMo(otherAmt,otherFreq)+extraM2;
+              const othM=toMo(otherAmt,otherFreq);
               const condoC=condo*0.5;
               const heatEst=heat>0?heat:100;
-              // 0.5% buffer so result lands comfortably under GDS/TDS limits
+              
               const gdsTarget=gdsMax-0.25;
               const tdsTarget=tdsMax-0.25;
-              // Labels and down calculation strategies per row
+              
               const scenarios=[
                 {label:"Min Down",fn:(p)=>calcMinDown(p),cmhcFn:(p)=>getCMHCRate(calcMinDown(p)/p*100,is30)},
                 {label:"10% down",fn:(p)=>p*0.10,cmhcFn:(p)=>getCMHCRate(10,is30)},
@@ -1399,8 +983,7 @@ function App(){
                   const avail=Math.min(gdsAvail,tdsAvail);
                   if(avail<=0){maxPrice=0;break;}
                   const maxMortgage=(avail*(Math.pow(1+rm,n)-1))/(rm*Math.pow(1+rm,n));
-                  // Solve: mortgage = (price - down) * (1 + cmhc)
-                  // For min down, down is a function of price so iterate
+
                   const downAmt=fn(guess);
                   const cmhcR=cmhcFn(guess);
                   const newPrice=(maxMortgage/(1+cmhcR))+downAmt;
@@ -1498,88 +1081,25 @@ function App(){
       <Field label="Condo Fees" hint={condo>0?fCAD(c.condoC,0)+"/mo used":"50% counted"}><NumInput value={condo} onChange={setCondo} pre="$" suf="/mo"/></Field>
       <Divider/>
       <SectionTitle>Debts</SectionTitle>
-      {/* Car Payment */}
       <Field label="Car Payment">
         <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
           <div style={{flex:1,minWidth:120}}><NumInput value={carAmt} onChange={setCarAmt} pre="$"/></div>
           <div style={{minWidth:140,flex:1}}><Pills value={carFreq} onChange={setCarFreq} options={[{key:"monthly",label:"Monthly"},{key:"biweekly",label:"Bi-Weekly"}]}/></div>
         </div>
-        {carAmt>0&&carFreq==="biweekly"&&(
-          <div style={{fontSize:12,color:C.label,marginTop:5}}>
-            Monthly equivalent used in calculation: <span style={{fontWeight:600,color:C.text}}>{fCAD(carAmt*26/12,2)}/mo</span>
-          </div>
-        )}
       </Field>
-      {/* Student Loan */}
       <Field label="Student Loan">
         <div style={{marginBottom:8}}><Pills value={studMode} onChange={setStudMode} options={[{key:"payment",label:"By Payment"},{key:"balance",label:"By Balance (1%)"}]}/></div>
         {studMode==="payment"
-          ?(<>
-              <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
-                <div style={{flex:1,minWidth:120}}><NumInput value={studPmt} onChange={setStudPmt} pre="$"/></div>
-                <div style={{minWidth:140,flex:1}}><Pills value={studFreq} onChange={setStudFreq} options={[{key:"monthly",label:"Monthly"},{key:"biweekly",label:"Bi-Weekly"}]}/></div>
-              </div>
-              {studPmt>0&&studFreq==="biweekly"&&(
-                <div style={{fontSize:12,color:C.label,marginTop:5}}>
-                  Monthly equivalent used in calculation: <span style={{fontWeight:600,color:C.text}}>{fCAD(studPmt*26/12,2)}/mo</span>
-                </div>
-              )}
-            </>)
-          :(<>
-              <NumInput value={studBal} onChange={setStudBal} pre="$" suf="balance"/>
-              {studBal>0&&(
-                <div style={{fontSize:12,color:C.label,marginTop:5}}>
-                  Monthly amount used in calculation: <span style={{fontWeight:600,color:C.text}}>{fCAD(studBal*0.01,2)}/mo</span> <span style={{color:C.label}}>(1% of balance)</span>
-                </div>
-              )}
-            </>)}
+          ?<div style={{display:"flex",gap:8,flexWrap:"wrap"}}><div style={{flex:1,minWidth:120}}><NumInput value={studPmt} onChange={setStudPmt} pre="$"/></div><div style={{minWidth:140,flex:1}}><Pills value={studFreq} onChange={setStudFreq} options={[{key:"monthly",label:"Monthly"},{key:"biweekly",label:"Bi-Weekly"}]}/></div></div>
+          :<NumInput value={studBal} onChange={setStudBal} pre="$" suf="balance"/>}
       </Field>
-      {/* Credit Cards */}
-      <Field label="Credit Cards" hint="3% of balance">
-        <NumInput value={ccBal} onChange={setCcBal} pre="$" suf="balance"/>
-        {ccBal>0&&(
-          <div style={{fontSize:12,color:C.label,marginTop:5}}>
-            Monthly amount used in calculation: <span style={{fontWeight:600,color:C.text}}>{fCAD(ccBal*0.03,2)}/mo</span> <span style={{color:C.label}}>(3% of balance)</span>
-          </div>
-        )}
-      </Field>
-      {/* Other Debt */}
+      <Field label="Credit Cards" hint="3% of balance"><NumInput value={ccBal} onChange={setCcBal} pre="$" suf="balance"/></Field>
       <Field label="Other Debt">
         <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
           <div style={{flex:1,minWidth:120}}><NumInput value={otherAmt} onChange={setOtherAmt} pre="$"/></div>
           <div style={{minWidth:140,flex:1}}><Pills value={otherFreq} onChange={setOtherFreq} options={[{key:"monthly",label:"Monthly"},{key:"biweekly",label:"Bi-Weekly"}]}/></div>
         </div>
-        {otherAmt>0&&otherFreq==="biweekly"&&(
-          <div style={{fontSize:12,color:C.label,marginTop:5}}>
-            Monthly equivalent used in calculation: <span style={{fontWeight:600,color:C.text}}>{fCAD(otherAmt*26/12,2)}/mo</span>
-          </div>
-        )}
       </Field>
-      {/* Extra debts */}
-      {extraDebts.map((d,i)=>(
-        <div key={i} style={{marginBottom:20}}>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:7}}>
-            <input value={d.label} onChange={e=>setDebtField(i,"label",e.target.value)}
-              style={{fontSize:13,fontWeight:600,color:C.labelStrong,textTransform:"uppercase",letterSpacing:"0.04em",background:"transparent",border:"none",outline:"none",fontFamily:C.font,flex:1}}/>
-            <button onClick={()=>removeDebt(i)}
-              style={{width:26,height:26,borderRadius:"50%",border:"1px solid rgba(255,59,48,0.3)",background:"rgba(255,59,48,0.08)",color:C.red,fontSize:14,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,fontFamily:C.font}}></button>
-          </div>
-          <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
-            <div style={{flex:1,minWidth:120}}><NumInput value={d.amt} onChange={v=>setDebtField(i,"amt",v)} pre="$"/></div>
-            <div style={{minWidth:140,flex:1}}><Pills value={d.freq} onChange={v=>setDebtField(i,"freq",v)} options={[{key:"monthly",label:"Monthly"},{key:"biweekly",label:"Bi-Weekly"}]}/></div>
-          </div>
-          {d.amt>0&&d.freq==="biweekly"&&(
-            <div style={{fontSize:12,color:C.label,marginTop:5}}>
-              Monthly equivalent: <span style={{fontWeight:600,color:C.text}}>{fCAD(d.amt*26/12,2)}/mo</span>
-            </div>
-          )}
-        </div>
-      ))}
-      {/* Add Debt button */}
-      <button onClick={addDebt}
-        style={{width:"100%",height:42,borderRadius:12,border:"1.5px dashed rgba(0,113,227,0.35)",background:"rgba(0,113,227,0.04)",color:C.blue,fontSize:13,fontWeight:600,cursor:"pointer",fontFamily:C.font,display:"flex",alignItems:"center",justifyContent:"center",gap:8,marginBottom:4,transition:"all 0.18s"}}>
-        <span style={{fontSize:18,lineHeight:1}}>+</span> Add Debt
-      </button>
       <Divider/>
       <SectionTitle>Settings</SectionTitle>
       <div style={{display:"flex",alignItems:"center",gap:6}}>
@@ -1634,23 +1154,13 @@ function App(){
           style={{flex:1,height:44,borderRadius:12,border:"1px solid rgba(0,113,227,0.25)",background:"rgba(0,113,227,0.07)",color:C.blue,fontSize:13,fontWeight:600,cursor:"pointer",fontFamily:C.font,letterSpacing:"-0.01em"}}>
            Email Neel
         </button>
-        <button onClick={generatePDF} disabled={pdfState==="loading"}
-          style={{flex:1,height:44,borderRadius:12,
-            border:"1px solid "+(pdfState==="done"?"rgba(52,199,89,0.4)":pdfState==="error"?"rgba(255,59,48,0.4)":"rgba(255,59,48,0.25)"),
-            background:pdfState==="done"?"rgba(52,199,89,0.08)":pdfState==="error"?"rgba(255,59,48,0.1)":"rgba(255,59,48,0.07)",
-            color:pdfState==="done"?C.green:pdfState==="error"?C.red:C.red,
-            fontSize:13,fontWeight:600,cursor:pdfState==="loading"?"wait":"pointer",
-            fontFamily:C.font,letterSpacing:"-0.01em",
-            display:"flex",alignItems:"center",justifyContent:"center",gap:5,transition:"all 0.3s"}}>
-          {pdfState==="loading"?"Generating...":pdfState==="done"?" Downloaded!":pdfState==="error"?"Library not loaded":"PDF Report"}
-        </button>
+        {c.eligible&&(
+          <a href={VELOCITY} target="_blank" rel="noopener noreferrer"
+            style={{flex:2,height:44,borderRadius:12,background:"linear-gradient(180deg,#147CE5,#0071e3)",display:"flex",alignItems:"center",justifyContent:"center",textDecoration:"none",boxShadow:"0 2px 8px rgba(0,113,227,0.35),inset 0 1px 0 rgba(255,255,255,0.2)"}}>
+            <span style={{fontSize:13,fontWeight:700,color:"#fff"}}>Apply Now </span>
+          </a>
+        )}
       </div>
-      {c.eligible&&(
-        <a href={VELOCITY} target="_blank" rel="noopener noreferrer"
-          style={{display:"flex",height:44,borderRadius:12,background:"linear-gradient(180deg,#147CE5,#0071e3)",alignItems:"center",justifyContent:"center",textDecoration:"none",boxShadow:"0 2px 8px rgba(0,113,227,0.35),inset 0 1px 0 rgba(255,255,255,0.2)",marginBottom:20}}>
-          <span style={{fontSize:13,fontWeight:700,color:"#fff"}}>Apply Now </span>
-        </a>
-      )}
       <SectionTitle>Qualification</SectionTitle>
       <StatRow label="Qualifying Income" value={fCAD(c.qualMo*12,0)+"/yr"}/>
       <StatRow label="Stress Test Payment" value={fCAD(c.qualPmt,0)+"/mo"}/>
@@ -1758,8 +1268,7 @@ function App(){
             const carM=toMo(carAmt,carFreq);
             const studM=studMode==="balance"?studBal*0.01:toMo(studPmt,studFreq);
             const ccM2=ccBal*0.03;
-            const extraM3=extraDebts.reduce((s,d)=>s+toMo(d.amt||0,d.freq||"monthly"),0);
-            const othM=toMo(otherAmt,otherFreq)+extraM3;
+            const othM=toMo(otherAmt,otherFreq);
             const sGds=sPmt+moTax+heat+condoC;
             const sTds=sGds+carM+studM+ccM2+othM;
             const incReq=Math.max(sGds/(gdsMax/100),sTds/(tdsMax/100))*12;
@@ -1958,10 +1467,10 @@ function App(){
       <Field label="Purchase Price" hint={rvbPriceOverride===0&&price>0?"From Inputs tab":rvbPriceOverride>0?"Override active":""}>
         <NumInput value={rvbPriceOverride>0?rvbPriceOverride:(price||0)} onChange={v=>{if(v>0)setRvbPriceOverride(v);else setRvbPriceOverride(0);}} pre="$"/>
       </Field>
-      <Field label="Down Payment" hint={rvbDownOverride===0&&rvbEffPrice>0?"Min: "+fCAD(Math.ceil(calcMinDown(rvbEffPrice)),0):""}>
-        <NumInput value={rvbDownOverride>0?rvbDownOverride:(rvbEffPrice>0?Math.ceil(calcMinDown(rvbEffPrice)):0)} onChange={v=>setRvbDownOverride(v)} pre="$"/>
+      <Field label="Down Payment" hint={rvbDownOverride===0?"Leave 0 for minimum":""}>
+        <NumInput value={rvbDownOverride} onChange={setRvbDownOverride} pre="$"/>
         <div style={{display:"flex",gap:6,marginTop:8,flexWrap:"wrap"}}>
-          {[{label:"Min",fn:()=>setRvbDownOverride(Math.ceil(calcMinDown(rvbEffPrice)))},{label:"10%",fn:()=>setRvbDownOverride(Math.round(rvbEffPrice*0.10))},{label:"15%",fn:()=>setRvbDownOverride(Math.round(rvbEffPrice*0.15))},{label:"20%",fn:()=>setRvbDownOverride(Math.round(rvbEffPrice*0.20))}].map(opt=>(
+          {[{label:"Min",fn:()=>setRvbDownOverride(0)},{label:"10%",fn:()=>setRvbDownOverride(Math.round(rvbEffPrice*0.10))},{label:"15%",fn:()=>setRvbDownOverride(Math.round(rvbEffPrice*0.15))},{label:"20%",fn:()=>setRvbDownOverride(Math.round(rvbEffPrice*0.20))}].map(opt=>(
             <button key={opt.label} onClick={opt.fn} disabled={rvbEffPrice<=0}
               style={{flex:1,height:36,borderRadius:9,border:"1px solid "+C.border,background:"rgba(118,118,128,0.09)",color:rvbEffPrice>0?C.text:C.label,fontSize:13,fontWeight:500,cursor:rvbEffPrice>0?"pointer":"default",fontFamily:C.font,letterSpacing:"-0.01em"}}>
               {opt.label}
@@ -1996,294 +1505,61 @@ function App(){
     </div>
   );
 
-  const AmortPane=(()=>{
-    const atEffTerm=atTermOverride>0?atTermOverride:term;
-    // atEffRate and atEffAmort are derived outside (memo level)
-
-    // Frequency multiplier helpers
-    const AT_FREQS=[
-      {key:"monthly",label:"Monthly",perYear:12},
-      {key:"semiMonthly",label:"Semi-Mo",perYear:24},
-      {key:"biweekly",label:"Bi-Weekly",perYear:26},
-      {key:"accelBiweekly",label:"Accel BW",perYear:26},
-      {key:"weekly",label:"Weekly",perYear:52},
-      {key:"accelWeekly",label:"Accel Wk",perYear:52},
-    ];
-    const freqInfo=AT_FREQS.find(f=>f.key===atFreq)||AT_FREQS[0];
-
-    // Calculate per-period payment
-    const rm=amortTable.pmt>0?effRate(atEffRate,atComp):0;
-    const principal=amortTable.principal||0;
-    const moPmt=amortTable.pmt||0;
-    let freqPmt=0;
-    if(atFreq==="monthly") freqPmt=moPmt;
-    else if(atFreq==="semiMonthly") freqPmt=moPmt/2;
-    else if(atFreq==="biweekly") freqPmt=moPmt*12/26;
-    else if(atFreq==="accelBiweekly") freqPmt=moPmt/2;
-    else if(atFreq==="weekly") freqPmt=moPmt*12/52;
-    else if(atFreq==="accelWeekly") freqPmt=moPmt/4;
-
-    // Full amort totals (monthly basis for accuracy)
-    const totalPaid=moPmt*atEffAmort*12;
-    const totalInt=totalPaid-principal;
-
-    // Term summary from annual rows
-    let termTotalPaid=0,termInt=0,termPrin=0,termBalAtRenewal=0;
-    if(amortTable.rows&&amortTable.rows.length>0){
-      const termRows=amortTable.rows.filter(r=>r.yr<=atEffTerm);
-      termTotalPaid=termRows.reduce((s,r)=>s+r.payment,0);
-      termInt=termRows.reduce((s,r)=>s+r.interest,0);
-      termPrin=termRows.reduce((s,r)=>s+r.principal,0);
-      termBalAtRenewal=termRows.length>0?termRows[termRows.length-1].balance:0;
-    }
-
-    // Build per-payment detail rows for term only
-    const detailRows=[];
-    if(atView==="detail"&&principal>0&&freqPmt>0){
-      const rp=effRate(rate,atComp); // monthly effective rate
-      // Convert to per-period rate
-      const annualEff=Math.pow(1+rp,12)-1;
-      let periodRate;
-      if(atFreq==="monthly") periodRate=rp;
-      else if(atFreq==="semiMonthly") periodRate=Math.pow(1+annualEff,1/24)-1;
-      else if(atFreq==="biweekly"||atFreq==="accelBiweekly") periodRate=Math.pow(1+annualEff,1/26)-1;
-      else if(atFreq==="weekly"||atFreq==="accelWeekly") periodRate=Math.pow(1+annualEff,1/52)-1;
-      else periodRate=rp;
-
-      const termPeriods=atEffTerm*freqInfo.perYear;
-      let bal=principal;
-      for(let p=1;p<=termPeriods&&bal>0.01;p++){
-        const intPart=bal*periodRate;
-        const prinPart=Math.min(freqPmt-intPart,bal);
-        bal=Math.max(0,bal-prinPart);
-        detailRows.push({p,intPart,prinPart,balance:bal,pmt:freqPmt});
-      }
-    }
-
-    return(
+  const AmortPane=(
     <div style={{paddingBottom:16}}>
       <SectionTitle>Amortization Table</SectionTitle>
-
-      {/* Price + Down inputs */}
       <Field label="Purchase Price" hint={atPriceOverride===0&&price>0?"From Inputs tab":atPriceOverride>0?"Override active":""}>
         <NumInput value={atPriceOverride>0?atPriceOverride:(price||0)} onChange={v=>{if(v>0)setAtPriceOverride(v);else setAtPriceOverride(0);}} pre="$"/>
       </Field>
-      <Field label="Down Payment" hint={atDownOverride===0&&atEffPrice>0?"Min: "+fCAD(Math.ceil(calcMinDown(atEffPrice)),0):""}>
-        <NumInput value={atDownOverride>0?atDownOverride:(atEffPrice>0?Math.ceil(calcMinDown(atEffPrice)):0)} onChange={v=>setAtDownOverride(v)} pre="$"/>
+      <Field label="Down Payment" hint={atDownOverride===0?"Leave 0 for minimum":""}>
+        <NumInput value={atDownOverride} onChange={setAtDownOverride} pre="$"/>
         <div style={{display:"flex",gap:6,marginTop:8,flexWrap:"wrap"}}>
-          {[{label:"Min",fn:()=>setAtDownOverride(Math.ceil(calcMinDown(atEffPrice)))},{label:"10%",fn:()=>setAtDownOverride(Math.round(atEffPrice*0.10))},{label:"15%",fn:()=>setAtDownOverride(Math.round(atEffPrice*0.15))},{label:"20%",fn:()=>setAtDownOverride(Math.round(atEffPrice*0.20))}].map(opt=>(
+          {[{label:"Min",fn:()=>setAtDownOverride(0)},{label:"10%",fn:()=>setAtDownOverride(Math.round(atEffPrice*0.10))},{label:"15%",fn:()=>setAtDownOverride(Math.round(atEffPrice*0.15))},{label:"20%",fn:()=>setAtDownOverride(Math.round(atEffPrice*0.20))}].map(opt=>(
             <button key={opt.label} onClick={opt.fn} disabled={atEffPrice<=0}
-              style={{flex:1,height:36,borderRadius:9,border:"1px solid "+C.border,background:"rgba(118,118,128,0.09)",color:atEffPrice>0?C.text:C.label,fontSize:13,fontWeight:500,cursor:atEffPrice>0?"pointer":"default",fontFamily:C.font}}>
+              style={{flex:1,height:36,borderRadius:9,border:"1px solid "+C.border,background:"rgba(118,118,128,0.09)",color:atEffPrice>0?C.text:C.label,fontSize:13,fontWeight:500,cursor:atEffPrice>0?"pointer":"default",fontFamily:C.font,letterSpacing:"-0.01em"}}>
               {opt.label}
             </button>
           ))}
         </div>
       </Field>
       {atEffPrice<=0&&<InfoBox color="blue">Enter a purchase price above or set one in the Inputs tab.</InfoBox>}
-      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginTop:16}}>
-        <Field label="Interest Rate" hint={atRateOverride===0?"From Inputs ("+rate+"%)":""}>
-          <div style={{display:"flex",alignItems:"center",height:46,background:atRateOverride>0?"rgba(255,149,0,0.08)":"rgba(118,118,128,0.1)",border:"1.5px solid "+(atRateOverride>0?"rgba(255,149,0,0.4)":"rgba(0,0,0,0.09)"),borderRadius:12,overflow:"hidden",transition:"all 0.18s"}}>
-            <span style={{padding:"0 14px",fontSize:15,color:atRateOverride>0?C.amber:C.label,fontWeight:500}}>%</span>
-            <input type="number" step="0.01" min="0.5" max="15"
-              value={atRateOverride>0?atRateOverride:rate}
-              onChange={e=>{const v=parseFloat(e.target.value);setAtRateOverride(v!==rate?v:0);}}
-              style={{flex:1,border:"none",outline:"none",background:"transparent",fontSize:17,color:atRateOverride>0?C.amber:C.text,fontFamily:C.font,fontWeight:atRateOverride>0?700:400,padding:"0 12px"}}/>
-          </div>
-          {atRateOverride>0&&(
-            <button onClick={()=>setAtRateOverride(0)}
-              style={{marginTop:4,fontSize:12,color:C.blue,background:"rgba(0,113,227,0.08)",border:"none",borderRadius:8,padding:"4px 10px",cursor:"pointer",fontFamily:C.font}}>
-              Reset to {rate}%
-            </button>
-          )}
-        </Field>
-        <Field label="Amortization" hint={atAmortOverride===0?"From Inputs ("+amort+"yr)":""}>
-          <select value={atEffAmort} onChange={e=>{const v=parseInt(e.target.value);setAtAmortOverride(v!==amort?v:0);}}
-            style={{width:"100%",height:46,borderRadius:12,border:"1.5px solid "+(atAmortOverride>0?"rgba(0,113,227,0.4)":"rgba(0,0,0,0.09)"),background:atAmortOverride>0?"rgba(0,113,227,0.06)":"rgba(118,118,128,0.1)",fontSize:15,fontWeight:600,color:atAmortOverride>0?C.blue:C.text,textAlign:"center",cursor:"pointer",fontFamily:C.font,WebkitAppearance:"auto",transition:"all 0.18s"}}>
-            {[5,10,15,20,25,30].map(a=>(
-              <option key={a} value={a}>{a} years{a===amort?" (from Inputs)":""}</option>
-            ))}
-          </select>
-          {atAmortOverride>0&&(
-            <button onClick={()=>setAtAmortOverride(0)}
-              style={{marginTop:4,fontSize:12,color:C.blue,background:"rgba(0,113,227,0.08)",border:"none",borderRadius:8,padding:"4px 10px",cursor:"pointer",fontFamily:C.font}}>
-              Reset to {amort}yr
-            </button>
-          )}
-        </Field>
-      </div>
-
       <Divider/>
-
-      {/* Controls grid */}
-      <div style={{display:"grid",gridTemplateColumns:mobile?"1fr":"1fr 1fr",gap:10,marginBottom:4}}>
-        <Field label="Compounding">
-          <Pills value={atComp} onChange={setAtComp} options={COMPOUNDS.map(x=>({key:x.key,label:x.label}))}/>
-        </Field>
-        <Field label="Payment Frequency">
-          <Pills value={atFreq} onChange={setAtFreq} options={AT_FREQS.map(x=>({key:x.key,label:x.label}))}/>
-        </Field>
-      </div>
-      <Field label="Term" hint={atTermOverride===0?"From Inputs":""}>
-        <div style={{display:"flex",gap:8,alignItems:"center"}}>
-          <select value={atEffTerm} onChange={e=>setAtTermOverride(parseInt(e.target.value))}
-            style={{flex:1,height:46,borderRadius:12,border:"1.5px solid rgba(52,199,89,0.4)",background:"rgba(52,199,89,0.06)",fontSize:15,fontWeight:600,color:C.green,textAlign:"center",cursor:"pointer",fontFamily:C.font,WebkitAppearance:"auto"}}>
-            {[1,2,3,4,5,7,10].map(t=>(
-              <option key={t} value={t}>{t}-Year Term{t===term?" (from Inputs)":""}</option>
-            ))}
-          </select>
-          {atTermOverride>0&&(
-            <button onClick={()=>setAtTermOverride(0)}
-              style={{fontSize:12,color:C.blue,background:"rgba(0,113,227,0.08)",border:"none",borderRadius:8,padding:"8px 12px",cursor:"pointer",fontFamily:C.font,whiteSpace:"nowrap"}}>
-              Reset to {term}yr
-            </button>
-          )}
-        </div>
+      <Field label="Compounding">
+        <Pills value={atComp} onChange={setAtComp} options={COMPOUNDS.map(x=>({key:x.key,label:x.label}))}/>
       </Field>
-
       {amortTable.rows&&amortTable.rows.length>0&&(
         <>
           <Divider/>
-
-          {/* Summary stats */}
-          <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:8,marginBottom:16}}>
-            {[
-              {label:freqInfo.label+" Payment", val:fCAD(freqPmt,2), color:C.blue, sub:atEffRate+"%  "+atEffAmort+"yr amort"},
-              {label:"Total Interest", val:fCAD(totalInt,0), color:C.red, sub:"over full amortization"},
-              {label:"Total Cost", val:fCAD(totalPaid,0), color:C.text, sub:"principal + interest"},
-              {label:"Interest % of Price", val:(atEffPrice>0?(totalInt/atEffPrice*100).toFixed(0):0)+"%", color:C.amber, sub:atEffPrice>0?fCAD(atEffPrice,0):""},
-            ].map(s=>(
-              <div key={s.label} style={{background:C.surface,border:"1px solid "+C.border,borderRadius:14,padding:"14px 16px",boxShadow:C.shadow}}>
-                <div style={{fontSize:11,fontWeight:600,color:C.label,textTransform:"uppercase",letterSpacing:"0.04em",marginBottom:6}}>{s.label}</div>
-                <div style={{fontSize:mobile?22:26,fontWeight:700,color:s.color,letterSpacing:"-0.04em",lineHeight:1,marginBottom:4}}>{s.val}</div>
-                <div style={{fontSize:11,color:C.label,opacity:0.7}}>{s.sub}</div>
-              </div>
-            ))}
+          <div style={{marginBottom:10,display:"flex",justifyContent:"space-between"}}>
+            <span style={{fontSize:13,color:C.label}}>Monthly payment</span>
+            <span style={{fontSize:15,fontWeight:700,color:C.blue}}>{fCAD(amortTable.pmt,2)}</span>
           </div>
-
-          {/* Term summary dark card */}
-          {atEffTerm>0&&termTotalPaid>0&&(
-            <div style={{background:"linear-gradient(160deg,#1c1c1e,#2a2a2e)",borderRadius:16,padding:"18px 20px",marginBottom:20,boxShadow:"0 8px 32px rgba(0,0,0,0.15),inset 0 1px 0 rgba(255,255,255,0.05)"}}>
-              <div style={{fontSize:11,color:"rgba(255,255,255,0.45)",fontWeight:500,letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:14}}>
-                {atEffTerm}-Year Term Summary
-              </div>
-              <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:10,marginBottom:12}}>
-                <div style={{background:"rgba(255,255,255,0.07)",borderRadius:11,padding:"12px 14px"}}>
-                  <div style={{fontSize:10,color:"rgba(255,255,255,0.4)",marginBottom:3}}>Total Paid</div>
-                  <div style={{fontSize:18,fontWeight:700,color:"#fff",letterSpacing:"-0.03em"}}>{fCAD(termTotalPaid,0)}</div>
-                </div>
-                <div style={{background:"rgba(255,59,48,0.15)",borderRadius:11,padding:"12px 14px"}}>
-                  <div style={{fontSize:10,color:"rgba(255,255,255,0.4)",marginBottom:3}}>Interest Paid</div>
-                  <div style={{fontSize:18,fontWeight:700,color:C.red,letterSpacing:"-0.03em"}}>{fCAD(termInt,0)}</div>
-                </div>
-                <div style={{background:"rgba(52,199,89,0.12)",borderRadius:11,padding:"12px 14px"}}>
-                  <div style={{fontSize:10,color:"rgba(255,255,255,0.4)",marginBottom:3}}>Principal Paid</div>
-                  <div style={{fontSize:18,fontWeight:700,color:C.green,letterSpacing:"-0.03em"}}>{fCAD(termPrin,0)}</div>
-                </div>
-                <div style={{background:"rgba(255,149,0,0.15)",borderRadius:11,padding:"12px 14px"}}>
-                  <div style={{fontSize:10,color:"rgba(255,255,255,0.4)",marginBottom:3}}>Balance at Renewal</div>
-                  <div style={{fontSize:18,fontWeight:700,color:C.amber,letterSpacing:"-0.03em"}}>{fCAD(termBalAtRenewal,0)}</div>
-                </div>
-              </div>
-              <div style={{height:6,borderRadius:3,overflow:"hidden",display:"flex",gap:1}}>
-                <div style={{width:(termPrin/termTotalPaid*100)+"%",background:C.green,transition:"width 0.8s ease"}}/>
-                <div style={{flex:1,background:"rgba(255,59,48,0.6)"}}/>
-              </div>
-              <div style={{display:"flex",justifyContent:"space-between",marginTop:5}}>
-                <span style={{fontSize:10,color:"rgba(255,255,255,0.4)"}}>{(termPrin/termTotalPaid*100).toFixed(1)}% principal</span>
-                <span style={{fontSize:10,color:"rgba(255,255,255,0.4)"}}>{(termInt/termTotalPaid*100).toFixed(1)}% interest</span>
-              </div>
-            </div>
-          )}
-
-          {/* View toggle */}
-          <div style={{marginBottom:16}}>
-            <Pills value={atView} onChange={setAtView} options={[
-              {key:"annual",label:"Annual (full amort)"},
-              {key:"detail",label:freqInfo.label+" detail (term only)"},
-            ]}/>
-          </div>
-
-          {/* Annual table */}
-          {atView==="annual"&&(
-            <div style={{overflowX:"auto",WebkitOverflowScrolling:"touch",borderRadius:12,border:"1px solid "+C.border}}>
-              <table style={{width:"100%",borderCollapse:"collapse",fontSize:13,fontFamily:C.font}}>
-                <thead>
-                  <tr style={{background:"rgba(118,118,128,0.06)"}}>
-                    {["Year","Annual Pmt","Interest","Principal","Balance"].map(h=>(
-                      <th key={h} style={{padding:"10px 12px",textAlign:"right",color:C.label,fontWeight:600,fontSize:12,borderBottom:"1px solid "+C.border}}>{h}</th>
-                    ))}
+          <div style={{overflowX:"auto",WebkitOverflowScrolling:"touch",borderRadius:12,border:"1px solid "+C.border}}>
+            <table style={{width:"100%",borderCollapse:"collapse",fontSize:13,fontFamily:C.font}}>
+              <thead>
+                <tr style={{background:"rgba(118,118,128,0.06)",borderBottom:"1px solid rgba(0,0,0,0.06)"}}>
+                  {["Year","Payment","Interest","Principal","Balance"].map(h=>(
+                    <th key={h} style={{padding:"10px 12px",textAlign:"right",color:C.label,fontWeight:600,fontSize:12,borderBottom:"1px solid "+C.border}}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {amortTable.rows.map((r,i)=>(
+                  <tr key={r.yr} style={{background:i%2===0?"transparent":"rgba(118,118,128,0.04)"}}>
+                    <td style={{padding:"9px 12px",textAlign:"right",fontWeight:600,color:C.blue}}>Yr {r.yr}</td>
+                    <td style={{padding:"9px 12px",textAlign:"right"}}>{fCAD(r.payment,0)}</td>
+                    <td style={{padding:"9px 12px",textAlign:"right",color:C.red}}>{fCAD(r.interest,0)}</td>
+                    <td style={{padding:"9px 12px",textAlign:"right",color:C.green}}>{fCAD(r.principal,0)}</td>
+                    <td style={{padding:"9px 12px",textAlign:"right",fontWeight:500}}>{fCAD(r.balance,0)}</td>
                   </tr>
-                </thead>
-                <tbody>
-                  {amortTable.rows.map((r,i)=>{
-                    const inTerm=r.yr<=atEffTerm;
-                    const isTermEnd=r.yr===atEffTerm;
-                    return (
-                      <>
-                        <tr key={r.yr} style={{background:inTerm?"rgba(52,199,89,0.05)":i%2===0?"transparent":"rgba(118,118,128,0.04)",borderLeft:inTerm?"3px solid rgba(52,199,89,0.35)":"3px solid transparent"}}>
-                          <td style={{padding:"9px 12px",textAlign:"right",fontWeight:600,color:inTerm?C.green:C.blue}}>Yr {r.yr}</td>
-                          <td style={{padding:"9px 12px",textAlign:"right"}}>{fCAD(r.payment,0)}</td>
-                          <td style={{padding:"9px 12px",textAlign:"right",color:C.red}}>{fCAD(r.interest,0)}</td>
-                          <td style={{padding:"9px 12px",textAlign:"right",color:C.green}}>{fCAD(r.principal,0)}</td>
-                          <td style={{padding:"9px 12px",textAlign:"right",fontWeight:inTerm?600:500,color:inTerm?C.amber:C.text}}>{fCAD(r.balance,0)}</td>
-                        </tr>
-                        {isTermEnd&&(
-                          <tr key="term-marker" style={{background:"rgba(255,149,0,0.08)"}}>
-                            <td colSpan={5} style={{padding:"6px 12px",textAlign:"center",fontSize:11,fontWeight:700,color:C.amber,letterSpacing:"0.06em",textTransform:"uppercase",borderTop:"2px dashed rgba(255,149,0,0.4)",borderBottom:"2px dashed rgba(255,149,0,0.4)"}}>
-                              End of {atEffTerm}-Year Term  Balance at Renewal: {fCAD(r.balance,0)}
-                            </td>
-                          </tr>
-                        )}
-                      </>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          )}
-
-          {/* Detail table  term payments only */}
-          {atView==="detail"&&(
-            <div style={{overflowX:"auto",WebkitOverflowScrolling:"touch",borderRadius:12,border:"1px solid "+C.border}}>
-              {detailRows.length===0?(
-                <div style={{padding:"20px",textAlign:"center",color:C.label,fontSize:13}}>Calculating...</div>
-              ):(
-                <table style={{width:"100%",borderCollapse:"collapse",fontSize:12,fontFamily:C.font}}>
-                  <thead>
-                    <tr style={{background:"rgba(118,118,128,0.06)"}}>
-                      {["#","Payment","Interest","Principal","Balance"].map(h=>(
-                        <th key={h} style={{padding:"9px 12px",textAlign:"right",color:C.label,fontWeight:600,fontSize:11,borderBottom:"1px solid "+C.border}}>{h}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {detailRows.map((r,i)=>(
-                      <tr key={r.p} style={{background:i%2===0?"transparent":"rgba(118,118,128,0.03)"}}>
-                        <td style={{padding:"7px 12px",textAlign:"right",color:C.label,fontSize:11}}>#{r.p}</td>
-                        <td style={{padding:"7px 12px",textAlign:"right",fontWeight:500}}>{fCAD(r.pmt,2)}</td>
-                        <td style={{padding:"7px 12px",textAlign:"right",color:C.red}}>{fCAD(r.intPart,2)}</td>
-                        <td style={{padding:"7px 12px",textAlign:"right",color:C.green}}>{fCAD(r.prinPart,2)}</td>
-                        <td style={{padding:"7px 12px",textAlign:"right",fontWeight:500}}>{fCAD(r.balance,0)}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                  <tfoot>
-                    <tr style={{background:"rgba(255,149,0,0.08)",borderTop:"2px dashed rgba(255,149,0,0.4)"}}>
-                      <td colSpan={5} style={{padding:"8px 12px",textAlign:"center",fontSize:11,fontWeight:700,color:C.amber,letterSpacing:"0.04em"}}>
-                        End of {atEffTerm}-Year Term ({detailRows.length} payments)  Balance at Renewal: {fCAD(detailRows[detailRows.length-1]?.balance||0,0)}
-                      </td>
-                    </tr>
-                  </tfoot>
-                </table>
-              )}
-            </div>
-          )}
+                ))}
+              </tbody>
+            </table>
+          </div>
         </>
       )}
     </div>
-    );
-  })();
-
+  );
 
   const PrepayPane=(
     <div style={{paddingBottom:16}}>
@@ -2420,7 +1696,6 @@ function App(){
     </div>
   );
 
-  //  Footer 
   const Footer=(
     <div style={{background:C.dark,borderTop:"1px solid "+C.borderDark}}>
       <div style={{padding:mobile?"24px 20px":"32px 40px"}}>
@@ -2441,7 +1716,7 @@ function App(){
             </div>
           </div>
           <div style={{color:"rgba(255,255,255,0.22)",fontSize:11,lineHeight:1.8,textAlign:mobile?"left":"right"}}>
-            <div style={{color:"rgba(255,255,255,0.35)",fontWeight:500,marginBottom:2}}>Neel Idnani - Mortgage Agent Level 2</div>
+            <div style={{color:"rgba(255,255,255,0.35)",fontWeight:500,marginBottom:2}}>Neel Idnani  Mortgage Agent Level 2</div>
             <div>Lic. #M23005524</div>
             <div>Dominion Lending Centres FC Funding</div>
             <div>Brokerage FSRA #10671</div>
@@ -2452,16 +1727,14 @@ function App(){
     </div>
   );
 
-  //  Mortgage Payment Calculator state 
-  //  Canadian Home Cost state 
   const MP_FREQS=[{key:"monthly",label:"Monthly"},{key:"biweekly",label:"Bi-Weekly"},{key:"weekly",label:"Weekly"}];
   const[mpPriceOverride,setMpPriceOverride]=useState(0);
   const[mpLocation,setMpLocation]=useState("Other ON");
   const[mpComp,setMpComp]=useState("semi-annual");
   const[mpFTHB,setMpFTHB]=useState(true);
   const[mpFreq,setMpFreq]=useState("monthly");
-  const[mpResultTab,setMpResultTab]=useState("payment"); // payment | term | total
-  const[mpNumCols,setMpNumCols]=useState(2); // 2 default, up to 4
+  const[mpResultTab,setMpResultTab]=useState("payment"); 
+  const[mpNumCols,setMpNumCols]=useState(2); 
 
   const[mpCols,setMpCols]=useState([
     {downPct:5, downAmt$:0, downMode:"%", amort:30, rate:4.5,  term:5, label:"Scenario A"},
@@ -2492,7 +1765,7 @@ function App(){
       const moPayment=totalMtg>0&&rm>0?(totalMtg*rm*Math.pow(1+rm,n))/(Math.pow(1+rm,n)-1):0;
       const freqPmt=mpFreq==="monthly"?moPayment:mpFreq==="biweekly"?moPayment*12/26:moPayment*12/52;
       const freqPerYear=mpFreq==="monthly"?12:mpFreq==="biweekly"?26:52;
-      // Term breakdown
+      
       const termMonths=col.term*12;
       let bal=totalMtg, termInt=0, termPrin=0;
       for(let i=0;i<termMonths&&bal>0.01;i++){
@@ -2502,10 +1775,10 @@ function App(){
       }
       const balAtRenewal=Math.max(0,bal);
       const termTotalPaid=moPayment*termMonths;
-      // Full amort totals
+      
       const totalPaid=moPayment*n;
       const totalInt=totalPaid-totalMtg;
-      // LTT + closing
+      
       const ontario=calcOntarioLTT(mpEffPrice,mpFTHB);
       const toronto=mpLocation==="Toronto"?calcTorontoLTT(mpEffPrice,mpFTHB):{tax:0,rebate:0,net:0};
       const lttTotal=ontario.net+toronto.net;
@@ -2524,22 +1797,20 @@ function App(){
     });
   },[mpEffPrice,activeCols,mpComp,mpFTHB,mpFreq,mpLocation,mpNumCols]);
 
-  //  MpPane 
   const MpPane=(()=>{
     const colColors=[C.blue,C.purple,"#e67e22","#27ae60"];
     const numLabel=MP_FREQS.find(f=>f.key===mpFreq)?.label||"Monthly";
 
-    //  Inline editable column header 
     function ColHeader({col,i,calc}){
       const color=colColors[i];
       return(
         <div style={{background:"linear-gradient(160deg,#1c1c1e,#2a2a2e)",borderRadius:14,padding:"12px 10px",border:"2px solid "+color+"44",position:"relative",minWidth:mobile?110:0}}>
           <div style={{position:"absolute",top:0,left:12,right:12,height:3,borderRadius:"0 0 4px 4px",background:color}}/>
-          {/* Editable label */}
+          {}
           <input value={col.label} onChange={e=>setMpCol(i,"label",e.target.value)}
             style={{width:"100%",fontSize:12,fontWeight:700,color:color,background:"transparent",border:"none",outline:"none",fontFamily:C.font,letterSpacing:"-0.01em",marginTop:4,marginBottom:8,textAlign:"center"}}/>
 
-          {/* Down payment */}
+          {}
           <div style={{marginBottom:6}}>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:3}}>
               <span style={{fontSize:10,color:"rgba(255,255,255,0.35)",textTransform:"uppercase",letterSpacing:"0.05em"}}>Down</span>
@@ -2572,7 +1843,7 @@ function App(){
             )}
           </div>
 
-          {/* Rate */}
+          {}
           <div style={{marginBottom:6}}>
             <div style={{fontSize:10,color:"rgba(255,255,255,0.35)",textTransform:"uppercase",letterSpacing:"0.05em",marginBottom:3}}>Rate</div>
             <div style={{display:"flex",alignItems:"center",height:30,background:"rgba(255,149,0,0.12)",border:"1px solid rgba(255,149,0,0.35)",borderRadius:8,overflow:"hidden"}}>
@@ -2583,7 +1854,7 @@ function App(){
             </div>
           </div>
 
-          {/* Term + Amort side by side */}
+          {}
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:4}}>
             <div>
               <div style={{fontSize:10,color:"rgba(255,255,255,0.35)",textTransform:"uppercase",letterSpacing:"0.05em",marginBottom:3}}>Term</div>
@@ -2604,7 +1875,6 @@ function App(){
       );
     }
 
-    //  Row definitions 
     const rows=[
       {key:"down",    label:"Down Payment",     sub:"",                  highlight:false, dark:false},
       {key:"cmhc",    label:"CMHC",             sub:"insurance premium", highlight:false, dark:false},
@@ -2637,7 +1907,7 @@ function App(){
 
     return(
       <div style={{paddingBottom:16}}>
-        {/* Title + scenario controls */}
+        {}
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:4}}>
           <SectionTitle>Canadian Home Cost</SectionTitle>
           <div style={{display:"flex",alignItems:"center",gap:8,flexShrink:0}}>
@@ -2655,7 +1925,7 @@ function App(){
         </div>
         <p style={{fontSize:14,color:C.label,marginBottom:16,lineHeight:1.6}}>Compare scenarios side by side  each column has its own rate, term, down payment and amortization.</p>
 
-        {/* Shared top controls */}
+        {}
         <div style={{display:"grid",gridTemplateColumns:mobile?"1fr":"1fr 1fr 1fr",gap:10,marginBottom:4}}>
           <Field label="Purchase Price" hint={mpPriceOverride===0&&price>0?"From Inputs":mpPriceOverride>0?"Override":""}>
             <NumInput value={mpPriceOverride>0?mpPriceOverride:(price||0)} onChange={v=>setMpPriceOverride(v===price?0:v||0)} pre="$"/>
@@ -2686,19 +1956,19 @@ function App(){
         {mpEffPrice<=0?(
           <InfoBox color="blue">Enter a purchase price above or set one in the Inputs tab.</InfoBox>
         ):(
-          /*  Comparison table  */
+          
           <div style={{overflowX:"auto",WebkitOverflowScrolling:"touch",marginLeft:mobile?-16:0,marginRight:mobile?-16:0,paddingLeft:mobile?16:0,paddingRight:mobile?16:0}}>
             <div style={{minWidth:mobile?"max-content":"100%"}}>
-              {/* Column headers */}
+              {}
               <div style={{display:"grid",gridTemplateColumns:mobile?"140px repeat("+mpNumCols+",120px)":"180px repeat("+mpNumCols+",1fr)",gap:8,marginBottom:8}}>
-                {/* Row label header */}
+                {}
                 <div/>
                 {activeCols2.map((col,i)=>(
                   <ColHeader key={i} col={col} i={i} calc={mpCalc[i]}/>
                 ))}
               </div>
 
-              {/* Data rows */}
+              {}
               {rows.map((row,ri)=>(
                 <div key={row.key} style={{
                   display:"grid",
@@ -2707,7 +1977,7 @@ function App(){
                   marginBottom:row.dark?0:6,
                   marginTop:row.dark?6:0,
                 }}>
-                  {/* Row label */}
+                  {}
                   <div style={{
                     display:"flex",flexDirection:"column",justifyContent:"center",
                     padding:row.dark?"14px 0":"8px 0",
@@ -2717,7 +1987,7 @@ function App(){
                     {row.sub&&<div style={{fontSize:10,color:C.label,opacity:0.7,marginTop:1}}>{row.sub}</div>}
                   </div>
 
-                  {/* Data cells */}
+                  {}
                   {activeCols2.map((col,i)=>{
                     const calc=mpCalc[i];
                     const cellBg=row.dark?"linear-gradient(160deg,#1c1c1e,#2a2a2e)":row.green?"rgba(52,199,89,0.07)":row.accent?"rgba(255,149,0,0.07)":"rgba(118,118,128,0.06)";
@@ -2754,7 +2024,6 @@ function App(){
     );
   })();
 
-  //  Rate Compare state 
   const[rcPriceOverride,setRcPriceOverride]=useState(0);
   const[rcDownOverride,setRcDownOverride]=useState(0);
   const[rcTerm,setRcTerm]=useState(5);
@@ -2784,7 +2053,7 @@ function App(){
       const rm=effRate(l.rate,rcComp);
       if(rm<=0)return null;
       const moPayment=(totalMtg*rm*Math.pow(1+rm,n))/(Math.pow(1+rm,n)-1);
-      // Term breakdown
+      
       let bal=totalMtg,termInt=0,termPrin=0;
       for(let i=0;i<termMonths&&bal>0.01;i++){
         const intM=bal*rm;
@@ -2795,7 +2064,7 @@ function App(){
       const termTotalPaid=moPayment*termMonths;
       const totalPaid=moPayment*n;
       const totalInt=totalPaid-totalMtg;
-      // First payment split
+      
       const firstInt=totalMtg*rm;
       const firstPrin=Math.max(0,moPayment-firstInt);
       return{moPayment,termInt,termPrin,termTotalPaid,balAtRenewal,totalPaid,totalInt,firstInt,firstPrin,totalMtg,dn,dnPct,cmhcAmt,cmhcR};
@@ -2808,7 +2077,7 @@ function App(){
     const lA=rcLenders[0];
     const lB=rcLenders[1];
     const hasBoth=a&&b;
-    // Savings: lender with lower payment vs higher
+    
     const pmtDiff=hasBoth?Math.abs(a.moPayment-b.moPayment):0;
     const termIntDiff=hasBoth?Math.abs(a.termInt-b.termInt):0;
     const termPrinDiff=hasBoth?Math.abs(a.termPrin-b.termPrin):0;
@@ -2840,7 +2109,7 @@ function App(){
         <SectionTitle>Rate Compare</SectionTitle>
         <p style={{fontSize:14,color:C.label,marginBottom:20,lineHeight:1.6}}>Compare two lender rates side by side  see exactly how much your client saves per month, over the term, and what they owe at renewal.</p>
 
-        {/* Shared inputs */}
+        {}
         <div style={{display:"grid",gridTemplateColumns:mobile?"1fr":"1fr 1fr",gap:12,marginBottom:4}}>
           <Field label="Purchase Price" hint={rcPriceOverride===0&&price>0?"From Inputs":rcPriceOverride>0?"Override":""}>
             <NumInput value={rcPriceOverride>0?rcPriceOverride:(price||0)} onChange={v=>setRcPriceOverride(v===price?0:v||0)} pre="$"/>
@@ -2870,7 +2139,7 @@ function App(){
           </Field>
         </div>
 
-        {/* Lender cards */}
+        {}
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:20}}>
           {rcLenders.map((l,i)=>(
             <div key={i} style={{background:"rgba(118,118,128,0.06)",borderRadius:16,padding:"16px",border:"2px solid "+l.color+"33",position:"relative"}}>
@@ -2879,17 +2148,17 @@ function App(){
                 style={{width:"100%",fontSize:13,fontWeight:700,color:l.color,background:"transparent",border:"none",outline:"none",fontFamily:C.font,marginBottom:12,marginTop:4}}/>
               <div style={{fontSize:11,color:C.label,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.04em",marginBottom:6}}>Interest Rate</div>
               <div style={{display:"flex",alignItems:"center",gap:6}}>
-                <div style={{flex:1,display:"flex",alignItems:"center",height:44,background:"rgba(255,149,0,0.1)",border:"2px solid rgba(255,149,0,0.5)",borderRadius:12,overflow:"hidden"}}>
+                <div style={{flex:1,display:"flex",alignItems:"center",height:44,background:"rgba(255,149,0,0.07)",border:"1.5px solid rgba(255,149,0,0.35)",borderRadius:12,overflow:"hidden"}}>
                   <input type="number" step="0.01" min="0.5" max="15" value={l.rate}
                     onChange={e=>setRcLender(i,"rate",Math.round(parseFloat(e.target.value||"0")*100)/100)}
-                    style={{flex:1,border:"none",outline:"none",background:"transparent",fontSize:22,fontWeight:700,color:"#c47000",fontFamily:C.font,textAlign:"center",padding:"0 8px"}}/>
-                  <span style={{padding:"0 12px",fontSize:14,color:"#c47000",fontWeight:700}}>%</span>
+                    style={{flex:1,border:"none",outline:"none",background:"transparent",fontSize:22,fontWeight:700,color:C.amber,fontFamily:C.font,textAlign:"center",padding:"0 8px"}}/>
+                  <span style={{padding:"0 12px",fontSize:14,color:C.amber,fontWeight:600}}>%</span>
                 </div>
                 <div style={{display:"flex",flexDirection:"column",gap:3}}>
                   <button onClick={()=>setRcLender(i,"rate",Math.round((l.rate+0.05)*100)/100)}
-                    style={{width:32,height:20,borderRadius:6,border:"1px solid rgba(255,149,0,0.35)",background:"rgba(255,149,0,0.12)",fontSize:12,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",color:C.amber,fontWeight:700}}></button>
+                    style={{width:32,height:20,borderRadius:6,border:"1px solid "+C.border,background:"#fff",fontSize:12,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",color:C.label}}></button>
                   <button onClick={()=>setRcLender(i,"rate",Math.max(0.5,Math.round((l.rate-0.05)*100)/100))}
-                    style={{width:32,height:20,borderRadius:6,border:"1px solid rgba(255,149,0,0.35)",background:"rgba(255,149,0,0.12)",fontSize:12,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",color:C.amber,fontWeight:700}}></button>
+                    style={{width:32,height:20,borderRadius:6,border:"1px solid "+C.border,background:"#fff",fontSize:12,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",color:C.label}}></button>
                 </div>
               </div>
               {rcCalc&&rcCalc[i]&&(
@@ -2907,7 +2176,7 @@ function App(){
           <InfoBox color="blue">Enter rates for both lenders to compare.</InfoBox>
         ):(
           <>
-            {/* Hero savings banner */}
+            {}
             <div style={{background:"linear-gradient(135deg,rgba(52,199,89,0.1),rgba(0,113,227,0.07))",border:"1px solid rgba(52,199,89,0.25)",borderRadius:16,padding:"18px 20px",marginBottom:20,borderLeft:"3px solid rgba(52,199,89,0.6)"}}>
               <div style={{fontSize:12,color:C.label,marginBottom:6,fontWeight:500}}>Choosing <span style={{color:lowerLender.color,fontWeight:700}}>{lowerLender.name}</span> ({(lowerIdx===0?lA:lB).rate.toFixed(2)}%) over <span style={{color:higherLender.color,fontWeight:700}}>{higherLender.name}</span> ({(lowerIdx===0?lB:lA).rate.toFixed(2)}%) saves:</div>
               <div style={{display:"flex",gap:mobile?16:32,flexWrap:"wrap"}}>
@@ -2928,14 +2197,14 @@ function App(){
               </div>
             </div>
 
-            {/* Column headers */}
+            {}
             <div style={{display:"grid",gridTemplateColumns:"1fr auto 1fr",gap:8,marginBottom:4}}>
-              <div style={{textAlign:"right",fontSize:14,fontWeight:700,color:lA.color,paddingRight:8,letterSpacing:"-0.01em"}}>{lA.name} <span style={{fontWeight:400,color:C.label}}> {lA.rate.toFixed(2)}%</span></div>
+              <div style={{textAlign:"right",fontSize:13,fontWeight:700,color:lA.color,paddingRight:8}}>{lA.name}  {lA.rate.toFixed(2)}%</div>
               <div/>
-              <div style={{fontSize:14,fontWeight:700,color:lB.color,paddingLeft:8,letterSpacing:"-0.01em"}}>{lB.name} <span style={{fontWeight:400,color:C.label}}> {lB.rate.toFixed(2)}%</span></div>
+              <div style={{fontSize:13,fontWeight:700,color:lB.color,paddingLeft:8}}>{lB.name}  {lB.rate.toFixed(2)}%</div>
             </div>
 
-            {/* Comparison rows */}
+            {}
             <StatCompare label="Monthly Payment" aVal={a.moPayment} bVal={b.moPayment} aFmt={fCAD(a.moPayment,2)} bFmt={fCAD(b.moPayment,2)}/>
             <StatCompare label={rcTerm+"yr Interest Paid"} aVal={a.termInt} bVal={b.termInt}/>
             <StatCompare label={rcTerm+"yr Principal Paid"} aVal={a.termPrin} bVal={b.termPrin} lowerIsBetter={false}/>
@@ -2943,9 +2212,9 @@ function App(){
             <StatCompare label="Balance at Renewal" aVal={a.balAtRenewal} bVal={b.balAtRenewal}/>
             <StatCompare label="Total Interest (full)" aVal={a.totalInt} bVal={b.totalInt}/>
 
-            {/* First payment donut comparison */}
+            {}
             <Divider/>
-            {/* Cost of choosing higher rate */}
+            {}
             {(()=>{
               const extraPmtsOverTerm=pmtDiff*rcTerm*12;
               const interestLost=termIntDiff;
@@ -2953,16 +2222,16 @@ function App(){
               const totalCost=interestLost+principalLost;
               return(
                 <div style={{background:C.darkCard,borderRadius:18,padding:"22px 20px",marginBottom:20,boxShadow:"0 8px 32px rgba(0,0,0,0.18),inset 0 1px 0 rgba(255,255,255,0.05)"}}>
-                  {/* Hero number */}
+                  {}
                   <div style={{marginBottom:20}}>
-                    <div style={{fontSize:11,color:"rgba(255,255,255,0.45)",fontWeight:500,letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:6}}>
-                      Cost of choosing <span style={{color:"#fff",fontWeight:700,opacity:0.9}}>{higherLender.name}</span> over <span style={{color:"rgba(255,255,255,0.6)",fontWeight:600}}>{lowerLender.name}</span>
+                    <div style={{fontSize:11,color:"rgba(255,255,255,0.4)",fontWeight:500,letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:6}}>
+                      Cost of choosing <span style={{color:higherLender.color}}>{higherLender.name}</span> over <span style={{color:lowerLender.color}}>{lowerLender.name}</span>
                     </div>
                     <div style={{fontSize:mobile?36:44,fontWeight:700,color:C.red,letterSpacing:"-0.05em",lineHeight:1}}>{fCAD(totalCost,0)}</div>
                     <div style={{fontSize:12,color:"rgba(255,255,255,0.35)",marginTop:6}}>total cost over {rcTerm}-year term  {lowerLender.rate.toFixed(2)}% vs {higherLender.rate.toFixed(2)}%</div>
                   </div>
 
-                  {/* Three supporting stats */}
+                  {}
                   <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,marginBottom:18}}>
                     <div style={{background:"rgba(255,255,255,0.06)",borderRadius:12,padding:"12px 10px",border:"1px solid "+C.borderDark,textAlign:"center"}}>
                       <div style={{fontSize:18,marginBottom:4}}></div>
@@ -2978,15 +2247,15 @@ function App(){
                     </div>
                     <div style={{background:"rgba(0,113,227,0.12)",borderRadius:12,padding:"12px 10px",border:"1px solid rgba(0,113,227,0.2)",textAlign:"center"}}>
                       <div style={{fontSize:18,marginBottom:4}}></div>
-                      <div style={{fontSize:mobile?16:18,fontWeight:700,color:C.onDarkBlue,letterSpacing:"-0.03em"}}>{fCAD(principalLost,0)}</div>
+                      <div style={{fontSize:mobile?16:18,fontWeight:700,color:"C.onDarkBlue",letterSpacing:"-0.03em"}}>{fCAD(principalLost,0)}</div>
                       <div style={{fontSize:10,color:"rgba(255,255,255,0.4)",marginTop:3,lineHeight:1.4}}>less equity built</div>
                       <div style={{fontSize:10,color:"rgba(255,255,255,0.25)",marginTop:2}}>wealth impact</div>
                     </div>
                   </div>
 
-                  {/* Plain language note */}
+                  {}
                   <div style={{fontSize:12,color:"rgba(255,255,255,0.4)",lineHeight:1.7,borderTop:"1px solid rgba(255,255,255,0.07)",paddingTop:14}}>
-                    Choosing <span style={{color:"rgba(255,255,255,0.85)",fontWeight:700}}>{higherLender.name}</span> costs <span style={{color:C.amber,fontWeight:600}}>{fCAD(extraPmtsOverTerm,0)}</span> more in payments over {rcTerm} years. Of that extra cash, <span style={{color:C.red,fontWeight:600}}>{fCAD(interestLost,0)}</span> goes to interest (gone forever) and you build <span style={{color:C.onDarkBlue,fontWeight:600}}>{fCAD(principalLost,0)}</span> less equity  for a true total cost of <span style={{color:C.red,fontWeight:600}}>{fCAD(totalCost,0)}</span>.
+                    Choosing <span style={{color:higherLender.color,fontWeight:600}}>{higherLender.name}</span> costs <span style={{color:C.amber,fontWeight:600}}>{fCAD(extraPmtsOverTerm,0)}</span> more in payments over {rcTerm} years. Of that extra cash, <span style={{color:C.red,fontWeight:600}}>{fCAD(interestLost,0)}</span> goes to interest (gone forever) and you build <span style={{color:"C.onDarkBlue",fontWeight:600}}>{fCAD(principalLost,0)}</span> less equity  for a true total cost of <span style={{color:C.red,fontWeight:600}}>{fCAD(totalCost,0)}</span>.
                   </div>
                 </div>
               );
@@ -3001,7 +2270,7 @@ function App(){
                   <div key={i} style={{background:"rgba(118,118,128,0.06)",borderRadius:14,padding:"14px",border:"1.5px solid "+l.color+"33"}}>
                     <div style={{fontSize:12,fontWeight:700,color:l.color,marginBottom:10}}>{l.name}</div>
                     <div style={{fontSize:mobile?18:22,fontWeight:700,color:C.text,letterSpacing:"-0.03em",marginBottom:12}}>{fCAD(tot,2)}<span style={{fontSize:11,fontWeight:400,color:C.label}}>/mo</span></div>
-                    {/* Bar */}
+                    {}
                     <div style={{height:10,borderRadius:5,overflow:"hidden",display:"flex",marginBottom:8}}>
                       <div style={{width:pPct+"%",background:l.color,transition:"width 0.8s ease"}}/>
                       <div style={{flex:1,background:"rgba(255,59,48,0.6)"}}/>
@@ -3029,20 +2298,19 @@ function App(){
     );
   })();
 
-
   const TABS=[
     {key:"inputs",label:"Inputs"},
     {key:"results",label:"Results"},
-    {key:"income",label:"Income Required"},
+    {key:"income",label:"Income"},
     {key:"payment",label:"Home Cost"},
-    {key:"ltt",label:"Land Transfer Tax"},
-    {key:"closing",label:"Closing Costs"},
-    {key:"ratecompare",label:"Rate Compare"},
-    {key:"rentbuy",label:"Rent vs Buy"},
-    {key:"amort",label:"Amortization"},
-    {key:"prepay",label:"Prepayment"},
-    {key:"refi",label:"Refinance"},
-    {key:"renewal",label:"Renewal Planner"},
+    {key:"ltt",label:"LTT"},
+    {key:"closing",label:"Closing"},
+    {key:"rentbuy",label:"Rent/Buy"},
+    {key:"amort",label:"Amort"},
+    {key:"prepay",label:"Prepay"},
+    {key:"refi",label:"Refi"},
+    {key:"renewal",label:"Renewal"},
+    {key:"ratecompare",label:"Compare"},
   ];
 
   const paneMap={inputs:InputsPane,results:ResultsPane,income:IncomePane,payment:MpPane,ltt:LTTPane,closing:ClosingPane,rentbuy:RentBuyPane,amort:AmortPane,prepay:PrepayPane,refi:RefiPane,renewal:RenewalPane,ratecompare:RateComparePane};
@@ -3051,14 +2319,12 @@ function App(){
   const GDSPill=<span style={{fontSize:mobile?11:12,fontWeight:600,padding:mobile?"3px 8px":"3px 10px",borderRadius:20,background:c.gdsPass?"rgba(52,199,89,0.12)":"rgba(255,59,48,0.12)",color:c.gdsPass?C.green:C.red,whiteSpace:"nowrap"}}>GDS {c.gds.toFixed(1)}%</span>;
   const TDSPill=<span style={{fontSize:mobile?11:12,fontWeight:600,padding:mobile?"3px 8px":"3px 10px",borderRadius:20,background:c.tdsPass?"rgba(52,199,89,0.12)":"rgba(255,59,48,0.12)",color:c.tdsPass?C.green:C.red,whiteSpace:"nowrap"}}>TDS {c.tds.toFixed(1)}%</span>;
 
-  //  Desktop Layout 
   if(!mobile){
-    const tabLabels={inputs:"Inputs",results:"Results",income:"Income Required",payment:"Home Cost",ltt:"Land Transfer Tax",closing:"Closing Costs",rentbuy:"Rent vs Buy",amort:"Amortization",prepay:"Prepayment",refi:"Refinance",renewal:"Renewal Planner",ratecompare:"Rate Compare"};
-    const allTabs=["inputs","results","income","payment","ltt","closing","ratecompare","rentbuy","amort","prepay","refi","renewal"];
+    const tabLabels={inputs:"Inputs",results:"Results",income:"Income Tool",payment:"Home Cost",ltt:"Land Transfer Tax",closing:"Closing Costs",rentbuy:"Rent vs Buy",amort:"Amortization",prepay:"Prepayment",refi:"Refinance",renewal:"Renewal Planner",ratecompare:"Rate Compare"};
+    const allTabs=["inputs","results","income","payment","ltt","closing","rentbuy","amort","prepay","refi","renewal","ratecompare"];
     return(
       <>
         {showSplash&&<SplashScreen onDone={()=>setShowSplash(false)}/>}
-        {showHelp&&<HelpModal onClose={()=>setShowHelp(false)}/>}
         <div style={{fontFamily:C.font,background:C.bg,minHeight:"100vh",color:C.text,display:"flex",flexDirection:"column",backgroundImage:"radial-gradient(rgba(0,0,0,0.025) 1px,transparent 1px)",backgroundSize:"32px 32px"}}>
           <div style={{background:"rgba(255,255,255,0.92)",backdropFilter:"saturate(180%) blur(20px)",WebkitBackdropFilter:"saturate(180%) blur(20px)",borderBottom:"1px solid rgba(0,0,0,0.09)",position:"sticky",top:0,zIndex:100,overflowX:"hidden"}}>
             <div style={{maxWidth:1200,margin:"0 auto",padding:"0 32px",height:48,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
@@ -3069,7 +2335,6 @@ function App(){
               </div>
               <div style={{display:"flex",alignItems:"center",gap:8}}>
                 <button onClick={handleReset} style={{padding:"5px 14px",borderRadius:20,border:"1px solid "+(resetFlash?C.green:C.border),background:resetFlash?"rgba(52,199,89,0.1)":"transparent",fontSize:13,color:resetFlash?C.green:C.label,cursor:"pointer",fontFamily:C.font,transition:"all 0.3s"}}>{resetFlash?"Cleared":"Reset"}</button>
-                <button onClick={()=>setShowHelp(true)} style={{width:32,height:32,borderRadius:"50%",border:"1px solid "+C.border,background:"rgba(118,118,128,0.1)",fontSize:14,color:C.label,cursor:"pointer",fontFamily:C.font,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:600}}>?</button>
                 <a href={VELOCITY} target="_blank" rel="noopener noreferrer"
                   style={{padding:"6px 18px",borderRadius:20,background:"linear-gradient(180deg,#147CE5,#0071e3)",fontSize:13,fontWeight:600,color:"#fff",textDecoration:"none",boxShadow:"0 1px 0 rgba(255,255,255,0.2) inset"}}>Apply Now</a>
               </div>
@@ -3095,11 +2360,9 @@ function App(){
     );
   }
 
-  //  Mobile Layout 
   return(
     <>
       {showSplash&&<SplashScreen onDone={()=>setShowSplash(false)}/>}
-      {showHelp&&<HelpModal onClose={()=>setShowHelp(false)}/>}
       <div style={{fontFamily:C.font,background:C.bg,color:C.text,maxWidth:"100vw",overflowX:"hidden",minHeight:"100vh",display:"flex",flexDirection:"column",backgroundImage:"radial-gradient(rgba(0,0,0,0.025) 1px,transparent 1px)",backgroundSize:"32px 32px"}}>
         <div style={{background:"rgba(249,249,249,0.94)",backdropFilter:"saturate(180%) blur(20px)",WebkitBackdropFilter:"saturate(180%) blur(20px)",borderBottom:"1px solid rgba(0,0,0,0.09)",position:"sticky",top:0,zIndex:100,overflowX:"hidden"}}>
           <div style={{padding:"8px 16px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
@@ -3109,7 +2372,6 @@ function App(){
             </div>
             <div style={{display:"flex",gap:8,alignItems:"center"}}>
               <button onClick={handleReset} style={{padding:"5px 14px",borderRadius:20,border:"1px solid "+(resetFlash?C.green:C.border),background:resetFlash?"rgba(52,199,89,0.1)":"transparent",fontSize:13,color:resetFlash?C.green:C.label,cursor:"pointer",fontFamily:C.font,transition:"all 0.3s"}}>{resetFlash?"Cleared":"Reset"}</button>
-              <button onClick={()=>setShowHelp(true)} style={{width:30,height:30,borderRadius:"50%",border:"1px solid "+C.border,background:"rgba(118,118,128,0.1)",fontSize:14,color:C.label,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:600}}>?</button>
               <a href={VELOCITY} target="_blank" rel="noopener noreferrer"
                 style={{padding:"5px 14px",borderRadius:20,background:"linear-gradient(180deg,#147CE5,#0071e3)",fontSize:13,fontWeight:600,color:"#fff",textDecoration:"none",boxShadow:"0 1px 0 rgba(255,255,255,0.2) inset"}}>Apply</a>
             </div>
@@ -3144,6 +2406,7 @@ function App(){
   );
 }
 
+    if(window.__hidePreloader)window.__hidePreloader();
     const container = document.getElementById('root');
     const root = ReactDOM.createRoot(container);
     root.render(React.createElement(App));
