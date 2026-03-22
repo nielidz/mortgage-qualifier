@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Package Builder - FC Funding</title>
+<title>Package Builder | Neel Idnani Mortgage Group</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
@@ -11,90 +11,410 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--navy:#0f1e35;--navy-mid:#1a3050;--navy-light:#234470;--gold:#c9a84c;--gold-light:#e8c97a;--cream:#f8f5ef;--cream-dark:#ede8de;--text:#1a1a2e;--text-mid:#4a5568;--text-light:#718096;--white:#ffffff;--success:#2d6a4f;--radius:10px;--shadow:0 4px 24px rgba(15,30,53,0.10)}
-body{font-family:"DM Sans",sans-serif;background:var(--cream);color:var(--text);min-height:100vh}
-.tnav{background:#080f1c;border-bottom:1px solid rgba(201,168,76,0.15);display:flex;align-items:center;padding:0 2rem;height:36px;position:sticky;top:0;z-index:200}
-.tnav span{font-size:.62rem;color:rgba(255,255,255,.3);letter-spacing:.1em;text-transform:uppercase;margin-right:1rem}
-.tnav a{padding:0 1rem;height:36px;display:flex;align-items:center;font-size:.75rem;color:rgba(255,255,255,.5);text-decoration:none;border-bottom:2px solid transparent;font-family:"DM Sans",sans-serif}
+:root{
+  --navy:#0f1e35;--navy-mid:#1a3050;--navy-light:#234470;
+  --gold:#c9a84c;--gold-light:#e8c97a;
+  --cream:#f8f5ef;--cream-dark:#ede8de;
+  --text:#1a1a2e;--text-mid:#4a5568;--text-light:#718096;
+  --white:#ffffff;--success:#2d6a4f;
+  --radius:10px;--shadow:0 4px 24px rgba(15,30,53,0.10)
+}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:"DM Sans",sans-serif;
+  background:var(--cream);color:var(--text);
+  min-height:100vh;overflow-x:hidden;
+  -webkit-tap-highlight-color:transparent
+}
+
+/* Tool nav */
+.tnav{
+  background:#080f1c;
+  border-bottom:1px solid rgba(201,168,76,0.15);
+  display:flex;align-items:center;
+  padding:0 1.5rem;height:36px;
+  position:sticky;top:0;z-index:200;
+  overflow-x:auto;-webkit-overflow-scrolling:touch
+}
+.tnav::-webkit-scrollbar{display:none}
+.tnav span{
+  font-size:.62rem;color:rgba(255,255,255,.3);
+  letter-spacing:.1em;text-transform:uppercase;
+  margin-right:1rem;white-space:nowrap;flex-shrink:0
+}
+.tnav a{
+  padding:0 .9rem;height:36px;
+  display:flex;align-items:center;
+  font-size:.75rem;color:rgba(255,255,255,.5);
+  text-decoration:none;border-bottom:2px solid transparent;
+  font-family:"DM Sans",sans-serif;white-space:nowrap;flex-shrink:0
+}
 .tnav a.act{color:var(--gold-light);border-bottom-color:var(--gold);font-weight:500}
-.hdr{background:var(--navy);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:36px;z-index:100;box-shadow:0 2px 16px rgba(0,0,0,.25)}
-.hbrand{display:flex;align-items:center;gap:12px}
-.hlogo{width:32px;height:32px;background:var(--gold);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--navy);font-weight:bold;font-family:"DM Serif Display",serif}
-.htit{font-family:"DM Serif Display",serif;font-size:1.1rem;color:var(--white)}
-.hsub{font-size:.7rem;color:var(--gold-light);letter-spacing:.08em;text-transform:uppercase}
-.hbdg{background:var(--navy-light);border:1px solid var(--gold);border-radius:20px;padding:4px 14px;font-size:.7rem;color:var(--gold-light);text-transform:uppercase}
+
+/* Header */
+.hdr{
+  background:var(--navy);padding:0 1.5rem;
+  display:flex;align-items:center;justify-content:space-between;
+  height:60px;position:sticky;top:36px;z-index:100;
+  box-shadow:0 2px 16px rgba(0,0,0,.25)
+}
+.hbrand{display:flex;align-items:center;gap:10px}
+.hlogo{
+  width:32px;height:32px;background:var(--gold);border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;color:var(--navy);font-weight:bold;
+  font-family:"DM Serif Display",serif;flex-shrink:0
+}
+.htit{font-family:"DM Serif Display",serif;font-size:1.05rem;color:var(--white);white-space:nowrap}
+.hsub{font-size:.65rem;color:var(--gold-light);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+.hbdg{
+  background:var(--navy-light);border:1px solid var(--gold);
+  border-radius:20px;padding:4px 12px;
+  font-size:.68rem;color:var(--gold-light);text-transform:uppercase;
+  white-space:nowrap;flex-shrink:0
+}
+
+/* Layout */
 .lay{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 96px)}
-.sbar{background:var(--navy-mid);padding:2rem 0;position:sticky;top:96px;height:calc(100vh - 96px);overflow-y:auto}
-.slbl{font-size:.62rem;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;padding:0 1.5rem;margin-bottom:.75rem;margin-top:1.5rem}
-.sbtn{display:flex;align-items:center;gap:12px;width:100%;padding:.7rem 1.5rem;background:transparent;border:none;cursor:pointer;text-align:left}
+
+/* Sidebar */
+.sbar{
+  background:var(--navy-mid);padding:2rem 0;
+  position:sticky;top:96px;height:calc(100vh - 96px);overflow-y:auto
+}
+.slbl{
+  font-size:.62rem;color:var(--gold);letter-spacing:.12em;
+  text-transform:uppercase;padding:0 1.5rem;
+  margin-bottom:.75rem;margin-top:1.5rem
+}
+.sbtn{
+  display:flex;align-items:center;gap:12px;
+  width:100%;padding:.7rem 1.5rem;
+  background:transparent;border:none;cursor:pointer;text-align:left
+}
 .sbtn:hover{background:rgba(201,168,76,.08)}
 .sbtn.act{background:rgba(201,168,76,.15);border-left:3px solid var(--gold)}
 .sbtn.act .snum{background:var(--gold);color:var(--navy)}
 .sbtn.dn .snum{background:var(--success);color:white}
-.snum{width:24px;height:24px;border-radius:50%;background:var(--navy-light);color:var(--cream);font-size:.7rem;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.snum{
+  width:24px;height:24px;border-radius:50%;
+  background:var(--navy-light);color:var(--cream);
+  font-size:.7rem;font-weight:600;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0
+}
 .stxt{font-size:.8rem;color:var(--cream)}
 .sbtn.act .stxt{color:var(--gold-light);font-weight:500}
-.main{padding:2.5rem 3rem;max-width:860px}
+.prog-wrap{padding:1.5rem}
+.pw{height:3px;background:var(--cream-dark);border-radius:2px;margin-bottom:.5rem}
+.pf{height:100%;background:var(--gold);border-radius:2px;transition:width .4s}
+
+/* Main */
+.main{padding:2.5rem 3rem;max-width:860px;width:100%}
 .sech{margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid var(--cream-dark)}
 .sect{font-family:"DM Serif Display",serif;font-size:1.6rem;color:var(--navy);margin-bottom:.3rem}
 .secd{font-size:.85rem;color:var(--text-mid)}
-.card{background:var(--white);border-radius:var(--radius);padding:1.75rem;margin-bottom:1.25rem;box-shadow:var(--shadow);border:1px solid rgba(0,0,0,.05)}
-.ctit{font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:1.25rem;display:flex;align-items:center;gap:8px}
+
+/* Cards */
+.card{
+  background:var(--white);border-radius:var(--radius);
+  padding:1.75rem;margin-bottom:1.25rem;
+  box-shadow:var(--shadow);border:1px solid rgba(0,0,0,.05)
+}
+.ctit{
+  font-size:.7rem;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--gold);
+  margin-bottom:1.25rem;display:flex;align-items:center;gap:8px
+}
 .ctit::after{content:"";flex:1;height:1px;background:var(--cream-dark)}
+
+/* Grids */
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
 .fld{display:flex;flex-direction:column;gap:6px}
 .fld.full{grid-column:1/-1}
 label{font-size:.75rem;font-weight:500;color:var(--text-mid)}
-input,select,textarea{font-family:"DM Sans",sans-serif;font-size:.875rem;padding:.6rem .875rem;border:1.5px solid var(--cream-dark);border-radius:7px;background:var(--cream);color:var(--text);width:100%}
-input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);background:var(--white)}
+
+/* Inputs — 16px prevents iOS zoom */
+input,select,textarea{
+  font-family:"DM Sans",sans-serif;
+  font-size:16px;
+  padding:.6rem .875rem;
+  border:1.5px solid var(--cream-dark);
+  border-radius:7px;background:var(--cream);
+  color:var(--text);width:100%;
+  -webkit-appearance:none;appearance:none
+}
+input:focus,select:focus,textarea:focus{
+  outline:none;border-color:var(--gold);background:var(--white)
+}
 textarea{resize:vertical;min-height:90px;line-height:1.5}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%234a5568' d='M6 8L0 0h12z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .75rem center;padding-right:2rem}
+
+/* Checkboxes / Radios */
 .cbg{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
-.cbi{display:flex;align-items:center;gap:10px;padding:.5rem .75rem;border-radius:6px;border:1.5px solid var(--cream-dark);cursor:pointer;background:var(--cream)}
-.cbi:hover{border-color:var(--gold)}
+.cbi{
+  display:flex;align-items:center;gap:10px;
+  padding:.6rem .75rem;border-radius:6px;
+  border:1.5px solid var(--cream-dark);
+  cursor:pointer;background:var(--cream);
+  -webkit-tap-highlight-color:transparent
+}
+.cbi:hover,.cbi:active{border-color:var(--gold)}
 .cbi.ck{border-color:var(--gold);background:rgba(201,168,76,.1)}
-.cbi input{width:15px;height:15px;accent-color:var(--gold);flex-shrink:0}
-.cbi span{font-size:.8rem}
+.cbi input[type=checkbox]{
+  width:18px;height:18px;
+  accent-color:var(--gold);flex-shrink:0
+}
+.cbi span{font-size:.82rem;line-height:1.3}
 .rg{display:flex;gap:.75rem;flex-wrap:wrap}
-.ri{display:flex;align-items:center;gap:8px;padding:.5rem 1rem;border-radius:6px;border:1.5px solid var(--cream-dark);cursor:pointer;background:var(--cream);font-size:.82rem;user-select:none}
-.ri:hover{border-color:var(--gold)}
+.ri{
+  display:flex;align-items:center;gap:8px;
+  padding:.55rem 1rem;border-radius:6px;
+  border:1.5px solid var(--cream-dark);
+  cursor:pointer;background:var(--cream);
+  font-size:.82rem;user-select:none;
+  -webkit-tap-highlight-color:transparent;
+  min-height:44px
+}
+.ri:hover,.ri:active{border-color:var(--gold)}
 .ri.sel{border-color:var(--gold);background:rgba(201,168,76,.1);font-weight:500}
+
+/* AI Panel */
 .aip{background:linear-gradient(135deg,#0f1e35,#1a3050);border-radius:var(--radius);padding:1.25rem;margin-top:.75rem}
 .aih{display:flex;align-items:center;gap:10px;margin-bottom:1rem}
-.aiic{width:28px;height:28px;background:var(--gold);border-radius:6px;display:flex;align-items:center;justify-content:center}
+.aiic{width:28px;height:28px;background:var(--gold);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .aitl{font-size:.8rem;color:var(--gold-light);font-weight:500}
 .aisl{font-size:.7rem;color:rgba(255,255,255,.5)}
 .tg{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:1rem}
-.tc{padding:.5rem .75rem;border-radius:6px;border:1px solid rgba(201,168,76,.3);background:rgba(201,168,76,.08);color:var(--gold-light);font-size:.75rem;cursor:pointer;text-align:left}
-.tc:hover{background:rgba(201,168,76,.18)}
+.tc{padding:.6rem .75rem;border-radius:6px;border:1px solid rgba(201,168,76,.3);background:rgba(201,168,76,.08);color:var(--gold-light);font-size:.78rem;cursor:pointer;text-align:left;min-height:44px}
+.tc:hover,.tc:active{background:rgba(201,168,76,.18)}
 .tc.sel{background:rgba(201,168,76,.25);border-color:var(--gold)}
-.aib{display:inline-flex;align-items:center;gap:8px;background:var(--gold);color:var(--navy);border:none;border-radius:6px;padding:.55rem 1.1rem;font-size:.8rem;font-weight:600;cursor:pointer;font-family:"DM Sans",sans-serif;margin-right:.5rem;margin-top:.25rem}
-.aib:hover{background:var(--gold-light)}
+.ai-btns{display:flex;gap:.5rem;flex-wrap:wrap}
+.aib{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  background:var(--gold);color:var(--navy);border:none;border-radius:6px;
+  padding:.6rem 1.1rem;font-size:.82rem;font-weight:600;
+  cursor:pointer;font-family:"DM Sans",sans-serif;
+  min-height:44px;-webkit-tap-highlight-color:transparent
+}
+.aib:hover,.aib:active{background:var(--gold-light)}
 .aib:disabled{opacity:.6;cursor:not-allowed}
 .spin{width:14px;height:14px;border:2px solid rgba(201,168,76,.3);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite;display:inline-block;vertical-align:middle}
 @keyframes spin{to{transform:rotate(360deg)}}
-.brow{display:flex;gap:.75rem;margin-top:2rem;align-items:center}
-.bp{background:var(--navy);color:var(--white);border:none;border-radius:8px;padding:.7rem 1.75rem;font-size:.875rem;font-weight:500;cursor:pointer;font-family:"DM Sans",sans-serif;display:flex;align-items:center;gap:8px}
-.bp:hover{background:var(--navy-light)}
-.bs{background:transparent;color:var(--text-mid);border:1.5px solid var(--cream-dark);border-radius:8px;padding:.7rem 1.5rem;font-size:.875rem;cursor:pointer;font-family:"DM Sans",sans-serif}
-.bs:hover{border-color:var(--navy);color:var(--navy)}
-.dcs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin:1.5rem 0}
-.dc{background:var(--white);border-radius:var(--radius);padding:1.25rem;border:1.5px solid var(--cream-dark);text-align:center}
-.dc.rdy{border-color:var(--success)}
-.dci{font-size:2rem;margin-bottom:.5rem}
-.dcn{font-size:.8rem;font-weight:600;color:var(--navy);margin-bottom:.25rem}
-.dcs2{font-size:.72rem;color:var(--text-light)}
-.dc.rdy .dcs2{color:var(--success);font-weight:500}
-.genb{background:linear-gradient(135deg,var(--navy),var(--navy-light));color:var(--white);border:none;border-radius:10px;padding:1rem 2.5rem;font-size:1rem;font-weight:500;cursor:pointer;font-family:"DM Sans",sans-serif;display:flex;align-items:center;gap:10px;box-shadow:0 8px 32px rgba(15,30,53,.25)}
-.genb:hover{transform:translateY(-2px)}
-.genb:disabled{opacity:.6;cursor:not-allowed;transform:none}
-.sbox{background:linear-gradient(135deg,var(--navy),var(--navy-mid));border-radius:var(--radius);padding:1.5rem 2rem;color:var(--white);margin-bottom:1.5rem}
+
+/* Buttons */
+.brow{display:flex;gap:.75rem;margin-top:2rem;align-items:center;flex-wrap:wrap}
+.bp{
+  background:var(--navy);color:var(--white);border:none;
+  border-radius:8px;padding:.75rem 1.75rem;
+  font-size:.875rem;font-weight:500;cursor:pointer;
+  font-family:"DM Sans",sans-serif;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  min-height:48px;-webkit-tap-highlight-color:transparent
+}
+.bp:hover,.bp:active{background:var(--navy-light)}
+.bp:disabled{opacity:.6;cursor:not-allowed}
+.bs{
+  background:transparent;color:var(--text-mid);
+  border:1.5px solid var(--cream-dark);border-radius:8px;
+  padding:.75rem 1.5rem;font-size:.875rem;cursor:pointer;
+  font-family:"DM Sans",sans-serif;min-height:48px;
+  -webkit-tap-highlight-color:transparent
+}
+.bs:hover,.bs:active{border-color:var(--navy);color:var(--navy)}
+
+/* Summary / Deal box */
+.sbox{background:linear-gradient(135deg,var(--navy),var(--navy-mid));border-radius:var(--radius);padding:1.5rem;color:var(--white);margin-bottom:1.5rem}
 .sgr{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-top:1rem}
 .slb{font-size:.65rem;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px}
 .svl{font-size:.9rem;color:var(--white)}
-.pw{height:3px;background:var(--cream-dark);border-radius:2px;margin:1.5rem 0}
-.pf{height:100%;background:var(--gold);border-radius:2px;transition:width .4s}
-.div{height:1px;background:var(--cream-dark);margin:1.25rem 0}
+
+/* Doc cards (generate step) */
+.dcs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin:1.5rem 0}
+.dc{background:var(--white);border-radius:var(--radius);padding:1.25rem;border:1.5px solid var(--cream-dark);text-align:center}
+.dc.rdy{border-color:var(--success)}
+.dci{font-size:.95rem;font-weight:700;color:var(--navy);background:var(--cream);border-radius:6px;padding:.4rem .6rem;margin:0 auto .5rem;width:fit-content}
+.dcn{font-size:.8rem;font-weight:600;color:var(--navy);margin-bottom:.25rem}
+.dcs2{font-size:.72rem;color:var(--text-light)}
+.dc.rdy .dcs2{color:var(--success);font-weight:500}
+.genb{
+  background:linear-gradient(135deg,var(--navy),var(--navy-light));
+  color:var(--white);border:none;border-radius:10px;
+  padding:1rem 2.5rem;font-size:1rem;font-weight:500;
+  cursor:pointer;font-family:"DM Sans",sans-serif;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  box-shadow:0 8px 32px rgba(15,30,53,.25);
+  min-height:52px;width:100%;max-width:360px;
+  -webkit-tap-highlight-color:transparent
+}
+.genb:hover,.genb:active{transform:translateY(-1px)}
+.genb:disabled{opacity:.6;cursor:not-allowed;transform:none}
 .ok{background:#d4edda;border:1px solid #c3e6cb;border-radius:8px;padding:1rem 1.25rem;color:var(--success);font-size:.85rem;display:flex;align-items:center;gap:10px;margin-bottom:1.25rem}
+.divider{height:1px;background:var(--cream-dark);margin:1.25rem 0}
+
+
+/* Footer */
+.footer{
+  background:#111827;
+  border-top:1px solid rgba(255,255,255,.08);
+  padding:1.5rem 2.5rem;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:1.25rem
+}
+.footer-left{display:flex;align-items:center;gap:1rem}
+.footer-avatar{
+  width:56px;height:56px;border-radius:50%;
+  background:linear-gradient(135deg,var(--gold),#8a6520);
+  display:flex;align-items:center;justify-content:center;
+  font-family:"DM Serif Display",serif;
+  font-size:1.1rem;color:var(--white);font-weight:700;
+  flex-shrink:0;border:2px solid rgba(201,168,76,.4)
+}
+.footer-info{}
+.footer-name{
+  font-size:.95rem;font-weight:700;
+  color:var(--white);margin-bottom:2px
+}
+.footer-city{
+  font-size:.78rem;color:rgba(255,255,255,.5);
+  margin-bottom:6px
+}
+.footer-contact{
+  display:flex;align-items:center;gap:1.25rem;
+  flex-wrap:wrap
+}
+.footer-contact a,.footer-contact span{
+  font-size:.78rem;color:rgba(255,255,255,.6);
+  text-decoration:none
+}
+.footer-contact a:hover{color:var(--gold-light)}
+.footer-right{
+  text-align:right
+}
+.footer-agent{
+  font-size:.82rem;font-weight:600;
+  color:rgba(255,255,255,.85);margin-bottom:3px
+}
+.footer-lic{
+  font-size:.72rem;color:rgba(255,255,255,.4);
+  line-height:1.7
+}
+.footer-disclaimer{
+  background:#0d1117;
+  border-top:1px solid rgba(255,255,255,.05);
+  padding:.875rem 2.5rem;
+  font-size:.68rem;color:rgba(255,255,255,.3);
+  line-height:1.6
+}
+.footer-disclaimer a{color:rgba(201,168,76,.5);text-decoration:none}
+.footer-disclaimer a:hover{color:var(--gold)}
+@media(max-width:768px){
+  .footer{padding:1.25rem 1.25rem;gap:1rem}
+  .footer-right{text-align:left}
+  .footer-disclaimer{padding:.75rem 1.25rem}
+}
+@media(max-width:640px){
+  .footer-left{flex-direction:column;align-items:flex-start;gap:.75rem}
+  .footer-avatar{width:44px;height:44px;font-size:.9rem}
+  .footer-contact{gap:.75rem}
+  .footer-right{width:100%}
+}
+/* ── RESPONSIVE ── */
+
+/* Tablet portrait (≤900px) */
+@media(max-width:900px){
+  .lay{grid-template-columns:180px 1fr}
+  .main{padding:2rem 1.75rem}
+  .sgr{grid-template-columns:1fr 1fr}
+  .dcs{grid-template-columns:1fr 1fr}
+}
+
+/* Mobile landscape + portrait (≤640px) */
+@media(max-width:640px){
+  /* Header */
+  .hdr{height:52px;top:36px;padding:0 1rem}
+  .htit{font-size:.9rem}
+  .hsub{display:none}
+  .hbdg{display:none}
+
+  /* Tool nav */
+  .tnav{height:36px;padding:0 .5rem}
+  .tnav span{display:none}
+  .tnav a{padding:0 .7rem;font-size:.72rem}
+
+  /* Layout — sidebar becomes horizontal step bar */
+  .lay{grid-template-columns:1fr;min-height:unset}
+  .sbar{
+    position:sticky;top:88px;z-index:90;
+    height:auto;padding:0;
+    display:flex;flex-direction:row;
+    overflow-x:auto;-webkit-overflow-scrolling:touch;
+    border-bottom:1px solid rgba(201,168,76,.2)
+  }
+  .sbar::-webkit-scrollbar{display:none}
+  .slbl{display:none}
+  .sbtn{
+    flex-direction:column;align-items:center;
+    padding:.5rem .75rem;min-width:72px;
+    border-left:none;border-bottom:3px solid transparent;
+    gap:4px;flex-shrink:0
+  }
+  .sbtn.act{
+    background:rgba(201,168,76,.15);
+    border-left:none;border-bottom-color:var(--gold)
+  }
+  .snum{width:20px;height:20px;font-size:.6rem}
+  .stxt{font-size:.62rem;line-height:1.2;text-align:center;white-space:nowrap}
+  .prog-wrap{display:none}
+
+  /* Main content */
+  .main{padding:1.25rem .875rem}
+  .sect{font-size:1.3rem}
+  .card{padding:1.1rem}
+
+  /* Grids all single column */
+  .g2{grid-template-columns:1fr}
+  .fld.full{grid-column:1}
+  .g2 .fld.full{grid-column:1}
+
+  /* Summary box */
+  .sgr{grid-template-columns:1fr 1fr}
+
+  /* Checkboxes / feature grid */
+  .cbg{grid-template-columns:1fr 1fr}
+
+  /* Radio groups wrap */
+  .rg{gap:.4rem}
+  .ri{font-size:.8rem;padding:.5rem .8rem;min-height:44px}
+
+  /* AI panel */
+  .aip{padding:1rem}
+  .tg{grid-template-columns:1fr 1fr}
+  .ai-btns{flex-direction:column}
+  .aib{width:100%}
+
+  /* Buttons */
+  .brow{gap:.5rem}
+  .bp,.bs{width:100%;justify-content:center}
+
+  /* Doc cards */
+  .dcs{grid-template-columns:1fr}
+  .dc{display:flex;align-items:center;gap:12px;text-align:left;padding:.875rem 1rem}
+  .dci{margin:0;flex-shrink:0}
+  .genb{max-width:100%}
+}
+
+/* Landscape phone (height < 500px) */
+@media(max-height:500px) and (orientation:landscape){
+  .hdr{height:44px;top:36px}
+  .sbar{top:80px}
+  .sbtn{padding:.4rem .65rem;min-width:64px}
+  .stxt{font-size:.58rem}
+  .main{padding:1rem .875rem}
+  .card{padding:1rem;margin-bottom:.875rem}
+  .sect{font-size:1.2rem}
+  .sech{margin-bottom:1.25rem}
+  .aip{padding:.875rem}
+}
 </style>
 </head>
 <body>
@@ -134,7 +454,7 @@ var SUITTMPLS = [
 // Smart auto-fill templates - fill ALL free text fields at once
 var SMARTTMPLS = [
   {
-    id:"st1", lbl:"Salaried - Purchase", icon:"🏠",
+    id:"st1", lbl:"Salaried - Purchase", icon:"Home",
     desc:"Owner-occupied purchase, salaried income, own savings DP",
     fill: function(d){
       var names=d.client1+(d.client2?" and "+d.client2:"");
@@ -150,7 +470,7 @@ var SMARTTMPLS = [
     }
   },
   {
-    id:"st2", lbl:"Salaried - Gifted DP", icon:"🎁",
+    id:"st2", lbl:"Salaried - Gifted DP", icon:"Gift",
     desc:"Owner-occupied purchase, salaried income, gifted down payment",
     fill: function(d){
       var names=d.client1+(d.client2?" and "+d.client2:"");
@@ -166,7 +486,7 @@ var SMARTTMPLS = [
     }
   },
   {
-    id:"st3", lbl:"Self-Employed", icon:"💼",
+    id:"st3", lbl:"Self-Employed", icon:"Work",
     desc:"Self-employed borrower, strong assets, business income",
     fill: function(d){
       var names=d.client1+(d.client2?" and "+d.client2:"");
@@ -181,7 +501,7 @@ var SMARTTMPLS = [
     }
   },
   {
-    id:"st4", lbl:"Refinance", icon:"🔄",
+    id:"st4", lbl:"Refinance", icon:"Refi",
     desc:"Refinance for equity access, debt consolidation or improvements",
     fill: function(d){
       var names=d.client1+(d.client2?" and "+d.client2:"");
@@ -195,6 +515,61 @@ var SMARTTMPLS = [
       };
     }
   },
+];
+
+
+var LENDERS = [
+  "ATB Credit Union (AB only)",
+  "Atlantic League Savings Credit Union (ON, Atlantics only)",
+  "B2B",
+  "Blueshore CU (BC only)",
+  "Bridgewater Bank",
+  "CMLS",
+  "Coast Capital Savings",
+  "Community Trust (BC AB and ON only)",
+  "CTBC (Bank of China)",
+  "Desjardin (ON, QC only)",
+  "Dominion Mortgage",
+  "DUCA (ON only)",
+  "Eclipse",
+  "Envision (BC only)",
+  "Equitable",
+  "First National",
+  "First Ontario (ON only)",
+  "Fisgard",
+  "Fraction (reverse mtg lender)",
+  "Haventree",
+  "Home Trust",
+  "HomeEquity Bank",
+  "ICICI",
+  "Island Savings (BC only)",
+  "Kawartha Credit Union (ON only)",
+  "KEB Hana Bank (Korean Bank)",
+  "Kootenay Savings Credit Union (BC Only)",
+  "League Savings and Mortgages Credit Union (ON and Atlantics only)",
+  "Lendwise",
+  "Manulife",
+  "Marathon",
+  "MCAP",
+  "Meridian (ON only)",
+  "Merix",
+  "Neo Financial",
+  "NPX",
+  "Optimum",
+  "Private - indicate in notes specific lender name",
+  "PROSPERA CREDIT UNION (BC Only)",
+  "Radius Financial",
+  "RFA (formerly Street Capital)",
+  "RFA Alt A",
+  "RMG",
+  "Strive",
+  "TD",
+  "Valley First (BC Only)",
+  "VWR",
+  "Wealth One",
+  "Westminster Savings (BC only)",
+  "XMC",
+  "Your Neighbourhood Credit Union (YNCU)(ON Only)",
 ];
 
 function b64ToBytes(b64){var bin=atob(b64);var b=new Uint8Array(bin.length);for(var i=0;i<bin.length;i++)b[i]=bin.charCodeAt(i);return b;}
@@ -241,14 +616,16 @@ async function fillKYC(d){
   tf("Support Q2",d.kycProperty||"");
   tf("Support Q3",d.kycRisks||"No additional risks identified.");
   tf("Agent SIgn Date",fmtD(d.date));
-  // Set font size on all text fields to prevent oversized text
-  form.getFields().forEach(function(field){
-    try{
-      if(field.constructor.name==="PDFTextField"){
+  // Fix font size - set font size and update appearances before flattening
+  try {
+    var helvetica = await pdf.embedFont(PDFLib.StandardFonts.Helvetica);
+    form.getFields().forEach(function(field){
+      try{
         field.setFontSize(9);
-      }
-    }catch(e){}
-  });
+        field.updateAppearances(helvetica);
+      }catch(e){}
+    });
+  } catch(e){ console.error("font fix:", e); }
   form.flatten();
   return await pdf.save();
 }
@@ -284,13 +661,15 @@ async function fillSuit(d){
   tf("Client Date Sign",fmtD(d.date));
   tf("Client 2 Date Sign",fmtD(d.date));
   tf("Agent Date Sign",fmtD(d.date));
-  form.getFields().forEach(function(field){
-    try{
-      if(field.constructor.name==="PDFTextField"){
+  try {
+    var helvetica = await pdf.embedFont(PDFLib.StandardFonts.Helvetica);
+    form.getFields().forEach(function(field){
+      try{
         field.setFontSize(9);
-      }
-    }catch(e){}
-  });
+        field.updateAppearances(helvetica);
+      }catch(e){}
+    });
+  } catch(e){ console.error("font fix:", e); }
   form.flatten();
   return await pdf.save();
 }
@@ -315,6 +694,22 @@ function App(){
   const [done,setDone]=useState(false);
   const [gen,setGen]=useState(false);
   const [ai,setAi]=useState({});
+  const [customLenders, setCustomLenders] = useState(function(){
+    try{ var s=localStorage.getItem("pb_custom_lenders"); return s?JSON.parse(s):[]; }catch(e){ return []; }
+  });
+
+  const addCustomLender = function(val){
+    var trimmed = val.trim();
+    if(!trimmed) return;
+    // Only add if not already in the built-in list or custom list
+    var allLenders = LENDERS.concat(customLenders);
+    var already = allLenders.some(function(l){ return l.toLowerCase()===trimmed.toLowerCase(); });
+    if(already) return;
+    var updated = customLenders.concat([trimmed]).sort();
+    setCustomLenders(updated);
+    try{ localStorage.setItem("pb_custom_lenders", JSON.stringify(updated)); }catch(e){}
+  };
+
   const [D,setD]=useState({
     client1:"",client2:"",property:"",date:new Date().toISOString().slice(0,10),
     transactionNo:"",income:"",contactMethod:"In Person",repeatClient:"No",
@@ -389,7 +784,7 @@ function App(){
 
   return(
 <div>
-<div className="tnav"><span>FC Funding Tools</span><a href="index.html">Mortgage Qualifier</a><a href="package-builder.html" className="act">Package Builder</a></div>
+<div className="tnav"><span>FC Funding Tools</span><a href="index.html">Mortgage Qualifier</a><a href="package-builder.html" className="act">Package Builder</a><a href="compliance-organizer.html">Compliance Organizer</a></div>
 <div className="hdr"><div className="hbrand"><div className="hlogo">FC</div><div><div className="htit">Package Builder</div><div className="hsub">Signing Package Automation</div></div></div><div className="hbdg">FC Funding - FSRA 10671</div></div>
 <div className="lay">
 <div className="sbar">
@@ -407,7 +802,17 @@ function App(){
 <div className="fld full"><label>Subject Property Address *</label><input value={D.property} onChange={e=>sv("property",e.target.value)} placeholder="e.g. 54 Sulmona Drive, Hamilton, Ontario L8W3Z3"/></div>
 <div className="fld"><label>Document Date</label><input type="date" value={D.date} onChange={e=>sv("date",e.target.value)}/></div>
 <div className="fld"><label>Transaction No. (Velocity)</label><input value={D.transactionNo} onChange={e=>sv("transactionNo",e.target.value)} placeholder="e.g. VDFCF378091"/></div>
-<div className="fld"><label>Household Income (for AI drafting)</label><input value={D.income} onChange={e=>sv("income",e.target.value)} placeholder="e.g. $120,000"/></div>
+<div className="fld"><label>Household Income (for AI drafting)</label><input
+  value={D.income}
+  onChange={e=>sv("income",e.target.value)}
+  onBlur={e=>{
+    var raw=e.target.value.replace(/[^0-9.]/g,"");
+    if(raw&&!isNaN(raw)){
+      sv("income","$"+Number(raw).toLocaleString("en-CA"));
+    }
+  }}
+  placeholder="e.g. 120000 or $120,000"
+/></div>
 </div></div>
 <div className="card"><div className="ctit">Contact Details</div>
 <div className="fld" style={{marginBottom:"1rem"}}><label>Method of Contact</label><div className="rg">{["In Person","Video Conferencing","Phone/Text/Email"].map(o=><div key={o} className={"ri"+(D.contactMethod===o?" sel":"")} onClick={()=>sv("contactMethod",o)}>{o}</div>)}</div></div>
@@ -419,7 +824,18 @@ function App(){
 {step==="deal"&&(<div>
 <div className="sech"><div className="sect">Mortgage Details</div><div className="secd">Populates Section I of the Suitability form.</div></div>
 <div className="card"><div className="ctit">Recommended Product</div><div className="g2">
-<div className="fld"><label>Lender *</label><input value={D.lender} onChange={e=>sv("lender",e.target.value)} placeholder="e.g. First Ontario Credit Union"/></div>
+<div className="fld"><label>Lender *</label>
+<input list="lender-list" value={D.lender}
+  onChange={e=>sv("lender",e.target.value)}
+  onBlur={e=>addCustomLender(e.target.value)}
+  placeholder="Type or select a lender..." autoComplete="off"/>
+<datalist id="lender-list">
+  {LENDERS.concat(customLenders).map(function(l){return <option key={l} value={l}/>;})}}
+</datalist>
+{customLenders.length>0&&<div style={{fontSize:".7rem",color:"var(--text-light)",marginTop:"4px"}}>
+  Your saved lenders: {customLenders.join(", ")} <span onClick={function(){setCustomLenders([]);try{localStorage.removeItem("pb_custom_lenders");}catch(e){};}} style={{cursor:"pointer",color:"var(--gold)",marginLeft:"6px"}}>clear</span>
+</div>}
+</div>
 <div className="fld"><label>Term</label><select value={D.term} onChange={e=>sv("term",e.target.value)}>{["1 Year","2 Year","3 Year","4 Year","5 Year","7 Year","10 Year"].map(t=><option key={t}>{t}</option>)}</select></div>
 <div className="fld"><label>Rate *</label><input value={D.rate} onChange={e=>sv("rate",e.target.value)} placeholder="e.g. 3.35% (Prime - 1.10%)"/></div>
 <div className="fld"><label>Interest Type</label><div className="rg">{["Fixed","Variable"].map(o=><div key={o} className={"ri"+(D.interestType===o?" sel":"")} onClick={()=>sv("interestType",o)}>{o}</div>)}</div></div>
@@ -478,7 +894,7 @@ function App(){
 <div className="aip">
 <div className="aih"><div className="aiic">+</div><div><div className="aitl">AI-Assisted Drafting</div><div className="aisl">Pick a template, then click AI Draft to personalize</div></div></div>
 <div className="tg">{KYCTMPLS.map(t=><button key={t.id} className={"tc"+(D.kycTpl===t.id?" sel":"")} onClick={()=>{sv("kycTpl",t.id);sv("kycFinancial",t.fn({client1:D.client1,client2:D.client2,property:D.property,income:D.income}));}}>{t.lbl}</button>)}</div>
-<div>
+<div className="ai-btns">
 <button className="aib" onClick={draftFin} disabled={ai.kf}>{ai.kf?<span><span className="spin"/> Drafting...</span>:"+ AI Draft Financial"}</button>
 <button className="aib" onClick={draftProp} disabled={ai.kp}>{ai.kp?<span><span className="spin"/> Drafting...</span>:"+ AI Draft Property"}</button>
 </div></div>
@@ -496,7 +912,7 @@ function App(){
 <div className="aip">
 <div className="aih"><div className="aiic">+</div><div><div className="aitl">AI-Assisted Drafting</div><div className="aisl">Pick a scenario, then refine with AI</div></div></div>
 <div className="tg">{SUITTMPLS.map(t=><button key={t.id} className={"tc"+(D.suitTpl===t.id?" sel":"")} onClick={()=>{sv("suitTpl",t.id);sv("keyConsiderations",t.fn({client1:D.client1,client2:D.client2,lender:D.lender,rate:D.rate,term:D.term}));}}>{t.lbl}</button>)}</div>
-<div>
+<div className="ai-btns">
 <button className="aib" onClick={draftCons} disabled={ai.sc}>{ai.sc?<span><span className="spin"/> Drafting...</span>:"+ AI Draft Considerations"}</button>
 <button className="aib" onClick={draftWhy} disabled={ai.sw}>{ai.sw?<span><span className="spin"/> Drafting...</span>:"+ AI Draft Why Best"}</button>
 </div></div>
@@ -545,6 +961,32 @@ function App(){
 </div>)}
 
 </div>
+</div>
+
+<div className="footer">
+  <div className="footer-left">
+    <div className="footer-avatar">NI</div>
+    <div className="footer-info">
+      <div className="footer-name">Neel Idnani Mortgage Group</div>
+      <div className="footer-city">London, Ontario, Canada</div>
+      <div className="footer-contact">
+        <span>519-697-2359</span>
+        <a href="mailto:info@neelidnani.com">info@neelidnani.com</a>
+        <a href="https://www.neelidnani.com" target="_blank" rel="noopener noreferrer">www.neelidnani.com</a>
+      </div>
+    </div>
+  </div>
+  <div className="footer-right">
+    <div className="footer-agent">Neel Idnani - Mortgage Agent Level 2</div>
+    <div className="footer-lic">
+      Lic. #M23005524<br/>
+      Dominion Lending Centres FC Funding<br/>
+      Brokerage FSRA #10671
+    </div>
+  </div>
+</div>
+<div className="footer-disclaimer">
+  For illustration and administrative purposes only. Not a commitment to lend. Results are estimates subject to full lender underwriting, credit adjudication, and appraisal. No fees collected through this tool. Regulated by FSRA. For borrower rights visit <a href="https://www.fsrao.ca" target="_blank" rel="noopener noreferrer">fsrao.ca</a>.
 </div>
 </div>
   );
