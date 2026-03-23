@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Mortgage Tools | Neel Idnani Mortgage Group</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--navy:#0f1e35;--gold:#c9a84c;--gold-light:#e8c97a;--cream:#f8f5ef;--white:#fff}
+html{-webkit-text-size-adjust:100%}
+body{font-family:"DM Sans",sans-serif;background:var(--navy);color:var(--white);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem}
+.box{background:#1a3050;border-radius:16px;padding:2.5rem;width:100%;max-width:420px;box-shadow:0 24px 64px rgba(0,0,0,.5);border:1px solid rgba(201,168,76,.2)}
+.logo{display:flex;align-items:center;gap:12px;margin-bottom:2rem}
+.badge{width:48px;height:48px;background:linear-gradient(135deg,var(--gold),#8a6520);border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:"DM Serif Display",serif;font-size:20px;color:var(--navy);font-weight:700;flex-shrink:0}
+.brand{font-family:"DM Serif Display",serif;font-size:1.1rem;color:var(--white)}
+.brand-sub{font-size:.68rem;color:var(--gold-light);text-transform:uppercase;letter-spacing:.08em}
+h1{font-family:"DM Serif Display",serif;font-size:1.5rem;color:var(--white);margin-bottom:.4rem}
+.sub{font-size:.82rem;color:rgba(255,255,255,.5);margin-bottom:2rem;line-height:1.5}
+.lbl{font-size:.75rem;font-weight:500;color:rgba(255,255,255,.6);display:block;margin-bottom:6px}
+input{font-family:"DM Sans",sans-serif;font-size:16px;padding:.75rem 1rem;border:1.5px solid rgba(255,255,255,.1);border-radius:8px;background:rgba(255,255,255,.05);color:var(--white);width:100%;margin-bottom:1rem;-webkit-appearance:none}
+input:focus{outline:none;border-color:var(--gold);background:rgba(255,255,255,.08)}
+input::placeholder{color:rgba(255,255,255,.2)}
+button{width:100%;background:var(--gold);color:var(--navy);border:none;border-radius:8px;padding:.9rem;font-size:.95rem;font-weight:700;cursor:pointer;font-family:"DM Sans",sans-serif;min-height:48px;transition:background .15s}
+button:hover{background:var(--gold-light)}
+button:disabled{opacity:.6;cursor:not-allowed}
+.err{background:rgba(198,40,40,.15);border:1px solid rgba(198,40,40,.3);border-radius:6px;padding:.65rem 1rem;font-size:.8rem;color:#ff8a8a;margin-bottom:1rem;display:none}
+.err.show{display:block}
+.foot{font-size:.68rem;color:rgba(255,255,255,.2);text-align:center;margin-top:1.75rem;line-height:1.6}
+.tools{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin-top:2rem}
+.tool-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:1rem;text-align:center;text-decoration:none;transition:all .15s;cursor:pointer}
+.tool-card:hover{background:rgba(201,168,76,.1);border-color:rgba(201,168,76,.3)}
+.tool-icon{font-size:1.5rem;margin-bottom:.4rem}
+.tool-name{font-size:.75rem;font-weight:600;color:rgba(255,255,255,.8)}
+.spinner{width:18px;height:18px;border:2px solid rgba(15,30,53,.3);border-top-color:var(--navy);border-radius:50%;animation:spin .7s linear infinite;display:inline-block;vertical-align:middle;margin-right:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@media(max-width:480px){
+  .box{padding:1.75rem 1.25rem;border-radius:12px}
+  h1{font-size:1.25rem}
+  .tools{grid-template-columns:1fr}
+  .tool-card{display:flex;align-items:center;gap:12px;text-align:left;padding:.875rem 1rem}
+  .tool-icon{font-size:1.2rem;margin-bottom:0;flex-shrink:0}
+}
+@media(max-height:600px) and (orientation:landscape){
+  body{align-items:flex-start;padding:1rem}
+  .box{margin:auto}
+}
+</style>
+</head>
+<body>
+<div class="box">
+  <div class="logo">
+    <div class="badge">NI</div>
+    <div>
+      <div class="brand">Neel Idnani Mortgage Group</div>
+      <div class="brand-sub">Mortgage Tools</div>
+    </div>
+  </div>
+
+  <div id="login-section">
+    <h1>Sign In</h1>
+    <p class="sub">Access is by invitation only. Contact Neel to request access.</p>
+    <div class="err" id="err-msg"></div>
+    <label class="lbl">Email Address</label>
+    <input type="email" id="email" placeholder="you@example.com"/>
+    <label class="lbl">Password</label>
+    <input type="password" id="password" placeholder="Your password"/>
+    <button id="login-btn" onclick="doLogin()">Sign In</button>
+    <div class="foot">
+      Neel Idnani - Mortgage Agent Level 2<br/>
+      Lic. #M23005524 - DLC FC Funding - FSRA #10671
+    </div>
+  </div>
+
+  <div id="tools-section" style="display:none">
+    <h1>Welcome back!</h1>
+    <p class="sub" id="welcome-msg">Choose a tool to get started.</p>
+    <div class="tools">
+      <a class="tool-card" href="package-builder.html">
+        <div class="tool-icon">📋</div>
+        <div class="tool-name">Package Builder</div>
+      </a>
+      <a class="tool-card" href="compliance-organizer.html">
+        <div class="tool-icon">📁</div>
+        <div class="tool-name">Compliance Organizer</div>
+      </a>
+      <a class="tool-card" href="index.html">
+        <div class="tool-icon">🏠</div>
+        <div class="tool-name">Mortgage Qualifier</div>
+      </a>
+    </div>
+    <button onclick="doLogout()" style="margin-top:1.5rem;background:rgba(255,255,255,.08);color:rgba(255,255,255,.5);font-size:.8rem;padding:.6rem">Sign Out</button>
+  </div>
+</div>
+
+<script>
+var SB_URL = "https://vztpsdshvjmriaycvzkk.supabase.co";
+var SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ6dHBzZHNodmptcmlheWN2emtrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQyMDE2ODgsImV4cCI6MjA4OTc3NzY4OH0.Xew4--_uy9fKGUPgjXDaB3rIXvXt6prBfzEPjImML0Q";
+var sb = supabase.createClient(SB_URL, SB_KEY);
+
+// Check if already logged in
+sb.auth.getSession().then(function(r){
+  if(r.data && r.data.session){
+    showTools(r.data.session.user.email);
+  }
+});
+
+async function doLogin(){
+  var email = document.getElementById('email').value;
+  var password = document.getElementById('password').value;
+  var btn = document.getElementById('login-btn');
+  var err = document.getElementById('err-msg');
+  if(!email || !password){ showErr("Please enter your email and password."); return; }
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Signing in...';
+  err.classList.remove('show');
+  try{
+    var r = await sb.auth.signInWithPassword({email: email, password: password});
+    if(r.error) throw r.error;
+    showTools(r.data.user.email);
+  }catch(e){
+    showErr(e.message || "Invalid email or password.");
+    btn.disabled = false;
+    btn.innerHTML = 'Sign In';
+  }
+}
+
+function showTools(email){
+  document.getElementById('login-section').style.display='none';
+  document.getElementById('tools-section').style.display='block';
+  document.getElementById('welcome-msg').textContent = 'Signed in as ' + email;
+}
+
+function showErr(msg){
+  var el = document.getElementById('err-msg');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+
+async function doLogout(){
+  await sb.auth.signOut();
+  window.location.reload();
+}
+
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Enter') doLogin();
+});
+</script>
+</body>
+</html>
