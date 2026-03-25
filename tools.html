@@ -8,49 +8,67 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--navy:#0f1e35;--gold:#c9a84c;--gold-light:#e8c97a;--cream:#f8f5ef;--white:#fff}
+:root{--navy:#0f1e35;--gold:#c9a84c;--gold-light:#e8c97a;--white:#fff;--success:#2d6a4f}
 html{-webkit-text-size-adjust:100%}
-body{font-family:"DM Sans",sans-serif;background:var(--navy);color:var(--white);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem}
+body{font-family:"DM Sans",sans-serif;background:var(--navy);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem;-webkit-tap-highlight-color:transparent}
 .box{background:#1a3050;border-radius:16px;padding:2.5rem;width:100%;max-width:420px;box-shadow:0 24px 64px rgba(0,0,0,.5);border:1px solid rgba(201,168,76,.2)}
 .logo{display:flex;align-items:center;gap:12px;margin-bottom:2rem}
-.badge{width:48px;height:48px;background:linear-gradient(135deg,var(--gold),#8a6520);border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:"DM Serif Display",serif;font-size:20px;color:var(--navy);font-weight:700;flex-shrink:0}
-.brand{font-family:"DM Serif Display",serif;font-size:1.1rem;color:var(--white)}
+.badge{width:44px;height:44px;background:linear-gradient(135deg,var(--gold),#8a6520);border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:"DM Serif Display",serif;font-size:18px;color:var(--navy);font-weight:700;flex-shrink:0}
+.brand{font-family:"DM Serif Display",serif;font-size:1.05rem;color:var(--white)}
 .brand-sub{font-size:.68rem;color:var(--gold-light);text-transform:uppercase;letter-spacing:.08em}
-h1{font-family:"DM Serif Display",serif;font-size:1.5rem;color:var(--white);margin-bottom:.4rem}
-.sub{font-size:.82rem;color:rgba(255,255,255,.5);margin-bottom:2rem;line-height:1.5}
+h1{font-family:"DM Serif Display",serif;font-size:1.4rem;color:var(--white);margin-bottom:.4rem}
+.sub{font-size:.82rem;color:rgba(255,255,255,.5);margin-bottom:1.75rem;line-height:1.5}
 .lbl{font-size:.75rem;font-weight:500;color:rgba(255,255,255,.6);display:block;margin-bottom:6px}
-input{font-family:"DM Sans",sans-serif;font-size:16px;padding:.75rem 1rem;border:1.5px solid rgba(255,255,255,.1);border-radius:8px;background:rgba(255,255,255,.05);color:var(--white);width:100%;margin-bottom:1rem;-webkit-appearance:none}
+input{font-family:"DM Sans",sans-serif;font-size:16px;padding:.75rem 1rem;border:1.5px solid rgba(255,255,255,.1);border-radius:8px;background:rgba(255,255,255,.05);color:var(--white);width:100%;margin-bottom:1rem;-webkit-appearance:none;appearance:none}
 input:focus{outline:none;border-color:var(--gold);background:rgba(255,255,255,.08)}
 input::placeholder{color:rgba(255,255,255,.2)}
-button{width:100%;background:var(--gold);color:var(--navy);border:none;border-radius:8px;padding:.9rem;font-size:.95rem;font-weight:700;cursor:pointer;font-family:"DM Sans",sans-serif;min-height:48px;transition:background .15s}
-button:hover{background:var(--gold-light)}
-button:disabled{opacity:.6;cursor:not-allowed}
-.err{background:rgba(198,40,40,.15);border:1px solid rgba(198,40,40,.3);border-radius:6px;padding:.65rem 1rem;font-size:.8rem;color:#ff8a8a;margin-bottom:1rem;display:none}
-.err.show{display:block}
-.foot{font-size:.68rem;color:rgba(255,255,255,.2);text-align:center;margin-top:1.75rem;line-height:1.6}
-.tools{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin-top:2rem}
-.tool-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:1rem;text-align:center;text-decoration:none;transition:all .15s;cursor:pointer}
-.tool-card:hover{background:rgba(201,168,76,.1);border-color:rgba(201,168,76,.3)}
-.tool-icon{font-size:1.5rem;margin-bottom:.4rem}
-.tool-name{font-size:.75rem;font-weight:600;color:rgba(255,255,255,.8)}
-.spinner{width:18px;height:18px;border:2px solid rgba(15,30,53,.3);border-top-color:var(--navy);border-radius:50%;animation:spin .7s linear infinite;display:inline-block;vertical-align:middle;margin-right:8px}
+.btn{width:100%;background:var(--gold);color:var(--navy);border:none;border-radius:8px;padding:.9rem;font-size:.95rem;font-weight:700;cursor:pointer;font-family:"DM Sans",sans-serif;min-height:48px;transition:background .15s}
+.btn:hover{background:var(--gold-light)}
+.btn:disabled{opacity:.6;cursor:not-allowed}
+.btn-ghost{width:100%;background:rgba(255,255,255,.06);color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:.8rem;font-size:.875rem;cursor:pointer;font-family:"DM Sans",sans-serif;min-height:44px;margin-top:.5rem;transition:all .15s}
+.btn-ghost:hover{background:rgba(255,255,255,.1);color:var(--white)}
+.msg{border-radius:6px;padding:.65rem 1rem;font-size:.82rem;margin-bottom:1rem;display:none;line-height:1.4}
+.msg.show{display:block}
+.msg.err{background:rgba(198,40,40,.15);border:1px solid rgba(198,40,40,.3);color:#ff8a8a}
+.msg.ok{background:rgba(45,106,79,.15);border:1px solid rgba(45,106,79,.4);color:#6fcf97}
+.forgot-link{display:block;text-align:right;font-size:.75rem;color:rgba(201,168,76,.6);cursor:pointer;margin-top:-.5rem;margin-bottom:1rem;background:none;border:none;font-family:"DM Sans",sans-serif;padding:0}
+.forgot-link:hover{color:var(--gold-light)}
+.back-link{display:block;text-align:center;font-size:.75rem;color:rgba(255,255,255,.35);cursor:pointer;margin-top:1rem;background:none;border:none;font-family:"DM Sans",sans-serif;padding:0}
+.back-link:hover{color:rgba(255,255,255,.6)}
+.divider{display:flex;align-items:center;gap:.75rem;margin:1.5rem 0}
+.divider-line{flex:1;height:1px;background:rgba(255,255,255,.08)}
+.divider-txt{font-size:.7rem;color:rgba(255,255,255,.25)}
+.tools{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-top:1.5rem}
+.tool-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:1.1rem 1rem;text-align:center;text-decoration:none;transition:all .15s;display:block}
+.tool-card:hover{background:rgba(201,168,76,.1);border-color:rgba(201,168,76,.3);transform:translateY(-1px)}
+.tool-icon{font-size:1.4rem;margin-bottom:.4rem}
+.tool-name{font-size:.78rem;font-weight:600;color:rgba(255,255,255,.8);line-height:1.3}
+.tool-desc{font-size:.67rem;color:rgba(255,255,255,.35);margin-top:2px}
+.tool-card.full{grid-column:1/-1;display:flex;align-items:center;gap:12px;text-align:left;padding:.875rem 1rem}
+.tool-card.full .tool-icon{font-size:1.2rem;margin-bottom:0;flex-shrink:0}
+.welcome-name{font-size:1rem;color:rgba(255,255,255,.5);margin-bottom:1.5rem}
+.welcome-name strong{color:var(--gold-light)}
+.sign-out-row{display:flex;justify-content:center;margin-top:1.5rem}
+.sign-out-btn{background:none;border:none;color:rgba(255,255,255,.25);font-size:.75rem;cursor:pointer;font-family:"DM Sans",sans-serif;padding:.4rem .75rem}
+.sign-out-btn:hover{color:rgba(255,255,255,.5)}
+.foot{font-size:.67rem;color:rgba(255,255,255,.2);text-align:center;margin-top:1.75rem;line-height:1.7}
+.spinner{width:16px;height:16px;border:2px solid rgba(15,30,53,.3);border-top-color:var(--navy);border-radius:50%;animation:spin .7s linear infinite;display:inline-block;vertical-align:middle;margin-right:8px}
 @keyframes spin{to{transform:rotate(360deg)}}
-
 @media(max-width:480px){
   .box{padding:1.75rem 1.25rem;border-radius:12px}
-  h1{font-size:1.25rem}
   .tools{grid-template-columns:1fr}
-  .tool-card{display:flex;align-items:center;gap:12px;text-align:left;padding:.875rem 1rem}
+  .tool-card{display:flex;align-items:center;gap:12px;text-align:left}
+  .tool-card.full{grid-column:1}
   .tool-icon{font-size:1.2rem;margin-bottom:0;flex-shrink:0}
 }
 @media(max-height:600px) and (orientation:landscape){
-  body{align-items:flex-start;padding:1rem}
-  .box{margin:auto}
+  body{align-items:flex-start;padding-top:1.5rem}
 }
 </style>
 </head>
 <body>
 <div class="box">
+
   <div class="logo">
     <div class="badge">NI</div>
     <div>
@@ -59,40 +77,63 @@ button:disabled{opacity:.6;cursor:not-allowed}
     </div>
   </div>
 
-  <div id="login-section">
+  <!-- LOGIN -->
+  <div id="s-login">
     <h1>Sign In</h1>
     <p class="sub">Access is by invitation only. Contact Neel to request access.</p>
-    <div class="err" id="err-msg"></div>
+    <div class="msg err" id="login-err"></div>
     <label class="lbl">Email Address</label>
-    <input type="email" id="email" placeholder="you@example.com"/>
+    <input type="email" id="login-email" placeholder="you@example.com" autocomplete="email"/>
     <label class="lbl">Password</label>
-    <input type="password" id="password" placeholder="Your password"/>
-    <button id="login-btn" onclick="doLogin()">Sign In</button>
+    <input type="password" id="login-pw" placeholder="Your password" autocomplete="current-password"/>
+    <button class="forgot-link" onclick="showForgot()">Forgot password?</button>
+    <button class="btn" id="login-btn" onclick="doLogin()">Sign In</button>
     <div class="foot">
       Neel Idnani - Mortgage Agent Level 2<br/>
       Lic. #M23005524 - DLC FC Funding - FSRA #10671
     </div>
   </div>
 
-  <div id="tools-section" style="display:none">
+  <!-- FORGOT PASSWORD -->
+  <div id="s-forgot" style="display:none">
+    <h1>Reset Password</h1>
+    <p class="sub">Enter your email and we will send you a link to set a new password.</p>
+    <div class="msg err" id="forgot-err"></div>
+    <div class="msg ok" id="forgot-ok"></div>
+    <label class="lbl">Email Address</label>
+    <input type="email" id="forgot-email" placeholder="you@example.com" autocomplete="email"/>
+    <button class="btn" id="forgot-btn" onclick="doForgot()">Send Reset Link</button>
+    <button class="back-link" onclick="showLogin()">Back to Sign In</button>
+  </div>
+
+  <!-- TOOLS HUB (after login) -->
+  <div id="s-tools" style="display:none">
     <h1>Welcome back!</h1>
-    <p class="sub" id="welcome-msg">Choose a tool to get started.</p>
+    <p class="welcome-name">Signed in as <strong id="user-email-display"></strong></p>
     <div class="tools">
       <a class="tool-card" href="package-builder.html">
         <div class="tool-icon">📋</div>
         <div class="tool-name">Package Builder</div>
+        <div class="tool-desc">Fill KYC, Suitability, Consent</div>
       </a>
       <a class="tool-card" href="compliance-organizer.html">
         <div class="tool-icon">📁</div>
         <div class="tool-name">Compliance Organizer</div>
+        <div class="tool-desc">Merge docs for Velocity</div>
       </a>
-      <a class="tool-card" href="index.html">
+      <a class="tool-card full" href="index.html">
         <div class="tool-icon">🏠</div>
-        <div class="tool-name">Mortgage Qualifier</div>
+        <div>
+          <div class="tool-name">Mortgage Qualifier</div>
+          <div class="tool-desc">Client-facing qualification calculator</div>
+        </div>
       </a>
     </div>
-    <button onclick="doLogout()" style="margin-top:1.5rem;background:rgba(255,255,255,.08);color:rgba(255,255,255,.5);font-size:.8rem;padding:.6rem">Sign Out</button>
+    <div class="sign-out-row">
+      <button class="sign-out-btn" onclick="doLogout()">Sign Out</button>
+    </div>
   </div>
+
 </div>
 
 <script>
@@ -100,52 +141,78 @@ var SB_URL = "https://vztpsdshvjmriaycvzkk.supabase.co";
 var SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ6dHBzZHNodmptcmlheWN2emtrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQyMDE2ODgsImV4cCI6MjA4OTc3NzY4OH0.Xew4--_uy9fKGUPgjXDaB3rIXvXt6prBfzEPjImML0Q";
 var sb = supabase.createClient(SB_URL, SB_KEY);
 
-// Check if already logged in
+function show(id) {
+  ['s-login','s-forgot','s-tools'].forEach(function(s){
+    document.getElementById(s).style.display = s===id ? 'block' : 'none';
+  });
+}
+function showLogin(){ show('s-login'); clearMsgs(); }
+function showForgot(){ show('s-forgot'); clearMsgs(); document.getElementById('forgot-email').value = document.getElementById('login-email').value; }
+function clearMsgs(){ ['login-err','forgot-err','forgot-ok'].forEach(function(id){ var el=document.getElementById(id); if(el){el.textContent='';el.classList.remove('show');} }); }
+
+function setErr(id, msg){ var el=document.getElementById(id); el.textContent=msg; el.classList.add('show'); }
+function setOk(id, msg){ var el=document.getElementById(id); el.textContent=msg; el.classList.add('show'); }
+
+// Check if already logged in on page load
 sb.auth.getSession().then(function(r){
   if(r.data && r.data.session){
-    showTools(r.data.session.user.email);
+    showToolsHub(r.data.session.user.email);
   }
 });
 
 async function doLogin(){
-  var email = document.getElementById('email').value;
-  var password = document.getElementById('password').value;
+  var email = document.getElementById('login-email').value.trim();
+  var pw = document.getElementById('login-pw').value;
   var btn = document.getElementById('login-btn');
-  var err = document.getElementById('err-msg');
-  if(!email || !password){ showErr("Please enter your email and password."); return; }
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span>Signing in...';
-  err.classList.remove('show');
+  clearMsgs();
+  if(!email || !pw){ setErr('login-err','Please enter your email and password.'); return; }
+  btn.disabled=true; btn.innerHTML='<span class="spinner"></span>Signing in...';
   try{
-    var r = await sb.auth.signInWithPassword({email: email, password: password});
+    var r = await sb.auth.signInWithPassword({email:email, password:pw});
     if(r.error) throw r.error;
-    showTools(r.data.user.email);
+    showToolsHub(r.data.user.email);
   }catch(e){
-    showErr(e.message || "Invalid email or password.");
-    btn.disabled = false;
-    btn.innerHTML = 'Sign In';
+    setErr('login-err', e.message==='Invalid login credentials' ? 'Incorrect email or password.' : (e.message||'Sign in failed.'));
+    btn.disabled=false; btn.innerHTML='Sign In';
   }
 }
 
-function showTools(email){
-  document.getElementById('login-section').style.display='none';
-  document.getElementById('tools-section').style.display='block';
-  document.getElementById('welcome-msg').textContent = 'Signed in as ' + email;
+async function doForgot(){
+  var email = document.getElementById('forgot-email').value.trim();
+  var btn = document.getElementById('forgot-btn');
+  clearMsgs();
+  if(!email){ setErr('forgot-err','Please enter your email address.'); return; }
+  btn.disabled=true; btn.innerHTML='<span class="spinner"></span>Sending...';
+  try{
+    var r = await sb.auth.resetPasswordForEmail(email, {
+      redirectTo: 'https://tools.neelidnani.com/reset-password.html'
+    });
+    if(r.error) throw r.error;
+    setOk('forgot-ok','Reset link sent! Check your email and click the link to set a new password.');
+    btn.innerHTML='Email Sent';
+  }catch(e){
+    setErr('forgot-err', e.message||'Failed to send reset email.');
+    btn.disabled=false; btn.innerHTML='Send Reset Link';
+  }
 }
 
-function showErr(msg){
-  var el = document.getElementById('err-msg');
-  el.textContent = msg;
-  el.classList.add('show');
+function showToolsHub(email){
+  document.getElementById('user-email-display').textContent = email;
+  show('s-tools');
 }
 
 async function doLogout(){
   await sb.auth.signOut();
-  window.location.reload();
+  showLogin();
+  document.getElementById('login-email').value='';
+  document.getElementById('login-pw').value='';
 }
 
+// Enter key support
 document.addEventListener('keydown', function(e){
-  if(e.key === 'Enter') doLogin();
+  if(e.key !== 'Enter') return;
+  if(document.getElementById('s-login').style.display !== 'none') doLogin();
+  else if(document.getElementById('s-forgot').style.display !== 'none') doForgot();
 });
 </script>
 </body>
